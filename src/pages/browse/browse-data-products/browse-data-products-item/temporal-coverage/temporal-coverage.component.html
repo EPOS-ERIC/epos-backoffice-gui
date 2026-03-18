@@ -1,0 +1,90 @@
+<ng-container *ngIf="temporalLinkedEntities.length > 0; else empty">
+  <form
+    [formGroup]="form"
+    *ngIf="form"
+  >
+    <div
+      class="fields-flex-col"
+      formArrayName="coverage"
+    >
+      <ng-container
+        *ngFor="let control of getControls('coverage'); let i = index"
+        [formGroupName]="i"
+      >
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="100"
+        >
+          <mat-label>Start date</mat-label>
+          <mtx-datetimepicker #pickerStartDate></mtx-datetimepicker>
+          <input
+            [mtxDatetimepicker]="pickerStartDate"
+            formControlName="startDate"
+            matInput
+            required
+          />
+          <mtx-datetimepicker-toggle
+            [for]="pickerStartDate"
+            matSuffix
+          ></mtx-datetimepicker-toggle>
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="100"
+        >
+          <mat-label>End date</mat-label>
+          <mtx-datetimepicker #pickerEndDate></mtx-datetimepicker>
+          <input
+            [mtxDatetimepicker]="pickerEndDate"
+            formControlName="endDate"
+            matInput
+          />
+          <mtx-datetimepicker-toggle
+            [for]="pickerEndDate"
+            matSuffix
+          ></mtx-datetimepicker-toggle>
+        </mat-form-field>
+        <button
+          mat-mini-fab
+          color="primary"
+          aria-label="Save Temporal Extent"
+          matTooltip="Save Temporal Extent"
+          (click)="handleSave(i)"
+          [disabled]="form.pristine"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+
+        <button
+          mat-mini-fab
+          color="warn"
+          aria-label="Remove Temporal Extent"
+          matTooltip="Remove Temporal Extent"
+          (click)="handleDelete(i)"
+          [disabled]="form.disabled"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </ng-container>
+    </div>
+    <span class="warnings">
+      <mat-hint>
+        <mat-icon>warning</mat-icon> If no end date is provided, it is assumed that this dataset is acquired
+        continuously.
+      </mat-hint>
+      <mat-error *ngIf="form.invalid"> <mat-icon>warning</mat-icon> End date must be after Start Date</mat-error>
+    </span>
+  </form>
+</ng-container>
+<ng-template #empty>
+  <p class="notice">Couldn't fetch temporal coverage data.</p>
+  @if (activeDataproduct.status !== STATUS.PUBLISHED && activeDataproduct.status !== STATUS.ARCHIVED) {
+  <button
+    mat-stroked-button
+    color="primary"
+    (click)="createNewTemporalExtent()"
+  >
+    Add Temporal Coverage
+  </button>
+  }
+</ng-template>

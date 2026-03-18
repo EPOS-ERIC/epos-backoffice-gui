@@ -1,0 +1,234 @@
+<ng-scrollbar
+  #scrollable
+  orientation="vertical"
+>
+  <div class="container">
+    <ng-container *ngIf="(loading$ | async) === false; else loading">
+      <ng-container *ngIf="(userInfo$ | async) !== null; else userLoading">
+        <div class="flex-row">
+          <div class="wave">👋</div>
+          <h1>
+            Welcome, <span>{{ (userInfo$ | async)?.firstName }}!</span>
+          </h1>
+        </div>
+      </ng-container>
+      <ng-template #userLoading>
+        <div class="loading-wrapper">
+          <app-skeleton-loader type="intro"></app-skeleton-loader>
+        </div>
+      </ng-template>
+    </ng-container>
+    <ng-template #loading>
+      <div class="loading-wrapper">
+        <svg
+          width="400"
+          height="80"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            clip-path="url(#clip-path-2)"
+            style="fill: url('#fill')"
+          ></rect>
+          <defs>
+            <clipPath id="clip-path-2">
+              <rect
+                width="96"
+                height="72"
+                x="0"
+                y="0"
+                rx="12"
+                ry="12"
+              />
+              <rect
+                width="260"
+                height="10"
+                x="108"
+                y="19"
+                rx="5"
+                ry="5"
+              />
+              <rect
+                width="150"
+                height="10"
+                x="108"
+                y="43"
+                rx="5"
+                ry="5"
+              />
+            </clipPath>
+            <linearGradient id="fill">
+              <stop
+                offset="0.599964"
+                stop-color="#f3f3f3"
+                stop-opacity="1"
+              >
+                <animate
+                  attributeName="offset"
+                  values="-2; -2; 1"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+              <stop
+                offset="1.59996"
+                stop-color="#ecebeb"
+                stop-opacity="1"
+              >
+                <animate
+                  attributeName="offset"
+                  values="-1; -1; 2"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+              <stop
+                offset="2.59996"
+                stop-color="#f3f3f3"
+                stop-opacity="1"
+              >
+                <animate
+                  attributeName="offset"
+                  values="0; 0; 3"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="details-wrapper">
+    <p
+      class="flex-row"
+      id="backoffice-service"
+    >
+      Backoffice Service Information
+    </p>
+    <h2 id="concept">Concept</h2>
+    <p>
+      We want to improve how TCSs manage and edit metadata they produce for the EPOS Data Portal. Currently, they
+      undertake the task of creating .ttl files, which are then ingested into the metadata catalogue via the ingestor
+      service. At the moment, they operate directly on files hosted on GitLab. This method allows them to exploit Git
+      version control to keep track of all changes, i.e., versioning. Thanks to the Backoffice, metadata curators will
+      be able to use this interface to create, edit, and publish an EPOS Data Model Entity directly to the Data Portal.
+    </p>
+
+    <h2 id="glossary">Glossary</h2>
+    <h3 id="possible-state">Possible Status</h3>
+    <p>Each instance has a specific state:</p>
+    <ul>
+      <li>
+        <strong>Draft</strong>
+        This instance has been edited but not yet submitted.
+      </li>
+      <li>
+        <strong>Submitted</strong>
+        This instance needs to be approved in order to be published.
+      </li>
+      <li>
+        <strong>Discarded</strong>
+        This instance has not been approved and is waiting to be edited again.
+      </li>
+      <li>
+        <strong>Published</strong>
+        This instance is public, and can be seen in the production EPOS DATA PORTAL.
+      </li>
+      <li>
+        <strong>Archived</strong>
+        This instance is no longer used.
+      </li>
+    </ul>
+    <h3 id="role">Role</h3>
+    <p>
+      Every person who interacts with the system is associated with one user. Every user can have one role for each user
+      group.
+    </p>
+    <ul>
+      <li>
+        <strong>Viewer</strong>
+        The user can only see the information without being able to modify any of it. They are allowed to view the
+        drafted, submitted, discarded, and archived data of his group.
+      </li>
+      <li>
+        <strong>Editor</strong>
+        The user can edit the metadata, create new drafts, or remove drafts created by themselves. They are allowed to
+        work only on the data of their user group.
+      </li>
+      <li>
+        <strong>Reviewer</strong>
+        The user can approve or disapprove a submitted instance. They are allowed to make changes only to the data of
+        their user group.
+      </li>
+      <li>
+        <strong>Admin</strong>
+        This user can do everything.
+      </li>
+    </ul>
+    <h2 id="user-groups">User Groups</h2>
+    <p>
+      <strong>Role:</strong> What the user can do. <strong>Group:</strong> On which data the user can operate with a
+      specific role.
+    </p>
+    <ul>
+      <li>Each instance belongs to least one Group.</li>
+      <li>
+        Only the users who belong to the same user group as the instance can operate on it. For example an user group
+        can overlap a TCS, so every entity of a TCS can be modified only by the users that belongs to the that TCS. Or,
+        another example only selected users can operate on the contract.
+      </li>
+    </ul>
+    <h3 id="permission-matrix">Permission matrix</h3>
+    <p>Type of operation that a user can do:</p>
+    <span class="flex-row"
+      ><img
+        class="resize"
+        src="./assets/img/guide/permissions.png"
+        alt=""
+    /></span>
+    <p>These action implicitly refear only to every entity which belong to the same user group as the user.</p>
+    <h2 id="life-cycle-of-an-entity">Life cycle of an entity</h2>
+    <span class="flex-row"
+      ><img
+        src="./assets/img/guide/sequence.png"
+        alt=""
+    /></span>
+    <p>In order to be <strong>Published</strong> an instance need:</p>
+    <ul>
+      <li>
+        First the editor draft a new entity or edit an already existing one. The Draft can be edit freely or even
+        remove. (<strong>DRAFT</strong> state)
+      </li>
+      <li>
+        When the editor decides that the instance is ok for him/her, he/she submit the entity. (<strong
+          >SUBMITTED</strong
+        >
+        state)
+      </li>
+      <li>
+        A reviewer has to take charge and check if the submitted instance is correct. If so, the change will be
+        published. (<strong>PUBLISHED</strong> state) The instance that was previously published is put in an archive to
+        be able in the future to rollback some changes. (<strong>ARCHIVED</strong> state)
+      </li>
+      <li>
+        If the reviewer doesn&#39;t approve the change, the changes are discarded. (<strong>DISCARDED</strong> state) An
+        editor can create a new draft from this.
+      </li>
+    </ul>
+    <span class="flex-row"
+      ><img
+        class="resize"
+        src="./assets/img/guide/approvalFlow.png"
+        alt=""
+    /></span>
+  </div>
+</ng-scrollbar>

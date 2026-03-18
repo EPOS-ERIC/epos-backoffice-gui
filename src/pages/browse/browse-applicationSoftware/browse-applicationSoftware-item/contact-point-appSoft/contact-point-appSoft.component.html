@@ -1,0 +1,24 @@
+<ng-container *ngIf="contactPoint; else empty">
+  <app-contact-point-search-appSoft
+    [contactPoint]="contactPoint"
+    (contactPointDetailsUpdated)="updateContactPointArray($event)"
+    (addedContactPointDetail)="handleAddedContactPointDetail($event)"
+    (isLoadingObs)="onLoadingChanged($event)"
+  ></app-contact-point-search-appSoft>
+
+  <div class="item">
+    <p>Contacts</p>
+    <app-contact-point-detail-appSoft
+      [contactPointDetails]="contactPointDetails"
+      [addedContactPointDetail]="addedContactPointDetail"
+      [disabled]="disabled"
+      (removeContactPoint)="handleUnlinkContactPoint($event)"
+    ></app-contact-point-detail-appSoft>
+  </div>
+</ng-container>
+<ng-template #empty>
+  <p class="notice">Couldn't fetch contact point data.</p>
+</ng-template>
+<!-- @if (isLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  } -->

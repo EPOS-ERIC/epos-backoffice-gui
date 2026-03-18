@@ -1,0 +1,25 @@
+@import 'src/styles/_theme.scss';
+
+.mat-tree-node {
+  height: 40px;
+  min-height: 40px;
+}
+
+.active {
+  background-color: $color-focus;
+}
+
+.action {
+  cursor: pointer;
+}
+
+.header-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    font-family: 'Roboto Flex', sans-serif;
+  }
+}

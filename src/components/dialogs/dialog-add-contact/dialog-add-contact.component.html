@@ -1,0 +1,54 @@
+<!-- <ng-container *ngIf="formFields">
+  <h1 mat-dialog-title>
+    Add new contact
+  </h1>
+  <form>
+    <mat-form-field appearance="fill">
+      <mat-label>Type</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let type of types" [value]="type.value">
+          {{ type.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Person</mat-label>
+      <input matInput placeholder="Person" [(ngModel)]="formFields.person" name="person"
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="Email" [(ngModel)]="formFields.email[0]" name="email"
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Language</mat-label>
+      <input matInput placeholder="Language" [(ngModel)]="formFields.language" name="language"
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Telephone</mat-label>
+      <input matInput placeholder="Telephone" [(ngModel)]="formFields.telephone[0]" name="telephone"
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <input matInput placeholder="Role" [(ngModel)]="formFields.role" name="role"
+        [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+  </form>
+</ng-container>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="'cancel'">
+    Cancel
+  </button>
+  <button mat-flat-button color="primary" cdkFocusInitial [mat-dialog-close]="'add'">
+    Add
+  </button>
+</div>
+
+<ng-container *ngIf="!formFields">
+  <div mat-dialog-content>
+    <p>Error loading form...</p>
+  </div>
+</ng-container> -->

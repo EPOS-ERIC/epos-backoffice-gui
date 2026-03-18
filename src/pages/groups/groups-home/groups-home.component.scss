@@ -1,0 +1,42 @@
+.flex-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+}
+
+.wave {
+  font-size: 50px;
+}
+
+h1 {
+  font-size: 90px;
+  font-weight: 300;
+  margin-left: 1rem;
+}
+
+.details-wrapper {
+  padding: 0 2em 2em 2em;
+}
+
+.resize {
+  width: 50%;
+}
+
+.loading-wrapper {
+  padding: 4rem;
+}
+
+ul {
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
+p {
+  line-height: 1.4;
+
+  &#backoffice-service {
+    font-size: 40px;
+  }
+}

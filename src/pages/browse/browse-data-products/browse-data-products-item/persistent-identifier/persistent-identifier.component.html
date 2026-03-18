@@ -1,0 +1,67 @@
+<form
+  [formGroup]="form"
+  *ngIf="form && dataProduct"
+>
+  <div formArrayName="identifier">
+    <div
+      class="fields-flex-col"
+      *ngFor="let control of getControls('identifier'); let i = index"
+      [formGroupName]="i"
+    >
+      <div class="identifiers-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Type</mat-label>
+          <input
+            matInput
+            placeholder="Type"
+            formControlName="type"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Identifier</mat-label>
+          <input
+            matInput
+            placeholder="Identifier"
+            formControlName="identifier"
+          />
+        </mat-form-field>
+        <button
+          mat-mini-fab
+          color="primary"
+          aria-label="Save Persistent Identifier"
+          matTooltip="Save Persistent Identifier"
+          (click)="handleUpdateIdentifier(i)"
+          [disabled]="disabled"
+        >
+          <mat-icon>save</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          [color]="dataProduct.status === stateEnum.PUBLISHED ? '' : 'warn'"
+          matTooltip="Remove Identifier"
+          class="smaller"
+          (click)="handleDeleteIdentifier(i)"
+          [disabled]="disabled"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+<button
+  mat-stroked-button
+  color="primary"
+  (click)="handleAddIdentifier()"
+  [disabled]="disabled"
+>
+  Add identifier
+</button>

@@ -1,0 +1,26 @@
+<ng-container *ngIf="loading; else loading">
+  <div class="wrapper">
+    <div
+      *ngFor="let detail of mergedDetails"
+      class="flex-row"
+    >
+      <div>
+        <span>{{ removeArrayDuplicates(detail.email) }}</span>
+        <span> - </span>
+        <span>Role: {{ getRoleName(detail?.role) }}</span>
+      </div>
+      <button
+        mat-mini-fab
+        color="warn"
+        aria-label="Remove Contact Point"
+        matTooltip="Remove Contact Point"
+        class="smaller"
+        [disabled]="disabled"
+        (click)="handleRemove(detail)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-container>
+<ng-template #loading>Loading...</ng-template>

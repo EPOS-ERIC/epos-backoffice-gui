@@ -1,0 +1,49 @@
+<div class="wrapper">
+  <ng-container>
+    <div class="upper-content">
+      <h1 mat-dialog-title>Adding Spatial Coverage Details</h1>
+      <button
+        mat-stroked-button
+        mat-dialog-close
+      >
+        Close<mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </ng-container>
+
+  <div class="content">
+    <ng-scrollbar>
+      <div class="step-content">
+        <span>
+          <strong> Step 1:</strong> Visit
+          <a
+            href="https://wktmap.com/"
+            target="_blank"
+            >Well-known Text (WKT) Visualization</a
+          >
+        </span>
+      </div>
+      <mat-divider> </mat-divider>
+      <div class="step-content">
+        <span
+          ><strong>Step 2:</strong> Using the Draw Tools the site provides, draw your desired bounding box, polygon or
+          point.</span
+        >
+        <img
+          src="assets/img/spatialCoverageHelp/drawBBox.png"
+          alt="Image demonstrating the use of WKT Visulisation  map tools"
+        />
+      </div>
+      <mat-divider> </mat-divider>
+      <div class="step-content">
+        <span
+          ><strong>Step 3:</strong> Copy and Paste the Cooridinates into the respective input in the Backoffice Portal
+        </span>
+        <img
+          src="assets/img/spatialCoverageHelp/coordinateSelection.png"
+          alt="Image demonstrating the selection of coordinates"
+        />
+      </div>
+    </ng-scrollbar>
+  </div>
+</div>

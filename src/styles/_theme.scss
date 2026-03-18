@@ -1,0 +1,145 @@
+@use '@angular/material' as mat;
+@use '@ng-matero/extensions' as mtx;
+
+@include mat.core();
+
+$primary-map: (
+  50: #e0e9e5,
+  100: #b3c8be,
+  200: #80a493,
+  300: #4d8067,
+  400: #266447,
+  500: #004926,
+  600: #004222,
+  700: #00391c,
+  800: #003117,
+  900: #00210d,
+  A100: #5dff86,
+  A200: #2aff60,
+  A400: #00f63e,
+  A700: #00dd37,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$accent-map: (
+  50: #fef3e3,
+  100: #fbe1b8,
+  200: #f9ce89,
+  300: #f7ba59,
+  400: #f5ab36,
+  500: #f39c12,
+  600: #f19410,
+  700: #ef8a0d,
+  800: #ed800a,
+  900: #ea6e05,
+  A100: #ffffff,
+  A200: #ffecdf,
+  A400: #ffceac,
+  A700: #ffbf92,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$warn-map: (
+  50: #fbe9e7,
+  100: #f5c9c4,
+  200: #eea59c,
+  300: #e78174,
+  400: #e26657,
+  500: #dd4b39,
+  600: #d94433,
+  700: #d43b2c,
+  800: #cf3324,
+  900: #c72317,
+  A100: #fff9f9,
+  A200: #ffc9c6,
+  A400: #ff9993,
+  A700: #ff817a,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$primary-palette: mat.m2-define-palette($primary-map);
+$accent-palette: mat.m2-define-palette($accent-map);
+$warn-palette: mat.m2-define-palette($warn-map);
+
+$app-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+  )
+);
+
+@include mat.all-component-themes($app-theme);
+@include mat.all-component-typographies();
+@include mtx.all-component-themes($app-theme);
+$color-main-content: #ffffff;
+$color-primary: #004926;
+$color-primary-l: lighten($color-primary, 10%);
+$color-primary-ll: lighten($color-primary-l, 10%);
+$color-primary-lll: rgba($color-primary, 0.54);
+$color-secondary: #f39c12;
+$color-secondary-l: lighten($color-secondary, 10%);
+$color-secondary-ll: lighten($color-secondary-l, 10%);
+$color-text-bg: #f4f4f4;
+$color-text-bg-light: #ffffff;
+$color-text-bg-dark: #a7a7a7;
+$color-borders: #ddd;
+$color-dark-text: #444;
+$color-dark-text-important: #333;
+$color-dark-text-strong: #000000;
+$color-light-text: #fff;
+$color-danger: #dd4b39;
+$color-success: $color-primary;
+$color-hazard: #f39c12;
+$color-cancel: #838383;
+$color-yellow: #ffc107;
+$color-background-panel: rgba(255, 255, 255, 0.5);
+$color-focus: rgba(0, 73, 38, 0.2);
+$color-bg-subtle: #efefef;

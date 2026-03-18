@@ -1,0 +1,70 @@
+<div class="contactpoint-item">
+  <div
+    class="contactpoint-box"
+    *ngIf="form && !form.disabled"
+  >
+    <form
+      [formGroup]="form"
+      class="search-toolbar"
+    >
+      <div class="form-fields-row">
+        <mat-form-field class="contact-select">
+          <mat-label>Search contact points</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="contactPoint"
+          />
+        </mat-form-field>
+
+        <mat-form-field class="role-filter">
+          <mat-label>Filter By Role</mat-label>
+          <mat-select formControlName="role">
+            <mat-option
+              *ngFor="let item of contactPointRoleOptions"
+              [value]="item.id"
+            >
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <div class="search-results">
+      <p class="results-title">{{ selectedRoleInFilter }}s</p>
+      <ng-container *ngIf="contactPointFilteredOptions | async as filteredOptions">
+        <div class="results-list">
+          <button
+            type="button"
+            class="result-item"
+            *ngFor="let contactPoint of filteredOptions"
+            [class.selected]="selectedContactPoint?.instanceId === contactPoint.instanceId"
+            (click)="handleSelectContactPoint(contactPoint)"
+          >
+            {{ getContactPointOptionLabel(contactPoint) }}
+          </button>
+          <p
+            class="no-results"
+            *ngIf="filteredOptions.length === 0"
+          >
+            No contact points found.
+          </p>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="add-contactpoint-row">
+      <button
+        class="add-contactpoint-action"
+        color="primary"
+        aria-label="Add contact point"
+        mat-flat-button
+        type="button"
+        (click)="handleAddContactPoint()"
+      >
+        Add Contact Point
+      </button>
+    </div>
+  </div>
+</div>

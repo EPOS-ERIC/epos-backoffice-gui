@@ -1,0 +1,17 @@
+<div class="flex-col">
+  <div class="top">
+    <p>Data product</p>
+    <app-back-button path="/browse/dataproduct"></app-back-button>
+  </div>
+  <mat-list role="list">
+    <mat-list-item
+      [id]="item.id"
+      role="listitem"
+      [ngClass]="activeListItem === item.id ? 'active' : ''"
+      *ngFor="let item of menuListItems"
+      (click)="handleClick(item.id)"
+    >
+      {{ item.name }}
+    </mat-list-item>
+  </mat-list>
+</div>

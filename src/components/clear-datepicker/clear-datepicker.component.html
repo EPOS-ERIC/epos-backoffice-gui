@@ -1,0 +1,11 @@
+<button
+  *ngIf="value"
+  matSuffix
+  mat-icon-button
+  aria-label="Clear existing value"
+  matTooltip="Clear existing value"
+  (click)="handleClearDate()"
+  [disabled]="inputDisabled"
+>
+  <mat-icon>close</mat-icon>
+</button>

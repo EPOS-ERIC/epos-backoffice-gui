@@ -1,0 +1,62 @@
+<div class="wrapper">
+  <div class="flex-col-wrapper">
+    <div class="flex-wrapper">
+      <div class="circle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="icon icon-tabler icon-tabler-user"
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="#ffffff"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            stroke="none"
+            d="M0 0h24v24H0z"
+            fill="none"
+          />
+          <circle
+            cx="12"
+            cy="7"
+            r="4"
+          />
+          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+        </svg>
+      </div>
+      <div class="details">
+        <p class="title">Update status</p>
+      </div>
+    </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select [(ngModel)]="currentStatus">
+        <mat-option
+          *ngFor="let role of userStatuses"
+          [value]="role"
+        >
+          {{ role }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-button
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      cdkFocusInitial
+      (click)="setNewUserStatus(currentStatus)"
+    >
+      Save
+    </button>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.warnings {
+  display: flex;
+  justify-content: space-around;
+  mat-hint {
+    display: flex;
+    align-items: center;
+    color: #f39c12;
+  }
+  mat-error {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.fields-flex-col {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.notice {
+  font-size: 15px;
+  color: #5c5c5c;
+}

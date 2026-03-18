@@ -1,0 +1,238 @@
+<div class="info">
+  <div>
+    <div class="detail">
+      <div class="label">Instance Id:</div>
+      <div class="value">{{ softwareSourceCode.instanceId }}</div>
+    </div>
+    <div
+      *ngIf="softwareSourceCode"
+      class="detail"
+    >
+      <div class="label">Status:</div>
+      <div class="value">
+        {{ softwareSourceCode.status }}
+      </div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="triggerVersionDialog()"
+    >
+      Version History
+    </button>
+    <button
+      *ngIf="this.softwareSourceCode.status !== stateEnum.PUBLISHED"
+      mat-mini-fab
+      color="warn"
+      matTooltip="Permanently Delete Software Application"
+      class="smaller"
+      (click)="handleDeleteSoftwareSourceCodeDelete()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+<form [formGroup]="form">
+  <div>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        placeholder="Title"
+        name="name"
+        formControlName="name"
+      />
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        name="description"
+        [ngStyle]="{ 'line-height': '1.4' }"
+        formControlName="description"
+      ></textarea>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+    [style.width.%]="100"
+  >
+    <mat-label>Keywords</mat-label>
+    <textarea
+      matInput
+      placeholder="Keywords"
+      name="keywords"
+      formControlName="keywords"
+    ></textarea>
+  </mat-form-field>
+
+  <ng-container>
+    <div class="fields-flex-row">
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Download URL</mat-label>
+          <input
+            matInput
+            placeholder="Download URL"
+            name="downloadURL"
+            formControlName="downloadURL"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>License</mat-label>
+          <input
+            matInput
+            placeholder="License"
+            name="licenseURL"
+            formControlName="licenseURL"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Web Page</mat-label>
+          <input
+            matInput
+            placeholder="Web Page"
+            name="mainEntityofPage"
+            formControlName="mainEntityofPage"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+          [appearance]="form.enabled ? 'outline' : 'fill'"
+        >
+          <mat-label>Programming languages</mat-label>
+          <mat-chip-grid
+            #chipGrid
+            [disabled]="form.disabled"
+          >
+            <mat-chip-row
+              *ngFor="let ctrl of programmingLanguageArray.controls; let i = index"
+              [removable]="form.enabled"
+              [disabled]="form.disabled"
+              (removed)="removeLanguage(i)"
+            >
+              {{ ctrl.value }}
+              <button
+                matChipRemove
+                aria-label="Remove"
+              >
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            <input
+              placeholder="Add language…"
+              [disabled]="form.disabled"
+              [matChipInputFor]="chipGrid"
+              [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="onChipTokenEnd($event)"
+            />
+          </mat-chip-grid>
+        </mat-form-field>
+      </div>
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Software Requirements</mat-label>
+          <input
+            matInput
+            placeholder="Software Requirements"
+            name="softwareRequirements"
+            formControlName="softwareRequirements"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Runtime Platform</mat-label>
+          <input
+            matInput
+            placeholder="Runtime Platform"
+            name="runtimePlatform"
+            formControlName="runtimePlatform"
+          />
+        </mat-form-field>
+      </div>
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="50"
+        >
+          <mat-label>Version</mat-label>
+          <input
+            matInput
+            placeholder="Version"
+            name="softwareVersion"
+            formControlName="softwareVersion"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="100"
+        >
+          <mat-label>{{ creatorLoading ? 'Loading creators...' : 'Creator' }}</mat-label>
+          <mat-select
+            [(ngModel)]="selectedOrganizations"
+            [ngModelOptions]="{ standalone: true }"
+            [compareWith]="compareWithFn"
+            (selectionChange)="handleUpdateCreator()"
+            [disabled]="form.disabled || creatorLoading"
+            multiple
+          >
+            <mat-option
+              *ngIf="!creatorLoading && organizations.length === 0"
+              [disabled]="true"
+            >
+              No organizations available
+            </mat-option>
+            <mat-option
+              *ngFor="let org of organizations | orderBy : { property: 'legalName', direction: 1 }"
+              [value]="org"
+            >
+              {{ org.legalName ? org.legalName[0] : '' }}
+            </mat-option>
+            <mat-progress-bar
+              *ngIf="creatorLoading"
+              mode="indeterminate"
+            ></mat-progress-bar>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </ng-container>
+</form>

@@ -1,0 +1,159 @@
+<!-- Selected Categories chips section -->
+<mat-label>Selected Categories:</mat-label>
+<mat-chip-set aria-label="Category Selection">
+  <mat-chip *ngFor="let category of selectedCategories">{{ category }}</mat-chip>
+</mat-chip-set>
+
+<mat-tree
+  [dataSource]="dataSource"
+  [treeControl]="treeControl"
+>
+  <!-- Node with children -->
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+    <div class="node-item">
+      <div class="node-left">
+        <button
+          mat-icon-button
+          matTreeNodeToggle
+          class="node-icon"
+        >
+          <mat-icon>
+            {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+          </mat-icon>
+        </button>
+        <mat-checkbox
+          color="primary"
+          (change)="toggleSelectedCategory($event, node)"
+          [checked]="isCategorySelected(node)"
+          [disabled]="checkStatus()"
+        ></mat-checkbox>
+        <div class="node-content-wrapper">
+          <span class="node-name">{{ node.name || node.uid }}</span>
+          <div
+            *ngIf="node.description"
+            class="node-description-small"
+          >
+            {{ node.description }}
+          </div>
+        </div>
+      </div>
+
+      <div class="node-actions">
+        <button
+          matTooltip="Add Sub-Category"
+          mat-icon-button
+          color="primary"
+          (click)="onAddCategory(node)"
+          [disabled]="!canAddSubCategory(node)"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+        <button
+          matTooltip="Edit Category"
+          mat-icon-button
+          class="edit-btn"
+          (click)="onEditCategory(node)"
+          [disabled]="!canEditCategory(node)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          *ngIf="canManageCategories"
+          matTooltip="Remove Category"
+          mat-icon-button
+          class="delete-btn"
+          (click)="onRemoveCategory(node)"
+          [disabled]="!canRemoveCategory(node)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div
+      *ngIf="treeControl.isExpanded(node)"
+      class="children"
+    >
+      <ng-container matTreeNodeOutlet></ng-container>
+    </div>
+  </mat-nested-tree-node>
+
+  <!-- Leaf node -->
+  <mat-tree-node *matTreeNodeDef="let node">
+    <div class="node-item">
+      <div class="node-left">
+        <button
+          mat-icon-button
+          disabled
+          class="node-icon"
+        ></button>
+        <mat-checkbox
+          color="primary"
+          (change)="toggleSelectedCategory($event, node)"
+          [checked]="isCategorySelected(node)"
+          [disabled]="checkStatus()"
+        ></mat-checkbox>
+        <div class="node-content-wrapper">
+          <span class="node-name">{{ node.name || node.uid }}</span>
+          <div
+            *ngIf="node.description"
+            class="node-description-small"
+          >
+            {{ node.description }}
+          </div>
+        </div>
+      </div>
+
+      <div class="node-actions">
+        <button
+          matTooltip="Add Sub-Category"
+          mat-icon-button
+          color="primary"
+          (click)="onAddCategory(node)"
+          [disabled]="!canAddSubCategory(node)"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+        <button
+          matTooltip="Edit Category"
+          mat-icon-button
+          class="edit-btn"
+          (click)="onEditCategory(node)"
+          [disabled]="!canEditCategory(node)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          *ngIf="canManageCategories"
+          matTooltip="Remove Category"
+          mat-icon-button
+          class="delete-btn"
+          (click)="onRemoveCategory(node)"
+          [disabled]="!canRemoveCategory(node)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-tree-node>
+</mat-tree>
+<br />
+
+<div class="root-actions">
+  <button
+    mat-flat-button
+    color="accent"
+    (click)="onAddCategory(null)"
+    [disabled]="!canAddRootCategory()"
+  >
+    <mat-icon>add</mat-icon> Add Top-Level Category
+  </button>
+</div>
+
+<!-- Empty state message -->
+<div
+  *ngIf="dataSource.data.length === 0"
+  class="empty-state"
+>
+  <p>No categories found for this scheme.</p>
+</div>

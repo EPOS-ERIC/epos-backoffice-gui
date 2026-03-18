@@ -1,0 +1,47 @@
+<ng-container *ngIf="form">
+  <form [formGroup]="form">
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Coordinate type</mat-label>
+      <mat-select
+        matNativeControl
+        name="property"
+        formControlName="property"
+      >
+        <mat-option
+          *ngFor="let coordinateType of coordinateTypes"
+          [value]="coordinateType"
+        >
+          {{ coordinateType }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Default value</mat-label>
+      <input
+        matInput
+        placeholder="Default value"
+        formControlName="defaultValue"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Min value</mat-label>
+      <input
+        matInput
+        placeholder="Min value"
+        formControlName="minValue"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Max value</mat-label>
+      <input
+        matInput
+        placeholder="Max value"
+        formControlName="maxValue"
+      />
+    </mat-form-field>
+  </form>
+</ng-container>

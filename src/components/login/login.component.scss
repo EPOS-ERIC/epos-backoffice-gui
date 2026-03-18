@@ -1,0 +1,55 @@
+@import '../../../src/styles/theme.scss';
+
+button.mat-mdc-unelevated-button {
+  border: 1px solid white;
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  background-color: orange;
+}
+
+.login-disclaimer {
+  clear: both;
+  text-align: center;
+  padding: 1rem 0;
+  color: black;
+  font-size: 14.5px;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+
+  a {
+    color: $color-primary;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+  align-items: center;
+  white-space: break-spaces;
+  text-align: center;
+  font-weight: 400;
+
+  & .manage-link {
+    font-size: 16px;
+    color: $color-primary;
+    margin: 1rem 0;
+  }
+
+  .button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding-left: 0.5rem;
+
+    button,
+    a {
+      padding: 0;
+      font-size: 14px;
+      margin-right: 0.5rem;
+      flex: auto;
+    }
+  }
+}

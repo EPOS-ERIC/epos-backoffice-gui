@@ -1,0 +1,22 @@
+<div class="wrapper">
+  <h1 mat-dialog-title>Confirm</h1>
+  <div mat-dialog-content>
+    <p>Are you sure you want to create a new distribution?</p>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-stroked-button
+      (click)="handleClose()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      cdkFocusInitial
+      (click)="handleCreate()"
+    >
+      Create
+    </button>
+  </div>
+</div>

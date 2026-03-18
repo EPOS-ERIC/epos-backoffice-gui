@@ -1,0 +1,65 @@
+<ng-scrollbar
+  #scrollable
+  class="scroll-container"
+>
+  <div class="page-container">
+    <header class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Categories</h1>
+        <p class="page-subtitle">Manage all categories across schemes</p>
+      </div>
+      <!--<button
+        *ngIf="!selectedSchemeFilter"
+        mat-flat-button
+        color="primary"
+        (click)="handleAddCategory()"
+        class="add-button"
+      >
+        <mat-icon>add</mat-icon>
+        <span>Add Category</span>
+      </button>-->
+    </header>
+
+    <div class="filter-section">
+      <mat-form-field
+        appearance="outline"
+        class="filter-field"
+      >
+        <mat-label>All Category Schemes</mat-label>
+        <mat-select
+          [(ngModel)]="selectedSchemeFilter"
+          (selectionChange)="onSchemeFilterChange()"
+        >
+          <mat-option [value]="null"> All Category Schemes </mat-option>
+          <mat-option
+            *ngFor="let scheme of uniqueSchemes"
+            [value]="scheme.title"
+          >
+            {{ scheme.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Tree View - always shown -->
+    <div class="tree-container hide-checkboxes">
+      <app-category-tree-details
+        [categories]="filteredCategories"
+        [selectedCategoryScheme]="selectedCategorySchemeObj"
+        [canManageCategories]="true"
+        [entityStatus]="'DRAFT'"
+        (categoryChanged)="refreshList()"
+      ></app-category-tree-details>
+    </div>
+  </div>
+
+  <button
+    mat-fab
+    color="accent"
+    class="fab-top"
+    (click)="handleScrollToTop()"
+    matTooltip="Scroll to top"
+  >
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
+</ng-scrollbar>

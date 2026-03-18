@@ -1,0 +1,48 @@
+<div class="wrapper">
+  <ng-container>
+    <h1 mat-dialog-title>Add new Parameter</h1>
+  </ng-container>
+
+  <div mat-dialog-content>
+    <form [formGroup]="form">
+      <mat-form-field appearance="fill">
+        <mat-label>Variable</mat-label>
+        <input
+          matInput
+          placeholder="Variable"
+          formControlName="variable"
+        />
+      </mat-form-field>
+      <mat-error *ngIf="duplicateName">Variable name already exists in this Operation</mat-error>
+      <mat-form-field appearance="fill">
+        <mat-label>Select Parameter Range</mat-label>
+        <mat-select formControlName="range">
+          <mat-option
+            *ngFor="let range of ranges"
+            [value]="range"
+          >
+            {{ range | formatRange }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle formControlName="required">Required</mat-slide-toggle>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-button
+      (click)="handleCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      [disabled]="!form.valid || duplicateName"
+      mat-flat-button
+      color="primary"
+      cdkFocusInitial
+      (click)="handleAdd()"
+    >
+      Add
+    </button>
+  </div>
+</div>

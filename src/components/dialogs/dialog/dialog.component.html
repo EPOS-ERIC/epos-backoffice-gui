@@ -1,0 +1,15 @@
+<ng-container *ngIf="!isDeleteDialog()">
+  <ng-scrollbar>
+    <ng-template
+      (attached)="handleComponentRender($event)"
+      [cdkPortalOutlet]="portal"
+    ></ng-template>
+  </ng-scrollbar>
+</ng-container>
+
+<ng-container *ngIf="isDeleteDialog()">
+  <ng-template
+    (attached)="handleComponentRender($event)"
+    [cdkPortalOutlet]="portal"
+  ></ng-template>
+</ng-container>

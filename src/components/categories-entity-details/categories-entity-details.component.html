@@ -1,0 +1,52 @@
+<form
+  [formGroup]="form"
+  *ngIf="form"
+>
+  <mat-form-field>
+    <mat-label>{{ loading ? 'Loading...' : 'Category Scheme' }}</mat-label>
+    <mat-select
+      [(ngModel)]="selectedCategoryScheme"
+      formControlName="categoryScheme"
+      (selectionChange)="updateCategories(unfilteredCategories)"
+      [disabled]="disableSchemeSelect"
+    >
+      <mat-option
+        *ngFor="let scheme of categorySchemes | orderBy : { property: 'name', direction: 1 }"
+        [value]="scheme"
+      >
+        {{ scheme.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- <mat-form-field>
+    <mat-label>{{ loading ? 'Loading...' : 'Category' }}</mat-label>
+    <mat-select
+      [(ngModel)]="selectedCategories"
+      formControlName="category"
+      [disabled]="disabled"
+      multiple
+      (selectionChange)="notifyChange()"
+    >
+      <mat-option
+        *ngFor="let category of categories | orderBy : { property: 'name', direction: 1 }"
+        [value]="category"
+      >
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field> -->
+
+  <!-- Category Tree: -->
+  <app-category-tree-details
+    [categories]="categories"
+    [entitySelectedCategories]="selectedCategories"
+    [selectedCategoryScheme]="selectedCategoryScheme"
+    [entityStatus]="activeEntity.status"
+    [canManageCategories]="canManageCategories"
+    (updateSelectedCategories)="updateSelectedCategoriesInEntity($event)"
+  ></app-category-tree-details>
+</form>
+@if (loading) {
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

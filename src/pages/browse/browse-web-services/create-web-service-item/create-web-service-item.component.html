@@ -1,0 +1,46 @@
+<ng-scrollbar>
+  <div class="container">
+    <div class="top-header">
+      <div class="flex-row">
+        <h1 class="mat-headline-4">New webservice</h1>
+      </div>
+    </div>
+    <div
+      *ngIf="loading"
+      class="loading-wrapper"
+    >
+      <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="!loading">
+      <form
+        [formGroup]="form"
+        *ngIf="form"
+      >
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>UID</mat-label>
+          <input
+            matInput
+            placeholder="UID"
+            name="uid"
+            formControlName="uid"
+            required
+          />
+        </mat-form-field>
+      </form>
+      <button
+        mat-stroked-button
+        color="primary"
+        class="back-btn"
+        (click)="handleCreate()"
+        [disabled]="!enableSave"
+      >
+        <mat-icon color="primary">create</mat-icon>
+        <span class="back-label-text">Create</span>
+      </button>
+    </div>
+  </div>
+</ng-scrollbar>

@@ -1,0 +1,32 @@
+<div class="wrapper">
+  <h1 mat-dialog-title>Select Group</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Group</mat-label>
+      <mat-select [(ngModel)]="selectedGroupId">
+        <mat-option
+          *ngFor="let group of groups"
+          [value]="group.id"
+        >
+          {{ group.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-stroked-button
+      (click)="handleCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      cdkFocusInitial
+      (click)="handleDelete()"
+    >
+      Confirm
+    </button>
+  </div>
+</div>

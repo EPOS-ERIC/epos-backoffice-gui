@@ -1,0 +1,196 @@
+<div class="info">
+  <div>
+    <div class="detail">
+      <div class="label">Instance Id:</div>
+      <div class="value">{{ dataProduct.instanceId }}</div>
+    </div>
+    <div
+      *ngIf="dataProduct"
+      class="detail"
+    >
+      <div class="label">Status:</div>
+      <div class="value">
+        {{ dataProduct.status }}
+      </div>
+    </div>
+  </div>
+  <div class="buttons">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="triggerVersionDialog()"
+    >
+      Version History
+    </button>
+    <button
+      *ngIf="this.dataProduct.status !== stateEnum.PUBLISHED"
+      mat-mini-fab
+      color="warn"
+      matTooltip="Permanently Delete Data Product"
+      class="smaller"
+      (click)="handleDeleteDataProduct()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+<form [formGroup]="form">
+  <div>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        placeholder="Title"
+        name="title"
+        formControlName="title"
+      />
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        name="description"
+        [ngStyle]="{ 'line-height': '1.4' }"
+        formControlName="description"
+        [value]="dataProduct.description?.[0]"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Keywords</mat-label>
+      <textarea
+        matInput
+        placeholder="Keywords"
+        name="keywords"
+        formControlName="keywords"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      [floatLabel]="floatLabelControl.value"
+      [style.width.%]="100"
+    >
+      <mat-label>Version Info</mat-label>
+      <input
+        matInput
+        placeholder="Version Info"
+        name="versionInfo"
+        formControlName="versionInfo"
+      />
+    </mat-form-field>
+  </div>
+  <ng-container>
+    <div class="fields-flex-row">
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="50"
+        >
+          <mat-label>Update frequency</mat-label>
+          <mat-select formControlName="accrualPeriodicity">
+            <mat-option
+              *ngFor="let item of accrualPeriodicityOptions"
+              [value]="item.id"
+            >
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="50"
+        >
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type">
+            <mat-option
+              *ngFor="let item of typeOptions"
+              [value]="item.id"
+              >{{ item.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field
+        appearance="fill"
+        [style.width.%]="50"
+      >
+        <mat-label>Issued</mat-label>
+        <mtx-datetimepicker #pickerIssued></mtx-datetimepicker>
+        <input
+          [mtxDatetimepicker]="pickerIssued"
+          formControlName="issued"
+          matInput
+          required
+        />
+        <mtx-datetimepicker-toggle
+          [for]="pickerIssued"
+          matSuffix
+        ></mtx-datetimepicker-toggle>
+      </mat-form-field>
+
+      <div class="fields-flex-col">
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="50"
+        >
+          <mat-label>Created</mat-label>
+          <mtx-datetimepicker #pickerCreated></mtx-datetimepicker>
+          <input
+            [mtxDatetimepicker]="pickerCreated"
+            formControlName="created"
+            matInput
+            required
+          />
+          <mtx-datetimepicker-toggle
+            [for]="pickerCreated"
+            matSuffix
+          ></mtx-datetimepicker-toggle>
+        </mat-form-field>
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="50"
+        >
+          <mat-label>Modified</mat-label>
+          <mtx-datetimepicker #pickerModified></mtx-datetimepicker>
+          <input
+            [mtxDatetimepicker]="pickerModified"
+            formControlName="modified"
+            matInput
+            required
+          />
+          <mtx-datetimepicker-toggle
+            [for]="pickerModified"
+            matSuffix
+          ></mtx-datetimepicker-toggle>
+        </mat-form-field>
+      </div>
+      <mat-form-field
+        appearance="fill"
+        [floatLabel]="floatLabelControl.value"
+        [style.width.%]="50"
+      >
+        <mat-label>Quality assurance</mat-label>
+        <input
+          matInput
+          placeholder="Quality assurance"
+          name="qualityAssurance"
+          formControlName="qualityAssurance"
+        />
+        <mat-error *ngIf="form.get('qualityAssurance')?.invalid"> URL is not valid. </mat-error>
+      </mat-form-field>
+    </div>
+  </ng-container>
+</form>

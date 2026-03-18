@@ -1,0 +1,93 @@
+<ng-container *ngIf="supportedOperations; else empty">
+  <form [formGroup]="form">
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="100"
+    >
+      <mat-label>Format</mat-label>
+      <mat-chip-grid
+        #formatsChipGrid
+        [disabled]="disableFeatures || supportedOperations.length === 0"
+      >
+        <mat-chip-row
+          *ngFor="let format of operationFormats; let i = index"
+          [removable]="!disableFeatures && supportedOperations.length > 0"
+          [disabled]="disableFeatures || supportedOperations.length === 0"
+          (removed)="removeFormat(i)"
+        >
+          {{ format }}
+          <button
+            type="button"
+            matChipRemove
+            aria-label="Remove format"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        <input
+          placeholder="Add format..."
+          [disabled]="disableFeatures || supportedOperations.length === 0 || operationFormats.length >= 1"
+          [matChipInputFor]="formatsChipGrid"
+          [matChipInputAddOnBlur]="true"
+          (matChipInputTokenEnd)="onFormatTokenEnd($event)"
+        />
+      </mat-chip-grid>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="100"
+    >
+      <mat-label>Service URI template</mat-label>
+      <input
+        matInput
+        placeholder="Service URI template"
+        formControlName="template"
+      />
+    </mat-form-field>
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="100"
+    >
+      <mat-label>Preview of the URI template with default values</mat-label>
+      <input
+        matInput
+        placeholder="Preview of the URI template with default values"
+        formControlName="preview"
+        readonly
+      />
+    </mat-form-field>
+
+    <button
+      type="button"
+      mat-stroked-button
+      color="primary"
+      class="uri-preview"
+      (click)="handleCreateURIPreview()"
+    >
+      Create URI preview
+    </button>
+
+    <p>Parameters</p>
+    <app-operation-parameters
+      [supportedOperations]="supportedOperations"
+      [templateInput]="this.form.get('template')?.value"
+      (template)="templateSrc.next($event)"
+      (mappingVals)="mappingSrc.next($event)"
+    ></app-operation-parameters>
+
+    <button
+      type="button"
+      mat-flat-button
+      color="primary"
+      (click)="handleAddOperation()"
+      *ngIf="supportedOperations.length === 0"
+      [disabled]="disableFeatures"
+    >
+      Add Operation
+    </button>
+  </form>
+</ng-container>
+<ng-template #empty>
+  <p class="notice">Couldn't fetch supported operations data.</p>
+</ng-template>

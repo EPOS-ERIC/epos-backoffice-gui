@@ -1,0 +1,51 @@
+<div class="wrapper">
+  <h1
+    mat-dialog-title
+    *ngIf="!isEditMode && data.dataIn.name; else createOrEditTitle"
+  >
+    Create category in "{{ data.dataIn.name }}"
+  </h1>
+  <ng-template #createOrEditTitle>
+    <h1 mat-dialog-title>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h1>
+  </ng-template>
+  <div mat-dialog-content>
+    <p>{{ isEditMode ? 'Please modify the Category details.' : 'Please enter new Category name to be created.' }}</p>
+  </div>
+
+  <mat-form-field class="insert-category">
+    <mat-label>Category Name</mat-label>
+    <input
+      required
+      type="text"
+      matInput
+      [(ngModel)]="categoryName"
+    />
+  </mat-form-field>
+
+  <mat-form-field class="insert-category">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      [(ngModel)]="categoryDescription"
+      rows="3"
+    ></textarea>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button
+      mat-stroked-button
+      (click)="handleCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      cdkFocusInitial
+      (click)="handleAction()"
+      [disabled]="!categoryName"
+    >
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+  </div>
+</div>

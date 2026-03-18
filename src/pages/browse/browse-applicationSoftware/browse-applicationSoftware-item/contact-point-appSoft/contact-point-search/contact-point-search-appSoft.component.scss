@@ -1,0 +1,98 @@
+.contactpoint-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.contactpoint-box {
+  width: 100%;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  padding: 0.9rem;
+  background: #fcfcfd;
+}
+
+.search-toolbar {
+  width: 100%;
+  display: block;
+}
+
+.form-fields-row {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.contact-select {
+  flex: 0 0 calc(60% - 0.5rem);
+  width: calc(60% - 0.5rem);
+}
+
+.role-filter {
+  flex: 0 0 calc(40% - 0.5rem);
+  width: calc(40% - 0.5rem);
+  margin-left: auto;
+}
+
+.search-results {
+  width: 100%;
+  margin: 0.25rem 0 0;
+}
+
+.add-contactpoint-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.add-contactpoint-action {
+  margin-top: 0.75rem;
+}
+
+.results-title {
+  margin: 0 0 0.5rem;
+  font-weight: 500;
+}
+
+.results-list {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #fff;
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.result-item {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.result-item:hover {
+  background: #f3f4f6;
+}
+
+.result-item.selected {
+  background: #e0e9e5;
+}
+
+.no-results {
+  margin: 0;
+  padding: 0.5rem;
+  color: #6b7280;
+}
+
+.disabled-note {
+  margin: 0;
+  color: #6b7280;
+}

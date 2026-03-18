@@ -1,0 +1,68 @@
+<mat-accordion>
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>filter_list</mat-icon>
+        <span>Filters</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="filters">
+      <mat-form-field
+        appearance="fill"
+        color="primary"
+      >
+        <mat-label>Status</mat-label>
+        <mat-select
+          (selectionChange)="handleFilterByStatus($event)"
+          [(ngModel)]="filters.status"
+          panelClass="table-filter-panel"
+        >
+          <mat-option
+            *ngFor="let item of statusOptions"
+            [value]="item.option"
+          >
+            {{ item.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        color="primary"
+      >
+        <input
+          matInput
+          placeholder="Search by Title"
+          (input)="handleTitleSearch($event)"
+          [value]="filters.title"
+        />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="fill"
+        color="primary"
+      >
+        <input
+          matInput
+          placeholder="Search by Save Comment"
+          (input)="handleCommentSearch($event)"
+          [value]="filters.changeComment"
+        />
+      </mat-form-field>
+    </div>
+
+    <button
+      mat-stroked-button
+      (click)="handleClearFilters()"
+      class="clear-btn"
+    >
+      Clear all
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="handleViewResults()"
+    >
+      View results
+    </button>
+  </mat-expansion-panel>
+</mat-accordion>

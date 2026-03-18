@@ -1,0 +1,96 @@
+@import '../../../styles/theme';
+
+.content {
+  width: 100vw;
+  height: 100vh;
+  background: #fcfbee;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  .epos-logo {
+    position: fixed;
+    top: 3%;
+    width: 225px;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 100px;
+    color: $color-primary;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .content-wrapper {
+    background: $color-main-content;
+    border-radius: 5px;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    margin-top: 2rem;
+
+    .header {
+      background: $color-primary;
+      padding: 1rem;
+      border-radius: 5px 5px 0 0;
+
+      .title {
+        color: #ffffff;
+      }
+    }
+
+    .main {
+      padding: 1rem 2rem;
+    }
+
+    p {
+      &.title {
+        font-size: 21px;
+        font-weight: 500;
+        letter-spacing: 0.1px;
+        margin: 0;
+        color: #191919;
+      }
+    }
+
+    .button-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding-left: 0.5rem;
+      margin-top: 1rem;
+
+      button,
+      a {
+        padding: 0;
+        font-size: 14px;
+        margin-right: 0.5rem;
+        flex: auto;
+      }
+
+      button {
+        &.login-btn {
+          color: $color-main-content;
+        }
+      }
+    }
+
+    .login-disclaimer {
+      clear: both;
+      text-align: center;
+      color: #2f2f2f;
+      font-size: 14.5px;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1px;
+
+      a {
+        text-decoration: underline;
+      }
+    }
+  }
+}

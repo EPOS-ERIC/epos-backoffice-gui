@@ -1,0 +1,310 @@
+<ng-scrollbar>
+  <div class="container">
+    <div class="top-header">
+      <div class="flex-row">
+        <h1 class="mat-headline-4">Webservice</h1>
+        <mat-chip-listbox
+          aria-label="Status"
+          *ngIf="currentEdit"
+        >
+          <mat-chip-option [color]="currentEdit.color">{{ currentEdit.status }}</mat-chip-option>
+        </mat-chip-listbox>
+      </div>
+      <div class="actions">
+        <div class="flex-col">
+          <button
+            mat-mini-fab
+            color="default"
+            aria-label="Load a revision"
+          >
+            <mat-icon>replay</mat-icon>
+          </button>
+          <label>Revisions</label>
+        </div>
+        <div class="flex-col">
+          <button
+            mat-mini-fab
+            color="error"
+            aria-label="Delete data product"
+            (click)="handleDelete()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <label>Delete</label>
+        </div>
+      </div>
+    </div>
+    <div class="body">
+      <form
+        [formGroup]="form"
+        *ngIf="form && webservice"
+      >
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Instance ID</mat-label>
+          <input
+            matInput
+            placeholder="Instance ID"
+            name="instanceId"
+            formControlName="instanceId"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>UID</mat-label>
+          <input
+            matInput
+            placeholder="UID"
+            name="uid"
+            formControlName="uid"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            placeholder="Name"
+            name="name"
+            formControlName="name"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Description</mat-label>
+          <input
+            matInput
+            placeholder="Description"
+            name="description"
+            formControlName="description"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Date published</mat-label>
+          <input
+            matInput
+            placeholder="Published"
+            name="datePublished"
+            formControlName="datePublished"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Date modified</mat-label>
+          <input
+            matInput
+            placeholder="Modified"
+            name="dateModified"
+            formControlName="dateModified"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Change comment</mat-label>
+          <input
+            matInput
+            placeholder="Change comment"
+            name="changeComment"
+            formControlName="changeComment"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Changed</mat-label>
+          <input
+            matInput
+            placeholder="Changed"
+            name="changeTimestamp"
+            formControlName="changeTimestamp"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Identifier</mat-label>
+          <input
+            matInput
+            placeholder="Identifier"
+            name="identifier"
+            formControlName="identifier"
+            readonly
+          />
+        </mat-form-field>
+        <!-- <ng-container *ngIf="webservice.provider">
+          <mat-label>Provider</mat-label>
+          <mat-form-field
+            appearance="outline"
+            [floatLabel]="floatLabelControl.value"
+            [style.width.%]="97"
+          >
+            <mat-label>UID</mat-label>
+            <input
+              matInput
+              placeholder="UID"
+              [value]="webservice.provider.uid"
+            />
+          </mat-form-field>
+        </ng-container> -->
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Entry point</mat-label>
+          <input
+            matInput
+            placeholder="Entry point"
+            name="entryPoint"
+            formControlName="entryPoint"
+          />
+        </mat-form-field>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>Keywords</mat-label>
+          <input
+            matInput
+            placeholder="Keywords"
+            name="keywords"
+            formControlName="keywords"
+          />
+        </mat-form-field>
+        <ng-container *ngIf="webservice.supportedOperation && webservice.supportedOperation.length > 0">
+          <mat-label class="heading">Supported operation</mat-label>
+          <ng-container *ngFor="let item of webservice.supportedOperation">
+            <mat-form-field
+              appearance="outline"
+              [floatLabel]="floatLabelControl.value"
+              [style.width.%]="96"
+              class="indent"
+            >
+              <mat-label>UID</mat-label>
+              <input
+                matInput
+                placeholder="UID"
+                name="supportedOperation.uid"
+                [value]="item.uid"
+              />
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              [floatLabel]="floatLabelControl.value"
+              [style.width.%]="96"
+              class="indent"
+            >
+              <mat-label>Entity</mat-label>
+              <input
+                matInput
+                placeholder="Entity"
+                name="supportedOperation.entityType"
+                [value]="item.entityType"
+                readonly
+              />
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="webservice.spatialExtent && webservice.spatialExtent.length > 0">
+          <mat-label class="heading">Spatial extent</mat-label>
+          <ng-container *ngFor="let item of webservice.spatialExtent">
+            <!-- <mat-form-field
+              appearance="outline"
+              [floatLabel]="floatLabelControl.value"
+              [style.width.%]="96"
+              class="indent"
+            >
+              <mat-label>Location</mat-label>
+            <input
+                matInput
+                placeholder="Location"
+                name="temporalExtent.location"
+                [value]="item.location"
+                readonly
+              />
+            </mat-form-field> -->
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="webservice.temporalExtent && webservice.temporalExtent.length > 0">
+          <mat-label class="heading">Temporal extent</mat-label>
+          <ng-container *ngFor="let item of webservice.temporalExtent">
+            <mat-form-field
+              appearance="outline"
+              [floatLabel]="floatLabelControl.value"
+              [style.width.%]="96"
+              class="indent"
+            >
+              <mat-label>Start date</mat-label>
+              <!-- <input
+                matInput
+                placeholder="Start date"
+                name="temporalExtent.startDate"
+                [value]="item.startDate"
+                readonly
+              /> -->
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              [floatLabel]="floatLabelControl.value"
+              [style.width.%]="96"
+              class="indent"
+            >
+              <mat-label>End date</mat-label>
+              <!-- <input
+                matInput
+                placeholder="End date"
+                name="temporalExtent.endDate"
+                [value]="item.endDate"
+                readonly
+              /> -->
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
+        <mat-form-field
+          appearance="outline"
+          [floatLabel]="floatLabelControl.value"
+          [style.width.%]="97"
+        >
+          <mat-label>License</mat-label>
+          <input
+            matInput
+            placeholder="License"
+            name="license"
+            formControlName="license"
+          />
+        </mat-form-field>
+      </form>
+    </div>
+  </div>
+</ng-scrollbar>

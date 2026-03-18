@@ -1,0 +1,13 @@
+.wrapper {
+  margin-bottom: 1rem;
+
+  .flex-row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    button {
+      margin-left: 0.5rem;
+    }
+  }
+}

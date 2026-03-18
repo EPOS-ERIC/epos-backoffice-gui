@@ -1,0 +1,37 @@
+<form
+  [formGroup]="form"
+  *ngIf="form && distribution"
+>
+  <mat-form-field
+    appearance="fill"
+    [style.width.%]="100"
+  >
+    <input
+      matInput
+      placeholder="URL"
+      formControlName="downloadURL"
+    />
+    <mat-error *ngIf="urlInvalid"> URL is not valid. </mat-error>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    [style.width.%]="100"
+  >
+    <mat-label>Format</mat-label>
+    <mat-select
+      name="format"
+      formControlName="format"
+    >
+      <mat-option
+        [value]=""
+        selected
+      ></mat-option>
+      <mat-option
+        *ngFor="let format of formats"
+        [value]="format.url"
+      >
+        {{ format.format }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>

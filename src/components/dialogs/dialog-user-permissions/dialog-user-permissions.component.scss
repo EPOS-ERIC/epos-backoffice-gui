@@ -1,0 +1,65 @@
+@import '../../../styles/theme';
+
+.wrapper {
+  padding: 2rem;
+}
+
+.flex-col-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+
+mat-form-field {
+  margin-top: 2rem;
+
+  mat-select {
+    mat-option {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.flex-wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  .circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+    background-color: $color-secondary;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .details {
+    margin-left: 1rem;
+    margin-top: 0.5rem;
+
+    .name {
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .email {
+      font-size: 14px;
+      margin-top: 0;
+      color: #555;
+    }
+  }
+}
+
+.role-disabled {
+  display: flex;
+  justify-content: center;
+  font-style: italic;
+  border: solid 0.5px;
+  border-radius: 5px;
+  opacity: 0.5;
+  margin: 0 5em;
+}

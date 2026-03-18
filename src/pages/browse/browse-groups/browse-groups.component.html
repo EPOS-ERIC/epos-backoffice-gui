@@ -1,0 +1,445 @@
+<ng-scrollbar>
+  <div class="container">
+    <div class="flex-row">
+      <div class="title">
+        <h1 class="mat-headline-4">Groups</h1>
+      </div>
+      <div class="buttons">
+        <button
+          mat-stroked-button
+          [routerLink]="['/groups/new-group']"
+          routerLinkActive="active"
+        >
+          New Group
+          <mat-icon>add</mat-icon>
+        </button>
+        <button
+          mat-flat-button
+          [routerLink]="['/groups/request']"
+          routerLinkActive="active"
+          color="accent"
+        >
+          Request To Join Group
+        </button>
+      </div>
+    </div>
+    <div class="spacer">
+      <mat-chip color="primary">Your Groups</mat-chip>
+      <ng-container *ngIf="userGroupsLoading; else loaded">
+        <mat-progress-bar
+          *ngIf="userGroupsLoading"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </ng-container>
+      <ng-template #loaded>
+        <ng-container *ngIf="dataSource.data.length > 0">
+          <table
+            mat-table
+            [dataSource]="dataSource"
+          >
+            <ng-container matColumnDef="id">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                ID
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.id }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                Name
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                Description
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.description }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="role">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                Role
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.role }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                Status
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.status }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                Actions
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                <button
+                  mat-flat-button
+                  color="warn"
+                  (click)="handleLeaveGroup(element.id, element.userid)"
+                >
+                  Leave
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="userid">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                [style.display]="'none'"
+              >
+                User ID
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                [style.display]="'none'"
+              >
+                {{ element.userid }}
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns"
+            ></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumns"
+            ></tr>
+          </table>
+        </ng-container>
+        <ng-container *ngIf="dataSource.data.length === 0">
+          <p class="body-1">No active groups.</p>
+        </ng-container>
+      </ng-template>
+      <mat-paginator
+        #userGroupsPaginator
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+    <div
+      *ngIf="isUserAdmin"
+      class="spacer"
+    >
+      <mat-chip color="primary">All group members</mat-chip>
+      <ng-container *ngIf="allGroupsLoading; else allGroupsLoaded">
+        <mat-progress-bar
+          *ngIf="allGroupsLoading"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </ng-container>
+      <ng-template #allGroupsLoaded>
+        <ng-container *ngIf="allGroupsDataSource.data.length > 0">
+          <div class="filters">
+            <mat-form-field
+              appearance="fill"
+              color="primary"
+            >
+              <mat-label>Group</mat-label>
+              <mat-select
+                [(ngModel)]="filters.groupName"
+                panelClass="table-filter-panel"
+              >
+                <mat-option
+                  *ngFor="let item of groupOptions"
+                  [value]="item.option"
+                >
+                  {{ item.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <button
+            mat-stroked-button
+            class="clear-btn"
+            (click)="handleClear()"
+          >
+            Clear all
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="handleViewResults()"
+          >
+            View results
+          </button>
+          <table
+            mat-table
+            [dataSource]="allGroupsDataSource"
+            multiTemplateDataRows
+            class="all-groups"
+          >
+            @for (column of allGroupsColumns; track column) {
+            <ng-container [matColumnDef]="column">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+              >
+                {{ column }}
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                #dynamicCell
+              >
+                {{ element?.[column] }}
+              </td>
+            </ng-container>
+            }
+
+            <ng-container matColumnDef="expand">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                aria-label="row actions"
+              >
+                View Users
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+              >
+                <button
+                  mat-icon-button
+                  aria-label="expand row"
+                  (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()"
+                >
+                  @if (expandedElement === element) {
+                  <mat-icon>keyboard_arrow_up</mat-icon>
+                  } @else {
+                  <mat-icon>keyboard_arrow_down</mat-icon>
+                  }
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+              <td
+                mat-cell
+                *matCellDef="let nestedElement"
+                [attr.colspan]="columnsToDisplayWithExpand.length"
+                class="no-hover"
+              >
+                <div
+                  class="example-element-detail"
+                  [@detailExpand]="nestedElement == expandedElement ? 'expanded' : 'collapsed'"
+                >
+                  <table
+                    mat-table
+                    [dataSource]="nestedElement.users"
+                    class="nested-table"
+                  >
+                    <ng-container matColumnDef="name">
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                      >
+                        User
+                      </th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="no-hover"
+                      >
+                        {{ element?.firstName }} {{ element?.lastName }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="email">
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                      >
+                        Email
+                      </th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="no-hover"
+                      >
+                        {{ element?.email }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                      >
+                        Status
+                      </th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="no-hover"
+                      >
+                        {{ element?.requestStatus }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="role">
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                      >
+                        Role
+                      </th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="no-hover"
+                      >
+                        {{ element?.role }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="remove">
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                      >
+                        Actions
+                      </th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        class="no-hover"
+                      >
+                        <button
+                          mat-icon-button
+                          [matMenuTriggerFor]="menu"
+                        >
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                          <button
+                            mat-menu-item
+                            [disabled]="!isUserAdmin"
+                            [matTooltipDisabled]="isUserAdmin"
+                            matTooltip="Only admins can remove users from groups."
+                            (click)="handleRemoveUserFromGroup(dynamicCell, element.authIdentifier)"
+                          >
+                            <mat-icon color="warn">delete</mat-icon>
+                            <span>Remove user</span>
+                          </button>
+                          <button
+                            mat-menu-item
+                            (click)="
+                              handleUpdateUserRole(element.authIdentifier, nestedElement, element?.requestStatus)
+                            "
+                          >
+                            <mat-icon>badge</mat-icon>
+                            <span>Update role</span>
+                          </button>
+                          <button
+                            mat-menu-item
+                            (click)="
+                              handleUpdateUserStatus(element.authIdentifier, nestedElement, element?.requestStatus)
+                            "
+                          >
+                            <mat-icon>timelapse</mat-icon>
+                            <span>Update status</span>
+                          </button>
+                        </mat-menu>
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      mat-header-row
+                      *matHeaderRowDef="nestedColumns"
+                      class="nested-row"
+                    ></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: nestedColumns"
+                    ></tr>
+                  </table>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr
+              mat-header-row
+              *matHeaderRowDef="columnsToDisplayWithExpand"
+            ></tr>
+            <tr
+              mat-row
+              *matRowDef="let element; columns: columnsToDisplayWithExpand"
+              class="example-element-row"
+              [class.example-expanded-row]="expandedElement === element"
+              (click)="expandedElement = expandedElement === element ? null : element"
+            ></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: ['expandedDetail']"
+              class="example-detail-row"
+            ></tr>
+          </table>
+        </ng-container>
+        <ng-container *ngIf="allGroupsDataSource.data.length === 0">
+          <p class="body-1">No group data found.</p>
+        </ng-container>
+      </ng-template>
+      <mat-paginator
+        #allGroupsPaginator
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</ng-scrollbar>

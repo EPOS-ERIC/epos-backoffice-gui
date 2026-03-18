@@ -1,0 +1,67 @@
+.filters {
+  margin: 1rem 0;
+  display: flex;
+  width: 100%;
+
+  mat-form-field {
+    width: auto;
+    margin-right: 1rem;
+  }
+
+  button {
+    margin-left: 1rem;
+  }
+}
+
+button {
+  &.clear-btn {
+    margin-right: 0.5rem;
+  }
+}
+
+::ng-deep {
+  app-table {
+    .mat-accordion > .mat-expansion-panel-spacing {
+      &:last-child {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .mat-mdc-form-field {
+      .mdc-text-field--outlined {
+        .mdc-notched-outline--upgraded {
+          .mdc-floating-label--float-above {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .mdc-floating-label {
+      font-size: 14px;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+  }
+}
+
+mat-expansion-panel {
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+
+  &.mat-expanded {
+    mat-expansion-panel-header {
+      background-color: rgba(0, 73, 38, 0.2);
+    }
+  }
+
+  mat-expansion-panel-header {
+    mat-panel-title {
+      span {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}

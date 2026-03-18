@@ -1,0 +1,76 @@
+<ng-container *ngIf="form">
+  <form [formGroup]="form">
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Semantic Tag</mat-label>
+      <mat-select
+        matNativeControl
+        name="property"
+        formControlName="property"
+      >
+        <mat-option
+          *ngFor="let semanticTag of semanticTags"
+          [value]="semanticTag"
+        >
+          {{ semanticTag }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Minimum Value</mat-label>
+      <mtx-datetimepicker #minValue></mtx-datetimepicker>
+      <input
+        [mtxDatetimepicker]="minValue"
+        placeholder="Minimum value"
+        formControlName="minValue"
+        matInput
+      />
+      <mtx-datetimepicker-toggle
+        [for]="minValue"
+        matSuffix
+      ></mtx-datetimepicker-toggle>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Maximum Value</mat-label>
+      <mtx-datetimepicker #maxValue></mtx-datetimepicker>
+      <input
+        [mtxDatetimepicker]="maxValue"
+        placeholder="Maximum value"
+        formControlName="maxValue"
+        matInput
+      />
+      <mtx-datetimepicker-toggle
+        [for]="maxValue"
+        matSuffix
+      ></mtx-datetimepicker-toggle>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Minimum Value</mat-label>
+      <mtx-datetimepicker #defaultValue></mtx-datetimepicker>
+      <input
+        [mtxDatetimepicker]="defaultValue"
+        placeholder="Default Value"
+        formControlName="defaultValue"
+        matInput
+      />
+      <mtx-datetimepicker-toggle
+        [for]="defaultValue"
+        matSuffix
+      ></mtx-datetimepicker-toggle>
+    </mat-form-field>
+  </form>
+</ng-container>

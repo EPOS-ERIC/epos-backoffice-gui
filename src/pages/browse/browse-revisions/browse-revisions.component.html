@@ -1,0 +1,41 @@
+<div class="container">
+  <div
+    class="top-header"
+    *ngIf="!error"
+  >
+    <div class="flex-row">
+      <h1 class="mat-headline-4">Revisions</h1>
+    </div>
+  </div>
+  <div
+    class="mat-table-margin"
+    *ngIf="loading"
+  >
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div
+    class="flex-wrapper"
+    *ngIf="!loading"
+  >
+    <ng-container *ngIf="!error">
+      <!-- <div class="labels">
+        <div
+          class="flex-horizontal"
+          *ngFor="let revision of revisions; let i = index"
+        >
+          <div
+            class="box"
+            [ngClass]="i === 0 ? 'previous' : 'current'"
+          >
+            <p>{{ i === 0 ? 'Previous' : 'Current' }}</p>
+          </div>
+          <p>{{ revision.versionInfo }}</p>
+        </div>
+      </div> -->
+      <div [innerHTML]="visualDiff"></div>
+    </ng-container>
+    <ng-container *ngIf="error">
+      <app-error-notice></app-error-notice>
+    </ng-container>
+  </div>
+</div>

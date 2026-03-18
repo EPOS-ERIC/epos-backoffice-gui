@@ -1,0 +1,343 @@
+<form
+  [formGroup]="form"
+  *ngIf="form"
+>
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+    [style.width.%]="100"
+  >
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      name="name"
+      [ngStyle]="{ 'line-height': '1.4' }"
+      formControlName="name"
+      [value]="webservice?.name"
+    />
+  </mat-form-field>
+
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+  >
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      name="description"
+      [ngStyle]="{ 'line-height': '1.4' }"
+      formControlName="description"
+      [value]="webservice?.description"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="service-provider">
+    <mat-label>{{ serviceProvidersLoading ? 'Loading...' : 'Service Provider' }}</mat-label>
+    <mat-select
+      [(ngModel)]="selectedServiceProvider"
+      [ngModelOptions]="{ standalone: true }"
+      [compareWith]="compareWithFn"
+      (selectionChange)="handleUpdateServicePoint()"
+      [disabled]="disabled || serviceProvidersLoading"
+    >
+      <mat-option
+        *ngFor="let provider of serviceProviders | orderBy : { property: 'legalName', direction: 1 }"
+        [value]="provider"
+      >
+        {{ provider.legalName ? provider.legalName[0] : '' }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div
+    class="grid"
+    *ngIf="webservice"
+  >
+    <mat-accordion>
+      <div class="grid-item">
+        <mat-expansion-panel #mepDocs="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Documentation</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepDocs.expanded) {
+          <app-documentation
+            [dataProduct]="dataProduct"
+            [webservice]="webservice"
+          ></app-documentation>
+          }
+        </mat-expansion-panel>
+      </div>
+      <div class="grid-item">
+        <mat-expansion-panel #mepSpatial="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Spatial Coverage</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepSpatial.expanded) {
+          <app-spatial-coverage
+            [mapId]="'webservice' + distributionIndex.toString()"
+            [spatialExtentInput]="webservice.spatialExtent"
+            [dataProductIsParent]="false"
+          ></app-spatial-coverage>
+          }
+        </mat-expansion-panel>
+      </div>
+      <div class="grid-item">
+        <mat-expansion-panel #mepTemporal="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Temporal Coverage</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepTemporal.expanded) {
+          <app-temporal-coverage
+            [dataProductIsParent]="false"
+            [parent]="webservice"
+          ></app-temporal-coverage>
+          }
+        </mat-expansion-panel>
+      </div>
+      <div class="grid-item">
+        <mat-expansion-panel #mepContacts="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Contact Points</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepContacts.expanded) {
+          <app-contact-point [contactPoint]="webservice.contactPoint"></app-contact-point>
+          }
+        </mat-expansion-panel>
+      </div>
+      <div class="grid-item">
+        <mat-expansion-panel #mepOperations="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Supported Operations</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepOperations.expanded) {
+          <app-supported-operation
+            [supportedOperations]="webservice.supportedOperation"
+            [webservice]="webservice"
+            [disableFeatures]="disabled"
+          ></app-supported-operation>
+          }
+        </mat-expansion-panel>
+      </div>
+      <div class="grid-item">
+        <mat-expansion-panel #mepPlugins="matExpansionPanel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <p class="subtitle">Plugins</p>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          @defer (when mepPlugins.expanded) {
+          <div class="plugins-wrapper">
+            <p class="plugins-description">
+              Plugins extend this distribution with additional processing and visualization capabilities.
+            </p>
+
+            <div
+              class="plugins-loading"
+              *ngIf="pluginsLoading"
+            >
+              Loading plugins...
+            </div>
+
+            <ng-container *ngIf="!pluginsLoading">
+              <div
+                class="plugins-empty"
+                *ngIf="plugins.length === 0"
+              >
+                No plugins associated with this distribution
+              </div>
+
+              <div
+                class="plugins-table-wrapper"
+                *ngIf="plugins.length > 0"
+              >
+                <div class="plugins-actions-bar">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    [disabled]="form.disabled"
+                    [matMenuTriggerFor]="pluginsActionsMenu"
+                    matTooltip="Plugins actions"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+
+                  <mat-menu
+                    #pluginsActionsMenu="matMenu"
+                    panelClass="plugins-actions-menu"
+                  >
+                    <button
+                      mat-menu-item
+                      class="plugins-remove-action"
+                      type="button"
+                      (click)="handleRemovePlugins()"
+                    >
+                      <mat-icon color="warn">delete</mat-icon>
+                      <span>Remove all plugins</span>
+                    </button>
+                  </mat-menu>
+                </div>
+
+                <table class="plugins-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Input format</th>
+                      <th>Output format</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let plugin of plugins; let i = index">
+                      <td>
+                        <span
+                          class="plugin-cell"
+                          [matTooltip]="getPluginName(plugin, i)"
+                          [matTooltipDisabled]="!getPluginName(plugin, i) || getPluginName(plugin, i) === '-'"
+                        >
+                          {{ getPluginName(plugin, i) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          class="plugin-cell"
+                          [matTooltip]="getPluginDescription(plugin)"
+                          [matTooltipDisabled]="!getPluginDescription(plugin) || getPluginDescription(plugin) === '-'"
+                        >
+                          {{ getPluginDescription(plugin) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          class="plugin-cell"
+                          [matTooltip]="getPluginInputFormat(plugin)"
+                          [matTooltipDisabled]="!getPluginInputFormat(plugin) || getPluginInputFormat(plugin) === '-'"
+                        >
+                          {{ getPluginInputFormat(plugin) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          class="plugin-cell"
+                          [matTooltip]="getPluginOutputFormat(plugin)"
+                          [matTooltipDisabled]="!getPluginOutputFormat(plugin) || getPluginOutputFormat(plugin) === '-'"
+                        >
+                          {{ getPluginOutputFormat(plugin) }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+
+            <mat-expansion-panel
+              #mepPluginRequest="matExpansionPanel"
+              [disabled]="form.disabled"
+              class="plugin-request-panel"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <p class="subtitle">Request new plugin</p>
+                </mat-panel-title>
+                <mat-panel-description class="plugin-request-toggle">
+                  {{ mepPluginRequest.expanded ? '-' : '+' }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div
+                [formGroup]="pluginRequestForm"
+                *ngIf="pluginRequestForm"
+              >
+                <div class="plugin-request-filters-row">
+                  <mat-form-field
+                    appearance="fill"
+                    class="plugin-request-filter"
+                  >
+                    <mat-label>Request Type</mat-label>
+                    <mat-select formControlName="requestType">
+                      <mat-option
+                        *ngFor="let requestType of pluginRequestTypes"
+                        [value]="requestType.value"
+                      >
+                        {{ requestType.label }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    appearance="fill"
+                    class="plugin-request-filter"
+                    *ngIf="isUpdateExistingRequest()"
+                  >
+                    <mat-label>Plugins to update</mat-label>
+                    <mat-select
+                      formControlName="selectedPlugins"
+                      multiple
+                    >
+                      <mat-option
+                        *ngFor="let plugin of plugins; let i = index"
+                        [value]="plugin"
+                      >
+                        {{ getPluginSelectionLabel(plugin, i) }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field
+                    appearance="fill"
+                    class="plugin-request-filter"
+                  >
+                    <mat-label>Visualization On</mat-label>
+                    <mat-select
+                      matInput
+                      formControlName="inputType"
+                      multiple
+                    >
+                      <mat-option value="Map">Map</mat-option>
+                      <mat-option value="Table">Table</mat-option>
+                      <mat-option value="Graph">Graph</mat-option>
+                    </mat-select>
+                    <mat-hint>Select types of visualization.</mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field
+                  appearance="fill"
+                  [style.width.%]="100"
+                >
+                  <mat-label>Message</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="message"
+                  ></textarea>
+                  <mat-hint>Please enter relevant details about your Plugin request.</mat-hint>
+                </mat-form-field>
+
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="button"
+                  (click)="handleSendPluginRequest()"
+                  [disabled]="pluginRequestForm.invalid || pluginRequestSending || form.disabled"
+                >
+                  Send request
+                </button>
+              </div>
+            </mat-expansion-panel>
+          </div>
+          }
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
+</form>

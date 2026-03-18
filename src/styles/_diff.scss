@@ -1,0 +1,54 @@
+.jsondiffpatch-delta {
+  font-family: 'Roboto Flex', sans-serif !important;
+  font-size: 14px !important;
+}
+
+.jsondiffpatch-delta {
+  pre {
+    font-family: 'Roboto Flex', sans-serif !important;
+    font-size: 14px !important;
+  }
+}
+
+.jsondiffpatch-modified {
+  .jsondiffpatch-value {
+    font-family: 'Roboto Flex', sans-serif !important;
+    font-size: 14px !important;
+
+    pre {
+      font-family: 'Roboto Flex', sans-serif !important;
+      font-size: 14px !important;
+    }
+  }
+
+  .jsondiffpatch-left-value {
+    pre {
+      background: rgb(248, 212, 212) !important;
+    }
+  }
+
+  .jsondiffpatch-right-value {
+    pre {
+      background: #a4ccbb !important;
+    }
+  }
+}
+
+.jsondiffpatch-deleted {
+  .jsondiffpatch-property-name,
+  pre {
+    background: rgb(248, 212, 212) !important;
+  }
+}
+
+.jsondiffpatch-added {
+  .jsondiffpatch-property-name {
+    background: #a4ccbb !important;
+  }
+
+  .jsondiffpatch-value {
+    pre {
+      background: #a4ccbb !important;
+    }
+  }
+}

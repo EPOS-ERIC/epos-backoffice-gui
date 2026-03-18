@@ -1,0 +1,25 @@
+<ng-scrollbar #scrollable>
+  <div class="container">
+    <div class="title mat-table-margin">
+      <h1 class="mat-headline-4">Data Products</h1>
+      <button
+        mat-stroked-button
+        (click)="createAsset()"
+      >
+        <mat-icon color="primary">add_circle</mat-icon>
+        Add New Data Product
+      </button>
+    </div>
+
+    <app-table
+      [sectionName]="sectionName"
+      (rowClickDetailsEmit)="rowClicked($event)"
+      (paginationChangeEmit)="handlePaginationChange($event)"
+    >
+    </app-table>
+  </div>
+</ng-scrollbar>
+<app-back-to-top-button
+  (onScrollToTop)="handleScrollToTop()"
+  *ngIf="showButton"
+></app-back-to-top-button>

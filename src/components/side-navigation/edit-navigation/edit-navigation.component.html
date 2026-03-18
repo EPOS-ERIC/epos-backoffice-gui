@@ -1,0 +1,94 @@
+<mat-nav-list>
+  <div class="bottom">
+    <div class="actions">
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.DRAFT
+        "
+        mat-stroked-button
+        color="primary"
+        (click)="handleSave()"
+      >
+        Save {{ activeEntityType }}
+      </button>
+      <!-- <div class="error">
+        <mat-error *ngIf="this.activeDataProduct?.distribution?.length === 0">
+          Please create and save a Distribution
+        </mat-error>
+      </div> -->
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          (activeEntityStatus === status.PUBLISHED || activeEntityStatus === status.ARCHIVED)
+        "
+        mat-raised-button
+        color="primary"
+        (click)="handleCreateFromPublishedArchivedDiscardedEntity()"
+      >
+        Create New Draft
+      </button>
+      <!-- Hello, check how to solve SUBMIT button for SoftwareApplication type: it doesn't have 'distribution' property as for DataProduct -->
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.DRAFT
+        "
+        mat-flat-button
+        color="primary"
+        (click)="handleChangeState(status.SUBMITTED)"
+        [disabled]="isSubmitDisabled"
+      >
+        Submit
+      </button>
+      <!-- TODO: Adapt to include check for SoftwareApplication -->
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.SUBMITTED
+        "
+        mat-flat-button
+        color="primary"
+        (click)="handleChangeState(status.PUBLISHED)"
+      >
+        Publish
+      </button>
+
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.SUBMITTED
+        "
+        mat-flat-button
+        color="warn"
+        (click)="handleChangeState(status.DISCARDED)"
+      >
+        Reject
+      </button>
+
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.DISCARDED
+        "
+        mat-flat-button
+        color="primary"
+        (click)="handleCreateFromPublishedArchivedDiscardedEntity()"
+      >
+        Revert to Draft
+      </button>
+
+      <button
+        *ngIf="
+          (activeDataProduct || activeSoftwareApplication || activeSoftwareSourceCode) &&
+          activeEntityStatus === status.PUBLISHED
+        "
+        mat-flat-button
+        color="warn"
+        (click)="handleChangeState(status.ARCHIVED)"
+      >
+        Archive
+      </button>
+    </div>
+  </div>
+</mat-nav-list>

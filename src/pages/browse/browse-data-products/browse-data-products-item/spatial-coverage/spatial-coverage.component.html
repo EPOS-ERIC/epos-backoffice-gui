@@ -1,0 +1,66 @@
+<ng-container *ngIf="spatialExtent?.length; else empty">
+  <div class="spatial-coverage-map-wrapper">
+    <app-spatial-coverage-map
+      [mapId]="mapId"
+      [spatialRange]="spatialCoverageInput"
+      [coordinatesChange]="spatialCoverageChange"
+    >
+    </app-spatial-coverage-map>
+  </div>
+
+  <ng-container *ngFor="let item of spatialExtents; let i = index">
+    <div class="spatial-item">
+      <app-simple-spatial-control
+        [spatialExtent]="item"
+        [index]="i"
+        [inputsDisabled]="disabled"
+        (location)="updateSpatialCoverage($event)"
+        (delete)="this.deleteSpatialCoverage($event)"
+        (save)="this.saveSpatialCoverage($event)"
+      ></app-simple-spatial-control>
+    </div>
+  </ng-container>
+
+  <div class="button-wrapper">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="newSpatialCoverage()"
+      [disabled]="disabled"
+    >
+      Add Spatial Coverage
+    </button>
+    <button
+      mat-mini-fab
+      color="primary"
+      aria-label="Help"
+      matTooltip="Spatial Coverage Support"
+      (click)="handleSpatialHelp()"
+    >
+      <mat-icon>contact_support</mat-icon>
+    </button>
+  </div>
+</ng-container>
+<ng-template #empty>
+  <p class="notice">Couldn't fetch spatial coverage data.</p>
+
+  <div class="button-wrapper">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="newSpatialCoverage()"
+      [disabled]="disabled"
+    >
+      Add Spatial Coverage
+    </button>
+    <button
+      mat-mini-fab
+      color="primary"
+      aria-label="Help"
+      matTooltip="Spatial Coverage Support"
+      (click)="handleSpatialHelp()"
+    >
+      <mat-icon>contact_support</mat-icon>
+    </button>
+  </div>
+</ng-template>

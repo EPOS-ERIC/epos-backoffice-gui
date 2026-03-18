@@ -1,0 +1,130 @@
+<h2 mat-dialog-title class="dialog-title">{{ isEditMode ? 'Edit Category Scheme' : 'Create Category Scheme' }}</h2>
+
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  <div class="form-container">
+    <p class="form-instruction">Enter the details for the new classification system.</p>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading category schemes...</p>
+    </div>
+
+    <!-- Form fields -->
+    <div *ngIf="!isLoading">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Scheme Title</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          placeholder="e.g., Seismology, Tectonics..."
+          required
+        />
+        <mat-icon matPrefix>folder_special</mat-icon>
+        <mat-error *ngIf="form.get('title')?.hasError('required')">
+          Scheme title is mandatory
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Code</mat-label>
+        <input
+          matInput
+          formControlName="code"
+          placeholder="e.g., SEIS, TECT"
+        />
+        <mat-icon matPrefix>code</mat-icon>
+        
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width color-picker-field">
+        <mat-label>Color (Hex)</mat-label>
+        
+        <!-- Hex Color Text Input -->
+        <input
+          matInput
+          formControlName="color"
+          [value]="color"
+          (input)="onColorChange($event)"
+          maxlength="7"
+          placeholder="#000000"
+        />
+
+        <!-- Color Preview / Picker Trigger -->
+        <div matSuffix class="color-preview-wrapper" (click)="colorPicker.click()">
+          <div class="color-preview" [style.background-color]="color || '#cccccc'"></div>
+          <input
+            #colorPicker
+            type="color"
+            class="hidden-color-input"
+            [value]="color"
+            (input)="onColorChange($event)"
+          />
+        </div>
+      </mat-form-field>
+
+
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Homepage URL</mat-label>
+        <input
+          matInput
+          formControlName="homepage"
+          placeholder="e.g., https://homepage.com"
+        />
+        <mat-icon matPrefix>link</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Logo URL</mat-label>
+        <input
+          matInput
+          formControlName="logo"
+          placeholder="e.g., https://.../logo.png"
+        />
+        <mat-icon matPrefix>add_photo_alternate</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width mt-2">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="What is this classification scheme for?"
+          rows="4"
+        ></textarea>
+        <mat-icon matPrefix>description</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Top Concepts</mat-label>
+        <mat-select formControlName="topConcepts">
+          <mat-option *ngFor="let tc of availableTopConcepts" [value]="tc.linkedEntity">
+            {{ tc.displayLabel }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button
+    mat-button
+    (click)="onCancel()"
+    class="cancel-btn"
+  >
+    Discard
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid || isLoading"
+    class="submit-btn"
+  >
+    <mat-icon>check</mat-icon>
+    {{ isEditMode ? 'Save Changes' : 'Create Scheme' }}
+  </button>
+</mat-dialog-actions>

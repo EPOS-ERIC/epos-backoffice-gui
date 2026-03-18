@@ -1,0 +1,93 @@
+<ng-container *ngIf="form">
+  <form [formGroup]="form">
+    <ng-container *ngIf="id !== 'boolean'">
+      <mat-radio-group
+        aria-label="Allowed values"
+        formControlName="allowedValues"
+      >
+        <mat-radio-button value="any">Any</mat-radio-button>
+        <mat-radio-button value="controlled">Controlled list of values</mat-radio-button>
+      </mat-radio-group>
+      <ng-container *ngIf="form.get('allowedValues')?.value === 'any'">
+        <mat-form-field>
+          <mat-label>Default value</mat-label>
+          <input
+            matInput
+            placeholder="Default value"
+            formControlName="defaultValue"
+          />
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngIf="form.get('allowedValues')?.value === 'controlled'">
+        <mat-slide-toggle
+          formControlName="multipleValues"
+          class="allow-multiple"
+        >
+          Allows multiple selection
+        </mat-slide-toggle>
+        <ng-container formArrayName="paramValue">
+          <div
+            *ngFor="let control of getControls('paramValue'); let i = index"
+            class="controlled-params"
+          >
+            <mat-form-field appearance="fill">
+              <mat-label>Value</mat-label>
+              <input
+                matInput
+                placeholder="Value"
+                [formControlName]="i"
+              />
+            </mat-form-field>
+            <mat-slide-toggle
+              [id]="i.toString()"
+              [checked]="isChecked(i)"
+              (change)="handleValueChange(i)"
+              [disabled]="form.disabled"
+            >
+              As default value
+            </mat-slide-toggle>
+            <button
+              mat-mini-fab
+              color="warn"
+              aria-label="Remove Value"
+              matTooltip="Remove Value"
+              class="smaller"
+              (click)="removeItem(i)"
+              [disabled]="form.disabled"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="handleAddNewValue()"
+          [disabled]="form.disabled"
+          [ngClass]="form.disabled ? 'hidden' : ''"
+          [disabled]="form.disabled"
+        >
+          Add new value
+        </button>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="id === 'boolean'">
+      <mat-form-field
+        appearance="fill"
+        [style.width.%]="50"
+      >
+        <mat-label>Default Value</mat-label>
+        <mat-select
+          matNativeControl
+          name="defaultValue"
+          formControlName="defaultValue"
+        >
+          <mat-option></mat-option>
+          <mat-option value="true">True</mat-option>
+          <mat-option value="false">False</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </form>
+</ng-container>

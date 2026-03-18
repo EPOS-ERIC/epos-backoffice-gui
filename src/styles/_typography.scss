@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Flex'), url(../assets/fonts/RobotoFlex-Regular.ttf) format('truetype');
+}
+
+$custom-typography: mat.m2-define-typography-config(
+  $font-family: 'Roboto Flex',
+);
+
+@include mat.all-component-typographies($custom-typography);

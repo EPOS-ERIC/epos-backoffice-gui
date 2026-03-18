@@ -1,0 +1,19 @@
+.map-container {
+  height: 150px;
+  width: 267px;
+}
+
+.map-frame {
+  border: 2px solid black;
+  height: 100%;
+}
+
+.map {
+  height: 100%;
+}
+
+::ng-deep .leaflet-control-zoom-fullscreen {
+  svg {
+    margin-top: 3px;
+  }
+}

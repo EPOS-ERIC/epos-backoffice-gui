@@ -1,0 +1,17 @@
+mat-slide-toggle {
+  margin: 1rem 0;
+}
+
+button {
+  margin-top: 1rem;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 99%;
+  .action {
+    margin-top: 4em;
+    margin-right: 1em;
+  }
+}

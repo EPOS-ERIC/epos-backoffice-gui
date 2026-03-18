@@ -1,0 +1,20 @@
+export enum AcrualPeriodicity {
+  '' = '', // Empty Option
+  'http://purl.org/cld/freq/triennial' = 'Triennial',
+  'http://purl.org/cld/freq/biennial' = 'Biennial',
+  'http://purl.org/cld/freq/annual' = 'Annual',
+  'http://purl.org/cld/freq/semiannual' = 'Semiannual',
+  'http://purl.org/cld/freq/threeTimesAYear' = 'Three times a year',
+  'http://purl.org/cld/freq/quarterly' = 'Quarterly',
+  'http://purl.org/cld/freq/bimonthly' = 'Bimonthly',
+  'http://purl.org/cld/freq/monthly' = 'Monthly',
+  'http://purl.org/cld/freq/semimonthly' = 'Semimonthly',
+  'http://purl.org/cld/freq/biweekly' = 'Biweekly',
+  'http://purl.org/cld/freq/threeTimesAMonth' = 'Three times a month',
+  'http://purl.org/cld/freq/weekly' = 'Weekly',
+  'http://purl.org/cld/freq/semiweekly' = 'Semiweekly',
+  'http://purl.org/cld/freq/threeTimesAWeek' = 'Three times a week',
+  'http://purl.org/cld/freq/daily' = 'Daily',
+  'http://purl.org/cld/freq/continuous' = 'Continuous',
+  'http://purl.org/cld/freq/irregular' = 'Irregular',
+}

@@ -1,0 +1,11 @@
+.wrapper {
+  padding: 2rem;
+
+  mat-dialog-content {
+    padding: 0 !important;
+  }
+
+  mat-dialog-actions {
+    padding-right: 0 !important;
+  }
+}

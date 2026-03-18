@@ -1,0 +1,35 @@
+import { LinkedEntity, WebService as WebServiceType } from 'generated/backofficeSchemas';
+
+export class WebService implements WebServiceType {
+  constructor(
+    public uid?: string,
+    public aaaiTypes?: string,
+    public category?: Array<LinkedEntity>,
+    public changeComment?: string,
+    public changeTimestamp?: string,
+    public contactPoint?: Array<LinkedEntity>,
+    public dateModified?: string,
+    public datePublished?: string,
+    public description?: string,
+    public distribution?: Array<LinkedEntity>,
+    public documentation?: Array<LinkedEntity>,
+    public editorId?: string,
+    public entryPoint?: string,
+    public fileProvenance?: string,
+    public identifier?: Array<LinkedEntity>,
+    public instanceChangedId?: string,
+    public instanceId?: string,
+    public keywords?: string,
+    public license?: string,
+    public metaId?: string,
+    public name?: string,
+    public operation?: string,
+    public provider?: LinkedEntity,
+    public spatialExtent?: Array<LinkedEntity>,
+    public state?: WebServiceType['status'],
+    public supportedOperation?: Array<LinkedEntity>,
+    public temporalExtent?: Array<LinkedEntity>,
+    public toBeDelete?: string,
+    public version?: string,
+  ) {}
+}

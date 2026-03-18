@@ -1,0 +1,49 @@
+@import '../../styles/theme';
+
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+  background: #fcfbee;
+
+  img {
+    position: fixed;
+    top: 2%;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .text {
+    width: 700px;
+
+    .flex-row {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  h1 {
+    font-size: 100px;
+    color: $color-primary;
+    text-transform: uppercase;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  p {
+    &.subtitle {
+      font-size: 20px;
+      line-height: 1.4;
+      color: #565656;
+    }
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: flex-start;
+  }
+}

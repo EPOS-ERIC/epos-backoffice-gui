@@ -1,0 +1,30 @@
+.step-content {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  img {
+    margin-top: 0.5em;
+  }
+}
+
+mat-divider {
+  margin: 1em 0em;
+}
+
+.content {
+  height: 65vh;
+}
+
+button {
+  border-radius: 25px;
+  mat-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.upper-content {
+  display: flex;
+  justify-content: space-between;
+}

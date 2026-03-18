@@ -1,0 +1,22 @@
+h3 {
+  font-family: 'Roboto Flex', sans-serif;
+  font-weight: bold;
+}
+
+.active {
+  background-color: rgba(0, 73, 38, 0.2);
+  border-radius: 0 !important;
+}
+
+.mat-mdc-list-base {
+  .mdc-list-item__content {
+    pointer-events: none !important;
+  }
+}
+
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

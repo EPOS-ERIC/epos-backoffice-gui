@@ -1,0 +1,32 @@
+:host {
+  width: 100%;
+  display: flex;
+  gap: 1em;
+
+  .wrapper {
+    display: flex;
+    justify-content: space-around;
+    gap: 5px;
+    margin-right: 5px;
+    width: 100%;
+
+    &.disabled {
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+
+  input:disabled {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+    padding: 2px 0px 0px 0px !important;
+    width: 100%;
+    border-top: none;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1em;
+  }
+}

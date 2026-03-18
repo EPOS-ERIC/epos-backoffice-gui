@@ -1,0 +1,66 @@
+.mdc-snackbar {
+  .mdc-snackbar__surface {
+    padding: 0 1rem !important;
+    width: 730px;
+    height: 48px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  &.snackbar-success {
+    .mdc-snackbar__surface {
+      background: #c8e0d5;
+
+      p {
+        &.body-1 {
+          color: #007b40;
+        }
+      }
+
+      span {
+        &.mdc-button__label {
+          color: #007b40;
+        }
+      }
+    }
+  }
+
+  &.snackbar-error {
+    background: rgb(248, 212, 212);
+    color: #f03d3e;
+
+    .mdc-snackbar__surface {
+      background: rgb(248, 212, 212);
+
+      p {
+        &.body-1 {
+          color: #f03d3e;
+        }
+      }
+
+      span {
+        &.mdc-button__label {
+          color: #f03d3e;
+        }
+      }
+    }
+  }
+
+  &.snackbar-warning {
+    .mdc-snackbar__surface {
+      background: rgb(240, 168, 69, 0.2);
+
+      p {
+        &.body-1 {
+          color: #000000;
+        }
+      }
+
+      span {
+        &.mdc-button__label {
+          color: #000000;
+        }
+      }
+    }
+  }
+}

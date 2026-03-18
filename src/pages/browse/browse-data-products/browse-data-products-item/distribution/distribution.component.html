@@ -1,0 +1,164 @@
+<ng-container *ngIf="distributionDetails.length === 0">
+  <button
+    mat-flat-button
+    (click)="handleAddDistribution()"
+    color="primary"
+    [disabled]="disabled"
+  >
+    Add Distribution
+  </button>
+</ng-container>
+
+<form
+  [formGroup]="form"
+  *ngIf="form"
+  class="distribution"
+>
+  <ng-container *ngIf="distributionDetails.length > 1">
+    <mat-tab-group
+      [mat-stretch-tabs]="true"
+      [animationDuration]="0"
+      [selectedIndex]="selectedDistributionTabIndex"
+      class="distribution"
+    >
+      <div formArrayName="distributions">
+        <ng-container
+          *ngFor="let child of getControls('distributions'); let i = index"
+          [formGroupName]="i"
+        >
+          <mat-tab [label]="getDistributionTabTitle(distributionDetails[i])">
+            <ng-scrollbar>
+              <ng-template
+                [ngTemplateOutlet]="singleDistribution"
+                [ngTemplateOutletContext]="{
+                  distribution: child,
+                  distributionObj: distributionDetails[i],
+                  index: i,
+                }"
+              ></ng-template>
+            </ng-scrollbar>
+          </mat-tab>
+        </ng-container>
+      </div>
+    </mat-tab-group>
+  </ng-container>
+  <ng-container *ngIf="distributionDetails.length === 1">
+    <ng-template
+      [ngTemplateOutlet]="singleDistribution"
+      [ngTemplateOutletContext]="{
+        distribution: getControls('distributions')[0],
+        distributionObj: distributionDetails[0],
+      }"
+    ></ng-template>
+  </ng-container>
+</form>
+
+<ng-template
+  #singleDistribution
+  let-distribution="distribution"
+  let-distributionObj="distributionObj"
+  let-index="index"
+>
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+    [style.width.%]="100"
+  >
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      placeholder="Title"
+      name="title"
+      [formControl]="distribution.get('title')"
+    />
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+  >
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      name="description"
+      [ngStyle]="{ 'line-height': '1.4' }"
+      [formControl]="distribution.get('description')"
+      [value]="distribution.get('description')"
+      [disabled]="true"
+    ></textarea>
+  </mat-form-field>
+  <mat-form-field
+    appearance="fill"
+    [floatLabel]="floatLabelControl.value"
+    [style.width.%]="100"
+  >
+    <mat-label>Licence</mat-label>
+    <input
+      matInput
+      placeholder="Licence"
+      name="licence"
+      [formControl]="distribution.get('licence')"
+    />
+  </mat-form-field>
+  <p class="title-larger">Data access</p>
+  <mat-radio-group [formControl]="distribution.get('dataAccess')">
+    <mat-radio-button
+      *ngFor="let type of dataAccessTypes"
+      [value]="type['value']"
+    >
+      {{ type['label'] }}
+    </mat-radio-button>
+  </mat-radio-group>
+  <ng-container *ngIf="distribution?.get('dataAccess')?.value === 'download'">
+    <app-distribution-download
+      [urlInvalid]="distribution?.get('downloadURL')?.invalid"
+      [distribution]="distributionObj"
+      (distributionChange)="handleDistributionChange($event, index ? index : 0)"
+    ></app-distribution-download>
+  </ng-container>
+
+  <ng-container *ngIf="distribution?.get('dataAccess')?.value === 'webservice'">
+    <div *ngIf="distributionObj.accessService.length === 0">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="handleAddWebservice(index ? index : 0)"
+      >
+        Create Webservice
+      </button>
+    </div>
+    @if (distributionObj.accessService.length > 0) {
+      <app-distribution-webservice
+        [accessService]="distributionObj.accessService"
+        [supportedOperations]="distributionObj.accessService.supportedOperation"
+        [distribution]="distributionObj"
+        [distributionIndex]="index ? index : ''"
+      ></app-distribution-webservice>
+    }
+  </ng-container>
+
+  <app-save-entity
+    entity="Distribution"
+    [disabled]="disabled"
+    (onSave)="handleSave(index ? index : 0)"
+    (onDelete)="handleDelete(index ? index : 0)"
+  ></app-save-entity>
+
+  <button
+    mat-flat-button
+    (click)="handleAddDistribution()"
+    color="primary"
+    class="add-distribution"
+    [disabled]="disabled"
+  >
+    Add Distribution
+  </button>
+
+  <!-- <div class="fn-buttons"> -->
+  <!-- <button
+      mat-flat-button
+      (click)="handleAddDistribution()"
+    >
+      Add Distribution
+    </button>
+  </div> -->
+</ng-template>

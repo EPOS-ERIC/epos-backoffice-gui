@@ -1,0 +1,13 @@
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 16px 0 0 0;
+
+  mat-label {
+    &.heading {
+      margin-bottom: 1.5rem;
+      font-size: 15px;
+    }
+  }
+}

@@ -1,0 +1,108 @@
+<form [formGroup]="optionForm">
+  <div class="top-params">
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Variable</mat-label>
+      <input
+        matInput
+        placeholder="Variable"
+        formControlName="variable"
+        readonly
+      />
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="fill"
+      [style.width.%]="50"
+    >
+      <mat-label>Range</mat-label>
+      <input
+        matInput
+        placeholder="Range"
+        formControlName="range"
+        readonly
+      />
+    </mat-form-field>
+  </div>
+
+  <mat-form-field
+    appearance="fill"
+    [style.width.%]="50"
+  >
+    <mat-label>Label</mat-label>
+    <input
+      matInput
+      placeholder="Label"
+      formControlName="label"
+    />
+  </mat-form-field>
+
+  <mat-slide-toggle formControlName="required">Required</mat-slide-toggle>
+
+  <span class="readonly">
+    <mat-slide-toggle
+      [(ngModel)]="readOnlyValue"
+      [checked]="readOnlyValue"
+      formControlName="readOnlyValue"
+      >Read Only</mat-slide-toggle
+    >
+    <mat-icon
+      matTooltip="Parameters that are set as 'Read Only' will not be visible in the Data Portal"
+      color="primary"
+    >
+      info
+    </mat-icon>
+  </span>
+
+  <!-- <mat-form-field
+    appearance="fill"
+    [style.width.%]="50"
+  >
+    <mat-label>Default Value</mat-label>
+    <mat-select formControlName="defaultValue">
+      <mat-option value=""></mat-option>
+      <mat-option value="true">true</mat-option>
+      <mat-option value="false">false</mat-option>
+    </mat-select>
+  </mat-form-field> -->
+
+  <ng-container [ngSwitch]="id">
+    <ng-container *ngSwitchCase="'coordinate'">
+      <app-option-coordinate [form]="optionForm"></app-option-coordinate>
+    </ng-container>
+    <ng-container *ngSwitchCase="'date'">
+      <app-option-date [form]="optionForm"></app-option-date>
+    </ng-container>
+    <ng-container *ngSwitchCase="'datetime'">
+      <app-option-datetime [form]="optionForm"></app-option-datetime>
+    </ng-container>
+    <ng-container *ngSwitchCase="'string'">
+      <app-option-complex
+        [form]="optionForm"
+        [id]="'string'"
+        [disableAddNewValue]="disableAddNewValue"
+      ></app-option-complex>
+    </ng-container>
+    <ng-container *ngSwitchCase="'boolean'">
+      <app-option-complex
+        [form]="optionForm"
+        [id]="'boolean'"
+        [disableAddNewValue]="disableAddNewValue"
+      ></app-option-complex>
+    </ng-container>
+    <ng-container *ngSwitchCase="'integer'">
+      <app-option-integer
+        [disableAddNewValue]="disableAddNewValue"
+        [form]="optionForm"
+      ></app-option-integer>
+    </ng-container>
+    <ng-container *ngSwitchCase="'float'">
+      <app-option-float
+        [disableAddNewValue]="disableAddNewValue"
+        [form]="optionForm"
+      ></app-option-float>
+    </ng-container>
+  </ng-container>
+</form>

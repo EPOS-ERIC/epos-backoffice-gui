@@ -1,0 +1,36 @@
+.wrapper {
+  padding: 2rem;
+}
+
+.flex-col-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+
+mat-form-field {
+  margin-top: 2rem;
+
+  mat-select {
+    mat-option {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.flex-wrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  .details {
+    margin-top: 0.5rem;
+
+    .title {
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+  }
+}

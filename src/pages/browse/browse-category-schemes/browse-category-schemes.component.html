@@ -1,0 +1,150 @@
+<ng-scrollbar
+  #scrollable
+  class="scroll-container"
+>
+  <div class="page-container">
+    <header class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Category Schemes</h1>
+        <p class="page-subtitle">Manage the Category Schemes </p>
+      </div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="handleAddScheme()"
+        class="add-button"
+      >
+        <mat-icon>add</mat-icon>
+        <span>Add Category Scheme</span>
+      </button>
+    </header>
+
+    <mat-accordion class="schemes-accordion" multi>
+      <mat-expansion-panel
+        *ngFor="let scheme of categorySchemes"
+        class="scheme-panel"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="scheme-icon">folder_special</mat-icon>
+            <span class="scheme-title">{{ scheme.title }}</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="scheme-details">
+          <!-- Code -->
+          <div class="detail-row">
+            <span class="detail-label">Code</span>
+            <div class="detail-value">
+              <code class="code-badge">{{ scheme.code || 'N/A' }}</code>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="detail-row">
+            <span class="detail-label">Description</span>
+            <div class="detail-value">
+              <span class="description-text">{{ scheme.description || '-' }}</span>
+            </div>
+          </div>
+
+          <!-- Logo -->
+          <div class="detail-row">
+            <span class="detail-label">Logo</span>
+            <div class="detail-value">
+              <ng-container *ngIf="getLogoUrl(scheme.logo) as logoUrl; else noLogo">
+                <div class="logo-preview">
+                  <img
+                    [src]="logoUrl"
+                    [alt]="scheme.title + ' logo'"
+                    (error)="handleImageError($event)"
+                    loading="lazy"
+                  />
+                </div>
+              </ng-container>
+              <ng-template #noLogo>
+                <span class="no-data">-</span>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Homepage -->
+          <div class="detail-row">
+            <span class="detail-label">Homepage</span>
+            <div class="detail-value">
+              <ng-container *ngIf="scheme.homepage; else noHomepage">
+                <a [href]="scheme.homepage" target="_blank" rel="noopener noreferrer" class="homepage-link">
+                  {{ scheme.homepage }}
+                </a>
+              </ng-container>
+              <ng-template #noHomepage>
+                <span class="no-data">-</span>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Color -->
+          <div class="detail-row">
+            <span class="detail-label">Color</span>
+            <div class="detail-value">
+              <ng-container *ngIf="scheme.color; else noColor">
+                <div class="color-wrapper">
+                  <div class="color-dot" [style.background-color]="scheme.color"></div>
+                  <span class="color-code">{{ scheme.color }}</span>
+                </div>
+              </ng-container>
+              <ng-template #noColor>
+                <span class="no-data">-</span>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Order -->
+          <div class="detail-row">
+            <span class="detail-label">Order Number</span>
+            <div class="detail-value">
+              <span class="order-value">{{ scheme.orderitemnumber || '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="handleEditScheme(scheme)"
+            class="edit-button"
+          >
+            <mat-icon>edit</mat-icon>
+            Edit
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <div
+      *ngIf="categorySchemes.length === 0"
+      class="empty-state"
+    >
+      <mat-icon class="empty-icon">inventory_2</mat-icon>
+      <p>No Category Schemes found</p>
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="handleAddScheme()"
+      >
+        Create your first scheme
+      </button>
+    </div>
+  </div>
+
+  <button
+    mat-fab
+    color="accent"
+    class="fab-top"
+    (click)="handleScrollToTop()"
+    matTooltip="Scroll to top"
+  >
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
+</ng-scrollbar>

@@ -1,0 +1,115 @@
+table {
+  width: 100%;
+
+  &.mat-mdc-table {
+    table-layout: fixed;
+  }
+
+  td {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 24px !important;
+  }
+
+  thead {
+    .mat-mdc-header-row {
+      background: #f1f1f1;
+    }
+
+    tr {
+      .mat-sort-header-content {
+        font-weight: 500;
+        color: #191919;
+      }
+    }
+  }
+
+  tbody {
+    .mat-mdc-row {
+      height: 56px;
+
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    }
+  }
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.mat-mdc-table-margin {
+  margin-right: 30px;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell:not(.no-hover) {
+  background-color: rgba(0, 73, 38, 0.2);
+}
+
+.mat-mdc-cell.no-hover {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+app-browse-contact-point,
+app-browse-web-services {
+  .mat-mdc-table {
+    .mat-column-Status {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.mat-mdc-table {
+  &.resizable {
+    width: 100%;
+
+    &.resizing {
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: col-resize;
+    }
+
+    .mat-mdc-cell {
+      span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .mat-mdc-header-cell {
+      position: relative;
+
+      &:not(:last-child) {
+        .resize-holder {
+          cursor: col-resize;
+          width: 20px;
+          height: 100%;
+          position: absolute;
+          right: -10px;
+          top: 0;
+          z-index: 1;
+        }
+      }
+    }
+
+    .mat-mdc-cell,
+    .mat-mdc-header-cell {
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+      &:not(:nth-child(1)) {
+        padding: 0 10px;
+      }
+    }
+  }
+}

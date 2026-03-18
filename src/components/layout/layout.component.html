@@ -1,0 +1,203 @@
+<!-- eslint-disable @angular-eslint/template/eqeqeq -->
+<div class="navbar-container">
+  <!-- Top navbar -->
+  <mat-toolbar
+    class="navbar"
+    color="primary"
+  >
+    <button
+      mat-icon-button
+      (click)="handleToggle()"
+    >
+      <mat-icon *ngIf="!sidenavOpen">menu</mat-icon>
+      <mat-icon
+        *ngIf="sidenavOpen"
+        [ngClass]="sidenavOpen ? 'active' : ''"
+        >menu_open</mat-icon
+      >
+    </button>
+    <a
+      class="logo-wrapper"
+      (click)="handleClick()"
+    >
+      <img
+        width="100"
+        alt="EPOS Logo"
+        src="assets/EPOS_logo_white_orange.png"
+      />
+    </a>
+    <a
+      class="navbar-brand"
+      matTooltip="Home"
+      (click)="handleClick()"
+    >
+      <h1>METADATA Backoffice</h1>
+    </a>
+    <span class="navbar-spacer"></span>
+    <div
+      class="user-details"
+      *ngIf="null != userInfo"
+    >
+      <div class="flex">
+        <p>{{ userInfo.firstName }} {{ userInfo.lastName }}</p>
+        <p *ngIf="userInfo.isAdmin">(Admin)</p>
+      </div>
+      <!-- <p class="group-name">Group name</p> -->
+    </div>
+    <div
+      class="nav-top-items-item guest"
+      [ngClass]="{ 'nav-top-items-item--active': this.dropdown === 'user' }"
+      #dialog
+    >
+      <button
+        mat-mini-fab
+        color="accent"
+        aria-label="Login"
+        class="account"
+        *ngIf="userInfo !== null"
+        (click)="toggleDropdown('user')"
+      >
+        <mat-icon>person</mat-icon>
+      </button>
+      <button
+        class="login"
+        mat-flat-button
+        color="accent"
+        *ngIf="userInfo === null"
+        class="hidden-xs login"
+        (click)="login()"
+      >
+        Log in
+      </button>
+      <div
+        [hidden]="this.dropdown !== 'user'"
+        class="dropdown-menu dropdown-menu--userdropdown"
+      >
+        <div class="dropdown-menu-header">
+          <p class="notice">Account options</p>
+        </div>
+        <div class="dropdown-menu-body">
+          <a
+            mat-button
+            [href]="manageUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="primary"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="icon icon-tabler icon-tabler-user"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="#A8A8A1"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                stroke="none"
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+              <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+            </svg>
+            <span>Manage account</span>
+          </a>
+        </div>
+        <div class="dropdown-menu-footer">
+          <div class="wrapper">
+            <button
+              mat-button
+              color="primary"
+              (click)="handleLogOut()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon icon-tabler icon-tabler-logout"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="#004926"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  stroke="none"
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                <path d="M9 12h12l-3 -3" />
+                <path d="M18 15l3 -3" />
+              </svg>
+              <span>Log out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container
+    class="navbar-sidenav-container"
+    autosize
+  >
+    <!-- Side nav -->
+    <mat-sidenav
+      #snav
+      mode="side"
+      [(opened)]="sidenavOpen"
+      fixedTopGap="56"
+      class="sidenav"
+    >
+      <div class="navigation-wrapper">
+        <ng-container *ngIf="(liveChanges | async) === true">
+          <ng-container [ngSwitch]="entityNavigationType">
+            <ng-container *ngSwitchCase="'softwareapplication'">
+              <!-- TODO: Check if switch-case is working correctly, commented out previous ngIf-else ! -->
+              <app-softwareapplication-navigation></app-softwareapplication-navigation>
+              <app-edit-navigation></app-edit-navigation>
+            </ng-container>
+            <ng-container *ngSwitchCase="'softwaresourcecode'">
+              <app-softwaresourcecode-navigation></app-softwaresourcecode-navigation>
+              <app-edit-navigation></app-edit-navigation>
+            </ng-container>
+            <!-- This case is met both for 'DataProduct' and 'Distribution' types -->
+            <ng-container *ngSwitchCase="isDataProductNav">
+              <app-dataproduct-navigation></app-dataproduct-navigation>
+              <app-edit-navigation></app-edit-navigation>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <p>No navigation set for {{ entityNavigationType }} type.</p>
+            </ng-container>
+          </ng-container>
+
+          <!-- IF applicationSoftware -->
+          <!-- <ng-container *ngIf="entityNavigationType === 'applicationSoftware'; else dataProduct"> // TODO: delete this commented out 'if-else' once check also SSC working fine ! ;)
+            <app-softwareapplication-navigation></app-softwareapplication-navigation>
+            <app-edit-navigation></app-edit-navigation>
+          </ng-container> -->
+          <!-- ELSE (is a DataProduct or a Distribution) -->
+          <!-- <ng-template #dataProduct>
+            <app-dataproduct-navigation></app-dataproduct-navigation>
+            <app-edit-navigation></app-edit-navigation>
+          </ng-template> -->
+        </ng-container>
+        <ng-container *ngIf="(liveChanges | async) === false">
+          <app-browse-navigation *ngIf="navigationType === 'home'"></app-browse-navigation>
+          <app-browse-navigation *ngIf="navigationType === 'browse'"></app-browse-navigation>
+          <app-groups-navigation *ngIf="navigationType === 'groups'"></app-groups-navigation>
+        </ng-container>
+      </div>
+    </mat-sidenav>
+    <!-- Main content -->
+    <mat-sidenav-content class="sidenav-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

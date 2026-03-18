@@ -1,0 +1,26 @@
+<div class="wrapper">
+  <div class="flex-col-wrapper">
+    <div class="flex-wrapper">
+      <div class="details">
+        <p class="title">Confirm action</p>
+      </div>
+    </div>
+    <p class="title">{{ data.dataIn.messageHtml }}</p>
+  </div>
+  <div mat-dialog-actions>
+    <button
+      mat-button
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      cdkFocusInitial
+      [color]="data.dataIn.confirmButtonTheme"
+      (click)="confirm()"
+    >
+      Confirm
+    </button>
+  </div>
+</div>

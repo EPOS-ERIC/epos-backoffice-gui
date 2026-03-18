@@ -1,0 +1,68 @@
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
+mat-chip-listbox {
+  min-width: 200px;
+  height: 45px;
+  border-radius: 40px;
+  cursor: pointer;
+
+  &.mat-default {
+    background: rgba(224, 224, 224, 0.4);
+
+    .flex-row {
+      .count {
+        background: rgba(224, 224, 224, 0.65);
+      }
+    }
+  }
+
+  &.mat-success {
+    background: rgba(0, 123, 64, 0.2);
+    color: #007b40;
+
+    .flex-row {
+      .count {
+        background: rgba(0, 123, 64, 0.15);
+      }
+    }
+  }
+
+  &.mat-mdc-form-field-error {
+    background: rgba(240, 61, 62, 0.2);
+    color: #f03d3e;
+
+    .flex-row {
+      .count {
+        background: rgba(240, 61, 62, 0.15);
+      }
+    }
+  }
+
+  &.mat-warning {
+    background: rgba(240, 168, 69, 0.2);
+    color: #000000;
+
+    .flex-row {
+      .count {
+        background: rgba(240, 168, 69, 0.15);
+      }
+    }
+  }
+
+  .flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .count {
+      width: 26px;
+      height: 26px;
+      border-radius: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0.125rem;
+    }
+  }
+}

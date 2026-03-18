@@ -1,0 +1,28 @@
+.active {
+  background-color: rgba(0, 73, 38, 0.2);
+  border-radius: 0 !important;
+}
+
+.mat-mdc-list-base {
+  .mdc-list-item__content {
+    pointer-events: none !important;
+  }
+}
+
+.loading-wrapper {
+  display: flex;
+  height: 90vh;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  padding: 2rem 0 0 1rem;
+  overflow: hidden;
+}
+
+.new-product-button {
+  width: 100%;
+}
+
+.warning-wrapper {
+  height: 100%;
+}

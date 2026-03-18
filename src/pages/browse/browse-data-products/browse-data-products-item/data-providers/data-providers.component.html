@@ -1,0 +1,35 @@
+<form
+  [formGroup]="form"
+  *ngIf="form"
+>
+  <mat-form-field class="service-provider">
+    <mat-label>{{ loading ? 'Loading...' : 'Data Providers' }}</mat-label>
+    <mat-select
+      [(ngModel)]="selectedDataProviders"
+      [ngModelOptions]="{ standalone: true }"
+      [compareWith]="compareWithFn"
+      (selectionChange)="handleUpdateServicePoint()"
+      [disabled]="disabled"
+      multiple
+    >
+      <mat-option
+        *ngFor="let provider of dataProviders | orderBy : { property: 'legalName', direction: 1 }"
+        [value]="provider"
+      >
+        {{ provider.legalName ? provider.legalName[0] : '' }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <ul
+    class="selected-providers-list"
+    *ngIf="selectedDataProviders.length > 0"
+  >
+    <li *ngFor="let provider of selectedDataProviders">
+      {{ provider.legalName }}
+    </li>
+  </ul>
+</form>
+@if (loading) {
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

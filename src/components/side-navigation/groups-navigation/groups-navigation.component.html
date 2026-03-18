@@ -1,0 +1,22 @@
+<mat-nav-list>
+  <div class="flex-row">
+    <h3 mat-subheader>Groups</h3>
+    <app-back-button path="/browse/groups"></app-back-button>
+  </div>
+  <a
+    mat-list-item
+    [routerLink]="['/groups/request']"
+    routerLinkActive="active"
+  >
+    <mat-icon>plus_one</mat-icon>
+    <span>Request To Join Group</span>
+  </a>
+  <a
+    mat-list-item
+    [routerLink]="['/groups/new-group']"
+    routerLinkActive="active"
+  >
+    <mat-icon mat-list-icon>group_add</mat-icon>
+    <span>New Group</span>
+  </a>
+</mat-nav-list>

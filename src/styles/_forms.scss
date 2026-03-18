@@ -1,0 +1,38 @@
+.mat-mdc-select-min-line {
+  font-size: 14px;
+}
+
+.mat-mdc-select-panel {
+  .mat-mdc-option {
+    .mdc-list-item__primary-text {
+      font-size: 14px;
+    }
+  }
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-floating-label {
+    &.mdc-floating-label {
+      font-size: 14px;
+    }
+  }
+}
+
+mat-form-field {
+  &.indent {
+    margin-left: 1rem;
+    margin-top: 1rem;
+  }
+
+  mat-input {
+    font-family: 'Roboto Flex', sans-serif !important;
+  }
+
+  .mat-mdc-input-element {
+    font-family: 'Roboto Flex', sans-serif !important;
+  }
+}
+
+.mat-mdc-form-field-input-control {
+  font-size: 14px !important;
+}

@@ -1,0 +1,90 @@
+<ng-container *ngIf="form">
+  <form
+    [formGroup]="form"
+    class="integer-form"
+  >
+    <mat-radio-group
+      aria-label="Allowed values"
+      formControlName="allowedValues"
+    >
+      <mat-radio-button value="any">Any</mat-radio-button>
+      <mat-radio-button value="controlled">Controlled</mat-radio-button>
+    </mat-radio-group>
+    <ng-container *ngIf="form.get('allowedValues')?.value === 'any'">
+      <mat-form-field>
+        <mat-label>Default value</mat-label>
+        <input
+          matInput
+          placeholder="Default value"
+          formControlName="defaultValue"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Min value</mat-label>
+        <input
+          matInput
+          placeholder="Min value"
+          formControlName="minValue"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Max value</mat-label>
+        <input
+          matInput
+          placeholder="Max value"
+          formControlName="maxValue"
+        />
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngIf="form.get('allowedValues')?.value === 'controlled'">
+      <mat-slide-toggle
+        formControlName="multipleValues"
+        class="allow-multiple"
+      >
+        Allows multiple selection
+      </mat-slide-toggle>
+      <ng-container formArrayName="paramValue">
+        <div
+          *ngFor="let control of getControls('paramValue'); let i = index"
+          class="controlled-params"
+        >
+          <mat-form-field appearance="fill">
+            <mat-label>Value</mat-label>
+            <input
+              matInput
+              placeholder="Value"
+              [formControlName]="i"
+            />
+          </mat-form-field>
+          <mat-slide-toggle
+            [id]="i.toString()"
+            [checked]="isChecked(i)"
+            (change)="handleValueChange(i)"
+            [disabled]="form.disabled"
+          >
+            As default value
+          </mat-slide-toggle>
+          <button
+            mat-mini-fab
+            color="warn"
+            aria-label="Remove Value"
+            matTooltip="Remove Value"
+            class="smaller"
+            (click)="removeItem(i)"
+            [disabled]="form.disabled"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="handleAddNewValue()"
+        [ngClass]="disableAddNewValue ? 'hidden' : ''"
+      >
+        Add new value
+      </button>
+    </ng-container>
+  </form>
+</ng-container>

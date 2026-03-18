@@ -1,0 +1,14 @@
+<mat-accordion>
+  <mat-expansion-panel
+    [expanded]="expanded"
+    (afterExpand)="handleOpened()"
+    (afterCollapse)="handleClosed()"
+  >
+    <mat-expansion-panel-header [ngClass]="headerClass">
+      <mat-panel-title>
+        {{ title }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <ng-content></ng-content>
+  </mat-expansion-panel>
+</mat-accordion>

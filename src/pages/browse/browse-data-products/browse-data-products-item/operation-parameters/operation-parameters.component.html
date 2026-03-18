@@ -1,0 +1,120 @@
+<ng-container *ngIf="!loading">
+  <form
+    [formGroup]="paramsForm"
+    *ngIf="paramsForm && mapping"
+    class="operation-params"
+  >
+    <mat-accordion>
+      <ng-container formArrayName="mapping">
+        <mat-expansion-panel
+          *ngFor="let control of getControls('mapping'); let i = index"
+          [formGroupName]="i"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ control.value.variable }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <ng-container [ngSwitch]="control.value.range">
+            <ng-container *ngSwitchCase="rangeEnum.DATE_TIME">
+              <app-option
+                id="datetime"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.DATE">
+              <app-option
+                id="date"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.STRING">
+              <app-option
+                id="string"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.INTEGER">
+              <app-option
+                id="integer"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.FLOAT">
+              <app-option
+                id="float"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.BOOLEAN">
+              <app-option
+                id="boolean"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+            <ng-container *ngSwitchCase="rangeEnum.COORDINATE">
+              <app-option
+                id="coordinate"
+                [param]="control.value"
+                [disabled]="disabled"
+                (updatedParam)="updateMappingArr($event)"
+              ></app-option>
+            </ng-container>
+
+            <ng-container>
+              <button
+                type="button"
+                mat-mini-fab
+                color="warn"
+                matTooltip="Delete Parameter"
+                [disabled]="disabled"
+                (click)="handleDeleteParam(control.value['instanceId'])"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+          </ng-container>
+        </mat-expansion-panel>
+      </ng-container>
+    </mat-accordion>
+  </form>
+  <div class="button-wrapper">
+    <div>
+      <button
+        type="button"
+        class="action"
+        mat-raised-button
+        color="primary"
+        [disabled]="disabled"
+        (click)="handleSave()"
+        *ngIf="mapping.length > 0"
+      >
+        Save Operation
+      </button>
+    </div>
+    <button
+      type="button"
+      id="param"
+      mat-stroked-button
+      color="primary"
+      [disabled]="disabled"
+      (click)="handleAddParam()"
+      *ngIf="supportedOperations && supportedOperations.length > 0"
+    >
+      Add Parameter
+    </button>
+  </div>
+</ng-container>
+<ng-container *ngIf="loading">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>

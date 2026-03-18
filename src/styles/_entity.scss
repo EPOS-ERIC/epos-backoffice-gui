@@ -1,0 +1,130 @@
+.top-header {
+  .flex-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    mat-chip-listbox {
+      margin-left: 1rem;
+      margin-top: 0.125rem;
+
+      mat-chip-option {
+        min-width: 75px;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        text-transform: capitalize;
+
+        &.mat-warning {
+          background: rgba(240, 168, 69, 0.2);
+          color: #000000;
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .flex-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 1.5rem;
+
+      label {
+        font-size: 13px;
+        margin-top: 0.5rem;
+      }
+    }
+
+    button {
+      margin-left: 0;
+      box-shadow: none;
+
+      &.mat-default {
+        background: rgba(224, 224, 224, 0.4);
+      }
+
+      &.mat-error {
+        background: rgb(240, 61, 62, 0.2);
+        color: #f03d3e;
+      }
+
+      &:hover {
+        &.mat-default {
+          background: rgba(224, 224, 224, 0.8);
+        }
+
+        &.mat-mdc-form-field-error {
+          background: rgb(240, 61, 62, 0.4);
+        }
+      }
+    }
+  }
+}
+
+.body {
+  padding-bottom: 2rem;
+
+  form {
+    &:not(.data-product) {
+      display: flex;
+      flex-direction: column;
+
+      input {
+        &:read-only {
+          // opacity: 0.4;
+        }
+      }
+
+      label {
+        margin-bottom: 0.75rem;
+        font-size: 14px;
+      }
+    }
+
+    &.distribution {
+      label {
+        margin-bottom: 0;
+      }
+    }
+
+    &.integer-form {
+      label {
+        margin-bottom: 0;
+      }
+    }
+
+    &.operation-params {
+      mat-slide-toggle {
+        label {
+          margin-bottom: 0;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+
+  mat-accordion {
+    display: inline-block;
+    width: 99%;
+  }
+}
+
+.back-btn {
+  &.mat-mdc-outlined-button {
+    border-radius: 25px;
+    margin-top: 0.75rem;
+  }
+
+  mat-icon {
+    color: #004926;
+  }
+
+  .back-label-text {
+    margin-left: 0.25rem;
+  }
+}

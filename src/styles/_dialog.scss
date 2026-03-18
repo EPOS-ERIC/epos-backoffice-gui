@@ -1,0 +1,185 @@
+app-dialog-delete {
+  .mat-mdc-dialog-title {
+    margin: 0;
+  }
+
+  .mat-mdc-dialog-content {
+    p {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+app-dialog {
+  width: 100%;
+  padding: 2rem;
+
+  app-dialog-add-person,
+  app-dialog-add-contact {
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+
+    .mat-mdc-dialog-actions {
+      align-self: flex-end;
+    }
+  }
+}
+
+.mat-mdc-dialog-container {
+  overflow: hidden !important;
+  padding: 24px 12px !important;
+
+  &#delete {
+    border-left: none !important;
+    // width: 500px;
+  }
+}
+
+.custom-dialog {
+  app-dialog {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-dialog-container {
+    border-left: none !important;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden !important;
+    display: flex;
+
+    app-dialog-delete,
+    app-dialog-submit {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      width: 100%;
+
+      h1 {
+        padding: 0 2rem;
+      }
+
+      .mat-mdc-dialog-content {
+        padding: 0 3.5rem;
+
+        p {
+          color: #515151;
+        }
+      }
+
+      .mat-mdc-dialog-actions {
+        padding: 1rem 2rem;
+        background: #efefef;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+#loginCopmonent {
+  padding: 0 !important;
+
+  .mat-mdc-dialog-surface {
+    overflow-x: hidden;
+  }
+
+  .content {
+    .button-wrapper {
+      a {
+        span {
+          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+          &.mat-button-wrapper {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  app-dialog-login {
+    .bottom {
+      mat-accordion {
+        mat-expansion-panel {
+          .mat-expansion-panel-content {
+            height: 250px;
+            overflow: hidden;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
+
+#changeUserRole {
+  &.mat-mdc-dialog-container {
+    padding: 0 !important;
+  }
+}
+
+.user-permissions,
+.user-status {
+  background: rgba(0, 0, 0, 0.32);
+
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+
+    app-user-permissions {
+      height: 100%;
+      display: block;
+      width: 100%;
+    }
+  }
+}
+
+.mdc-dialog__actions {
+  padding: 16px !important;
+}
+
+.dialog-submit {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+
+    h1 {
+      margin-bottom: 0;
+    }
+
+    p {
+      margin-top: 0;
+      font-size: 14px;
+    }
+
+    form {
+      margin-top: 2rem;
+    }
+  }
+
+  .mat-mdc-dialog-content {
+    padding-bottom: 0 !important;
+  }
+
+  app-dialog-submit {
+    display: flex;
+    flex-direction: column;
+
+    .mat-mdc-dialog-actions {
+      align-self: flex-end;
+      margin-top: 0.75rem;
+    }
+  }
+}
+
+.cdk-overlay-pane {
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+
+    .wrapper {
+      padding: 2rem;
+    }
+  }
+}
+
+div[mat-dialog-actions] {
+  justify-content: flex-end;
+}

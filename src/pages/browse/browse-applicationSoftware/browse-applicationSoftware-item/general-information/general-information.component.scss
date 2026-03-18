@@ -1,0 +1,35 @@
+.info {
+  margin-bottom: 2em;
+  display: flex;
+  justify-content: space-between;
+
+  .detail {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    font-size: 14px;
+    background-color: transparent;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+    .label {
+      flex: 0 0 10%;
+      color: #000000;
+      flex-grow: 1;
+    }
+
+    .value {
+      color: #595959;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.fields-flex-col {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}

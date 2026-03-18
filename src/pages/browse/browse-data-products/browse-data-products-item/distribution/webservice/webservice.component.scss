@@ -1,0 +1,138 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  mat-accordion {
+    width: 100%;
+  }
+
+  .grid-item {
+    width: 100%;
+
+    .subtitle {
+      font-weight: 500;
+    }
+
+    mat-expansion-panel {
+      width: 100%;
+      margin-bottom: 1rem;
+      box-shadow: none !important;
+      border: 1px solid #efefef;
+    }
+  }
+}
+
+mat-form-field {
+  &.service-provider {
+    margin-top: 1rem;
+  }
+}
+
+mat-expansion-panel {
+  margin-bottom: 1rem;
+}
+
+.plugins-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.plugins-empty,
+.plugins-loading {
+  font-size: 0.9rem;
+}
+
+.plugins-description {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.plugins-table-wrapper {
+  overflow: visible;
+}
+
+.plugins-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid #efefef;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      &:hover {
+        background-color: rgba(0, 73, 38, 0.2);
+      }
+    }
+  }
+}
+
+.plugin-cell {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plugin-request-panel {
+  margin-top: 0.5rem;
+}
+
+.plugin-request-toggle {
+  justify-content: flex-end;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+.plugins-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 0.85rem;
+}
+
+.plugin-request-filters-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.plugin-request-filter {
+  flex: 1 1 16rem;
+  min-width: 16rem;
+}
+
+::ng-deep .plugin-request-panel .mat-expansion-indicator {
+  display: none;
+}
+
+::ng-deep .plugins-actions-menu .mat-mdc-menu-item {
+  min-height: 28px;
+  height: 28px;
+  font-size: 0.72rem;
+}
+
+::ng-deep .plugins-actions-menu .mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+  line-height: 14px;
+}

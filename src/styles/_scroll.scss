@@ -1,0 +1,29 @@
+@mixin custom-scroll {
+  display: block;
+  overflow-y: auto;
+  // overflow-x: hidden;
+
+  // custom scrollbar
+  /* width */
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #d3d3d3;
+  }
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #EFEFEF;
+  }
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.nice-scrollbar,
+html {
+  @include custom-scroll;
+}

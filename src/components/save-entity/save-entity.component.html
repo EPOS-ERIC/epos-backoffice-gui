@@ -1,0 +1,20 @@
+<div class="actions">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="handleSave()"
+    [disabled]="disabled"
+  >
+    Save {{ entity }}
+  </button>
+  <button
+    *ngIf="!hideDelete"
+    mat-stroked-button
+    color="warn"
+    (click)="handleDelete()"
+    [disabled]="disabled"
+  >
+    <mat-icon>delete</mat-icon>
+    Delete {{ entity }}
+  </button>
+</div>

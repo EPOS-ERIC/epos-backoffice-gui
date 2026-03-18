@@ -1,0 +1,18 @@
+.top-params {
+  display: flex;
+  :nth-child(1) {
+    margin-right: 1em;
+  }
+}
+
+mat-slide-toggle {
+  padding: 1em;
+}
+
+.readonly {
+  display: flex;
+  align-items: center;
+  mat-icon {
+    margin-left: 0.5em;
+  }
+}

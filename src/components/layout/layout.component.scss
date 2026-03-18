@@ -1,0 +1,273 @@
+@import '../../styles/theme';
+
+.navbar-spacer {
+  flex: 1 1 auto;
+}
+
+.navbar {
+  z-index: 2;
+}
+
+.logo-wrapper {
+  cursor: pointer;
+}
+
+.navbar-brand {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 400;
+
+  h1 {
+    font-weight: 500;
+    font-size: 20px;
+  }
+}
+
+.navbar-main-navigation {
+  margin-left: 2.5%;
+}
+
+.navbar-main-navigation-item {
+  font-size: 16px;
+  margin: 0 15%;
+  text-decoration: none;
+  cursor: pointer;
+  color: white;
+  font-weight: 400;
+
+  &:visited {
+    color: white;
+  }
+
+  &:hover,
+  &:focus {
+    color: orange;
+    text-decoration: none;
+  }
+}
+
+.account {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  mat-icon {
+    color: #ffffff;
+  }
+}
+
+.user-details {
+  .flex {
+    display: flex;
+    align-items: center;
+
+    p {
+      margin: 0 0.5rem 0 0;
+      font-size: 16px;
+
+      &:nth-of-type(2) {
+        font-size: 14px;
+        text-transform: capitalize;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  p {
+    &.group-name {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+.nav-top-items-item {
+  margin: 0 0.75rem;
+}
+
+.navbar-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.navbar-container img {
+  margin: 0 16px;
+}
+
+.navbar-is-mobile .navbar {
+  position: fixed;
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+  z-index: 2;
+}
+
+.navbar-sidenav-container {
+  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
+           causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+  flex: 1;
+}
+
+.navbar-is-mobile .navbar-sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+           `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+/*Set sidenav width*/
+
+mat-sidenav {
+  min-width: 300px !important;
+  border-right: 1px solid #eee;
+  box-shadow: 6px 0 6px rgba(0, 0, 0, 0.1);
+}
+
+mat-sidenav-content {
+  overflow-x: hidden;
+}
+
+a.mat-mdc-list-item.active {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+#push-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
+button {
+  &[mat-icon-button] {
+    mat-icon {
+      &.active {
+        color: #f39c12;
+      }
+    }
+  }
+
+  &.login {
+    padding: 15px;
+    color: white;
+    font-weight: bold;
+    background-color: orange;
+  }
+}
+.groups-button {
+  margin-left: 1em;
+}
+
+.dropdown-menu {
+  background: #ffffff;
+  min-width: 160px;
+  line-height: normal;
+  z-index: 100;
+  position: absolute;
+  right: 25px;
+  left: auto;
+  top: 70px;
+  border-radius: 0 0 10px 10px;
+
+  &--userdropdown {
+    width: 280px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  &-header {
+    padding: 0 0 0 1rem;
+    border-bottom: 1px solid $color-text-bg;
+
+    .notice {
+      color: #717171;
+      font-size: 13px;
+    }
+
+    &-userimage {
+      display: block;
+      margin: 0 auto;
+      z-index: 5;
+      height: 90px;
+      width: 90px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    &-username {
+      text-align: center;
+      font-weight: 800;
+      color: $color-text-bg;
+    }
+  }
+
+  &-body {
+    background: white;
+    color: black;
+    padding: 10px;
+
+    a,
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      color: $color-dark-text;
+      justify-content: flex-start;
+      margin-bottom: 0.5rem;
+
+      span {
+        &.mdc-button__label {
+          display: flex;
+          align-items: center;
+
+          span {
+            margin-left: 0.75rem;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+
+    & .wrapper {
+      .menuitem {
+        display: flex;
+        flex-direction: row;
+        justify-content: right;
+        cursor: pointer;
+
+        span {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  &-footer {
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 0 0 5px 5px;
+
+    button {
+      width: 100%;
+      border-top: 1px solid #efefef;
+    }
+
+    &:after {
+      content: ' ';
+      display: table;
+      clear: both;
+    }
+  }
+}
+
+.navigation-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.loading-wrapper {
+  padding-top: 1rem;
+}

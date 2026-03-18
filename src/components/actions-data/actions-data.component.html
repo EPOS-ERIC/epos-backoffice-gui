@@ -1,0 +1,12 @@
+<h3>{{ title }}</h3>
+<mat-chip-listbox [attr.aria-label]="ariaLabel">
+  <mat-chip-option
+    *ngFor="let item of actionItems"
+    [color]="item.color"
+  >
+    <div class="flex-row">
+      <span class="label">{{ item.label }}</span>
+      <span class="count">{{ item.count }}</span>
+    </div>
+  </mat-chip-option>
+</mat-chip-listbox>

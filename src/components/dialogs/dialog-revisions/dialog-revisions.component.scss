@@ -1,0 +1,32 @@
+.wrapper {
+  padding: 2rem;
+
+  p {
+    &.title {
+      font-size: 22px;
+    }
+  }
+
+  .table-wrapper {
+    border: 1px solid #efefef;
+  }
+
+  .loading-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .compare {
+    margin-top: 1rem;
+  }
+}
+
+.exit-button {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  mat-icon {
+    margin: 0;
+  }
+}

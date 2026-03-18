@@ -4,19 +4,26 @@ Essential commands and runtime config for local development and Docker deploymen
 
 ## Development
 
-| Task                         | Command            | Notes                                         |
-| ---------------------------- | ------------------ | --------------------------------------------- |
-| Install dependencies         | `pnpm install`     | Run once after checkout or dependency updates |
-| Start default dev server     | `pnpm run dev`     | Local URL: `http://localhost:4200/testpath`   |
-| Start open source dev server | `pnpm run dev-oss` | Local URL: `http://localhost:4200/testpath`   |
+| Task                                 | Command            | Notes                                         |
+| ------------------------------------ | ------------------ | --------------------------------------------- |
+| Install dependencies                 | `pnpm install`     | Run once after checkout or dependency updates |
+| Start open source development server | `pnpm run dev-oss` | Local URL: `http://localhost:4200/testpath`   |
+| Start internal development server    | `pnpm run dev`     | Local URL: `http://localhost:4200/testpath`   |
+| Regenerate API client                | `pnpm run codegen` | Updates files in `generated/`                 |
 
 ## Quality checks
 
-| Task                 | Command              | Notes                                        |
-| -------------------- | -------------------- | -------------------------------------------- |
-| Run lint             | `pnpm run lint`      | Currently fails on existing repo-wide issues |
-| Create default build | `pnpm run build`     | Outputs Angular production assets            |
-| Create OSS build     | `pnpm run build-oss` | Outputs Angular OSS production assets        |
+| Task     | Command         | Notes                     |
+| -------- | --------------- | ------------------------- |
+| Run lint | `pnpm run lint` | Runs Angular ESLint rules |
+
+## Build
+
+| Task                             | Command              | Notes                                            |
+| -------------------------------- | -------------------- | ------------------------------------------------ |
+| Create open source build         | `pnpm run build-oss` | CI uses this build flavor                        |
+| Create internal production build | `pnpm run build`     | Default/internal configuration                   |
+| Regenerate API client            | `pnpm run codegen`   | Run before build when the backend schema changes |
 
 Build output is written to `dist/browser`.
 
@@ -24,18 +31,18 @@ Build output is written to `dist/browser`.
 
 The container image supports runtime configuration via environment variables.
 
-| Variable      | Default               | Description                                                     |
-| ------------- | --------------------- | --------------------------------------------------------------- |
-| `BASE_URL`    | `/`                   | Base path where the app is served. Must start and end with `/`. |
-| `API_HOST`    | `http://gateway:5000` | Upstream API host used by nginx for `/api` requests.            |
-| `SERVER_NAME` | `_`                   | nginx `server_name` value.                                      |
+| Variable      | Default               | Description                                                                                  |
+| ------------- | --------------------- | -------------------------------------------------------------------------------------------- |
+| `BASE_URL`    | `/`                   | Base path where the app is served. Must start and end with `/` (for example `/backoffice/`). |
+| `API_HOST`    | `http://gateway:5000` | Upstream API URL used by nginx for `/api` requests.                                          |
+| `SERVER_NAME` | `_`                   | nginx `server_name` value.                                                                   |
 
 Example:
 
 ```bash
 docker run --rm -p 8080:80 \
   -e BASE_URL=/backoffice/ \
-  -e API_HOST=https://api.example.org \
+  -e API_HOST=https://api.example.org/ \
   -e SERVER_NAME=_ \
   epos-back-office:latest
 ```

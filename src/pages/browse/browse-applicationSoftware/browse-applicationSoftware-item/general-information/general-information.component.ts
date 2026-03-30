@@ -18,6 +18,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ApiService } from 'src/apiAndObjects/api/api.service';
 import { LinkedEntity, Organization } from 'generated/backofficeSchemas';
 import { SnackbarService, SnackbarType } from 'src/services/snackbar.service';
+import { ActiveUserService } from 'src/services/activeUser.service';
 
 @Component({
   selector: 'app-general-information-appSoft',
@@ -52,11 +53,13 @@ export class GeneralInformationAppSoftComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly apiService: ApiService,
     private readonly snackbarService: SnackbarService,
+    private readonly activeUserService: ActiveUserService,
   ) {
     this.softwareApplication = this.entityExecutionService.getActiveSoftwareApplicationValue() as SoftwareApplication;
   }
 
   private initForm(): void {
+    let userHasEditPermissionsForSubmitted: boolean | undefined = false;
     if (this.softwareApplication) {
       this.form = new FormGroup({
         name: new FormControl(this.softwareApplication?.name, [Validators.required]),
@@ -74,7 +77,27 @@ export class GeneralInformationAppSoftComponent implements OnInit {
           (this.softwareApplication?.creator ?? []).map((creator) => this.formBuilder.control(creator)),
         ),
       });
+      // check for User Role - if user not an ADMIN or REVIEWER can see the SUBMITTED, but can't edit them
+      const activeUser = this.activeUserService.getActiveUser();
+      if(activeUser){
+        const activeUserGroups = activeUser.groups;
+        if(activeUserGroups){
+          // find group in UserGroups matching with current active loaded Entity
+          const groupMatch = activeUserGroups.find(group => group.groupId === this.softwareApplication?.groups?.find(entityGroup => entityGroup === group.groupId));
+          if(groupMatch){
+            const userRole = groupMatch.role;
+            console.warn('userRole', userRole);
+            if(userRole && (userRole === 'ADMIN' || userRole === 'REVIEWER')){
+              userHasEditPermissionsForSubmitted = true;
+            }
+            else{
+              userHasEditPermissionsForSubmitted = false;
+            }
+          }
+        }
+      }
       if (
+        (this.softwareApplication.status === Status.SUBMITTED && userHasEditPermissionsForSubmitted === false) ||
         this.softwareApplication?.status === Status.PUBLISHED ||
         this.softwareApplication?.status === Status.ARCHIVED
       ) {

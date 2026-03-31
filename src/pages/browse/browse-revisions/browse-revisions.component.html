@@ -1,41 +1,245 @@
 <div class="container">
-  <div
-    class="top-header"
-    *ngIf="!error"
-  >
+  <div class="top-header" *ngIf="!error">
     <div class="flex-row">
-      <h1 class="mat-headline-4">Revisions</h1>
+      <button mat-icon-button (click)="goBack()" matTooltip="Back" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="mat-headline-4">Revision Comparison</h1>
     </div>
   </div>
-  <div
-    class="mat-table-margin"
-    *ngIf="loading"
-  >
+  <div class="mat-table-margin" *ngIf="loading">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </div>
-  <div
-    class="flex-wrapper"
-    *ngIf="!loading"
-  >
+  <div class="flex-wrapper" *ngIf="!loading">
     <ng-container *ngIf="!error">
-      <!-- <div class="labels">
-        <div
-          class="flex-horizontal"
-          *ngFor="let revision of revisions; let i = index"
-        >
-          <div
-            class="box"
-            [ngClass]="i === 0 ? 'previous' : 'current'"
-          >
-            <p>{{ i === 0 ? 'Previous' : 'Current' }}</p>
+      <div class="legend">
+        <span class="legend-item added">
+          <span class="legend-swatch swatch-added"></span>
+          Added
+        </span>
+        <span class="legend-item deleted">
+          <span class="legend-swatch swatch-deleted"></span>
+          Removed
+        </span>
+        <span class="legend-item unchanged">
+          <span class="legend-swatch swatch-unchanged"></span>
+          Unchanged
+        </span>
+      </div>
+      <div *ngIf="noDifferences" class="no-diff-notice">
+        <mat-icon>check_circle</mat-icon>
+        <span>No differences found between the two selected revisions.</span>
+      </div>
+      <div class="diff-output" *ngIf="!noDifferences">
+        <div *ngFor="let section of visualDiff" class="diff-section friendly-section"
+          [class.diff-section--changed]="section.hasDifferences"
+          [class.diff-section--unchanged]="!section.hasDifferences">
+
+          <h3 class="section-title">
+            {{ section.label }}
+            <span *ngIf="!section.hasDifferences" class="no-changes-badge">No changes</span>
+          </h3>
+
+          <!-- Friendly Grid View -->
+          <div class="friendly-diff-container" *ngIf="section.typeOfFields">
+            <div *ngFor="let field of section.typeOfFields" class="friendly-diff-row" [class]="'diff-' + field.status">
+              <div class="friendly-diff-label">{{ field.label }}</div>
+
+              <div class="friendly-diff-values"
+                [class.multiline]="isMultiline(field.oldValue) || isMultiline(field.newValue)"
+                [ngSwitch]="field.fieldType">
+
+                <!-- COMPLEX FIELDS (Distributions, Webservices, Documentation) -->
+                <ng-container *ngSwitchCase="'distribution'">
+                  <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: distCard }"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'webservice'">
+                   <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: wsCard }"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'documentation'">
+                   <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: docCard }"></ng-container>
+                </ng-container>
+
+                <!-- GENERIC FIELDS (Text/Simple) -->
+                <ng-container *ngSwitchDefault>
+                  <ng-container *ngIf="field.status === 'modified'">
+                    <div class="friendly-diff-value old-value" [innerHTML]="field.oldHtml || formatFriendlyValue(field.oldValue)"></div>
+                    <div class="friendly-diff-value new-value" [innerHTML]="field.newHtml || formatFriendlyValue(field.newValue)"></div>
+                  </ng-container>
+                  <ng-container *ngIf="field.status === 'added'">
+                    <div class="friendly-diff-value new-value" [innerHTML]="formatFriendlyValue(field.newValue)"></div>
+                  </ng-container>
+                  <ng-container *ngIf="field.status === 'deleted'">
+                    <div class="friendly-diff-value old-value" [innerHTML]="formatFriendlyValue(field.oldValue)"></div>
+                  </ng-container>
+                  <ng-container *ngIf="field.status === 'unchanged'">
+                    <div class="friendly-diff-value unchanged-value" [innerHTML]="formatFriendlyValue(field.oldValue)"></div>
+                  </ng-container>
+                </ng-container>
+
+              </div>
+            </div>
           </div>
-          <p>{{ revision.versionInfo }}</p>
         </div>
-      </div> -->
-      <div [innerHTML]="visualDiff"></div>
+      </div>
     </ng-container>
     <ng-container *ngIf="error">
       <app-error-notice></app-error-notice>
     </ng-container>
   </div>
 </div>
+
+<!-- META-TEMPLATE for Card Status Handling -->
+<ng-template #cardLoop let-field="field" let-template="template">
+  <!-- Modified -->
+  <ng-container *ngIf="field.status === 'modified'">
+    <div class="friendly-diff-value old-value">
+      <div *ngFor="let item of toArray(field.oldValue)" class="card-wrapper">
+        <ng-container *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.newValue), side: 'old' }"></ng-container>
+      </div>
+    </div>
+    <div class="friendly-diff-value new-value">
+      <div *ngFor="let item of toArray(field.newValue)" class="card-wrapper">
+        <ng-container *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.oldValue), side: 'new' }"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Added -->
+  <ng-container *ngIf="field.status === 'added'">
+    <div class="friendly-diff-value new-value">
+      <div *ngFor="let item of toArray(field.newValue)" class="card-wrapper">
+        <ng-container *ngTemplateOutlet="template; context: { item: item, other: null, side: 'new' }"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Deleted -->
+  <ng-container *ngIf="field.status === 'deleted'">
+    <div class="friendly-diff-value old-value">
+      <div *ngFor="let item of toArray(field.oldValue)" class="card-wrapper">
+        <ng-container *ngTemplateOutlet="template; context: { item: item, other: null, side: 'old' }"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Unchanged -->
+  <ng-container *ngIf="field.status === 'unchanged'">
+    <div class="friendly-diff-value unchanged-value">
+      <div *ngFor="let item of toArray(field.oldValue)" class="card-wrapper">
+        <ng-container *ngTemplateOutlet="template; context: { item: item, other: item, side: 'new' }"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<!-- DISTRIBUTION CARD TEMPLATE -->
+<ng-template #distCard let-item="item" let-other="other" let-side="side">
+  <div class="dist-card">
+    <div class="dist-section-title">GENERAL INFO</div>
+    <div class="dist-field">
+      <span class="dist-field-label">TITLE:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.title, other?.title, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">DESCRIPTION:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.description, other?.description, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">STATUS:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.status, other?.status, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">VERSION:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.version, other?.version, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">LICENCE:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.licence, other?.licence, side)"></span>
+    </div>
+
+    <div class="dist-section-spacer"></div>
+    <div class="dist-section-title">DATA ACCESS</div>
+    
+    <div *ngIf="item?.downloadURL" class="dist-access-badge badge-download">DOWNLOADABLE FILE</div>
+    <div *ngIf="item?.downloadURL" class="dist-field">
+      <span class="dist-field-label">URL:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.downloadURL, other?.downloadURL, side)"></span>
+    </div>
+
+    <div *ngIf="item?.accessService?.length > 0">
+      <div class="dist-access-badge badge-webservice">WEBSERVICE</div>
+      <div *ngFor="let acc of item.accessService; let i = index" class="dist-sub-item">
+        <div *ngIf="i > 0" class="dist-inner-sep"></div>
+        <div class="dist-sub-item-title" [innerHTML]="getDiff(acc.name || acc.uid, findMatch(acc, other?.accessService)?.name || findMatch(acc, other?.accessService)?.uid, side)"></div>
+        <div *ngIf="acc.description" class="dist-field">
+          <span class="dist-field-value" [innerHTML]="getDiff(acc.description, findMatch(acc, other?.accessService)?.description, side)"></span>
+        </div>
+        
+        <div *ngIf="acc.documentation?.length > 0">
+          <div class="dist-sub-label">DOCUMENTATION</div>
+          <div *ngFor="let doc of acc.documentation; let j = index" class="dist-list-item">
+            <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, findMatch(acc, other?.accessService)?.documentation), side: side, parentId: acc.instanceId }"></ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTATION (Directly on distribution) -->
+    <div *ngIf="item?.documentation?.length > 0">
+      <div class="dist-section-spacer"></div>
+      <div class="dist-section-title">DOCUMENTATION</div>
+      <div *ngFor="let doc of item.documentation; let i = index" class="dist-list-item">
+        <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- WEBSERVICE CARD TEMPLATE -->
+<ng-template #wsCard let-item="item" let-other="other" let-side="side">
+  <div class="dist-card dist-card--webservice">
+    <div class="dist-section-title">GENERAL INFO</div>
+    <div class="dist-field">
+      <span class="dist-field-label">TITLE:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.name, other?.name, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">DESCRIPTION:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.description, other?.description, side)"></span>
+    </div>
+    <div class="dist-field">
+      <span class="dist-field-label">STATUS:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.status, other?.status, side)"></span>
+    </div>
+    <div *ngIf="item?.entryPoint" class="dist-field">
+      <span class="dist-field-label">ENTRY POINT:</span>
+      <span class="dist-field-value" [innerHTML]="getDiff(item?.entryPoint, other?.entryPoint, side)"></span>
+    </div>
+
+    <div *ngIf="item?.documentation?.length > 0">
+      <div class="dist-section-spacer"></div>
+      <div class="dist-section-title">DOCUMENTATION</div>
+      <div *ngFor="let doc of item.documentation; let i = index" class="dist-list-item">
+        <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- DOCUMENTATION MINI-CARD TEMPLATE -->
+<ng-template #docCard let-item="item" let-other="other" let-side="side" let-parentId="parentId">
+  <div class="doc-detail">
+    <div class="doc-title">
+      <a [href]="item.instanceId && parentId ? API_BASE + '/documentation/' + parentId + '/' + item.instanceId : item.uri || '#'"
+         target="_blank" class="doc-link"
+         [innerHTML]="getDiff(item?.title || item?.uid, other?.title || other?.uid, side)"></a>
+    </div>
+    <div *ngIf="item?.description" class="doc-description"
+         [innerHTML]="getDiff(item?.description, other?.description, side)"></div>
+    <div *ngIf="item.uri" class="doc-uri">
+      <span class="label">URI:</span> 
+      <span [innerHTML]="getDiff(item.uri, other?.uri, side)"></span>
+    </div>
+  </div>
+</ng-template>

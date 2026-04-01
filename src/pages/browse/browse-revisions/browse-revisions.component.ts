@@ -594,13 +594,14 @@ export class BrowseRevisionsComponent implements OnInit {
         // We received new revisions from the dialog
         this.loading = true;
         this.revisions = revisions;
-        this.persistorService.setValueInStorage(
-          StorageType.LOCAL_STORAGE,
-          StorageKey.REVISIONS,
-          JSON.stringify(revisions),
-        );
         this._mapResponse(this.revisions);
         this.fetchRelatedEntities().then(() => {
+          // Save to LocalStorage AFTER hydration so cached data includes titles/descriptions
+          this.persistorService.setValueInStorage(
+            StorageType.LOCAL_STORAGE,
+            StorageKey.REVISIONS,
+            JSON.stringify(this.revisions),
+          );
           this.visualDiff = this.getVisualDiff();
           this.loading = false;
         });
@@ -712,7 +713,32 @@ export class BrowseRevisionsComponent implements OnInit {
         }
       }
 
-      // Hydrate provider fields (Person or Organization)
+      if (revision.documentation && Array.isArray(revision.documentation)) {
+        for (const item of revision.documentation) {
+          // If instanceId is missing, try to "borrow" it from the other revision (siblings often have it)
+          if (!item.instanceId && item.uid) {
+            const otherRev = this.revisions.find((r) => r !== rev);
+            const match = this.findNestedMatch(item.uid, otherRev, 'documentation');
+            if (match) {
+              item.instanceId = match.instanceId;
+              item.metaId = match.metaId;
+            }
+          }
+
+          if (item.instanceId && item.metaId && (!(item as any).title || !(item as any).description || !(item as any).uri)) {
+            promises.push(
+              this.apiService.endpoints.Documentation.get
+                .call({ instanceId: item.instanceId, metaId: item.metaId })
+                .then((res: any) => {
+                  if (res && res.length > 0) Object.assign(item, res[0]);
+                })
+                .catch((e: any) => console.warn('Failed to fetch documentation', e)),
+            );
+          }
+        }
+      }
+
+      // provider fields (Person or Organization)
       providerFields.forEach((field) => {
         if (revision[field] && Array.isArray(revision[field])) {
           revision[field].forEach((item: any) => {
@@ -740,7 +766,7 @@ export class BrowseRevisionsComponent implements OnInit {
         }
       });
 
-      // Hydrate category fields
+      // category fields
       categoryFields.forEach((field) => {
         if (revision[field] && Array.isArray(revision[field])) {
           revision[field].forEach((item: any) => {
@@ -758,7 +784,7 @@ export class BrowseRevisionsComponent implements OnInit {
         }
       });
 
-      // Hydrate distribution fields
+      // distribution fields
       distributionFields.forEach((field) => {
         if (revision[field] && Array.isArray(revision[field])) {
           revision[field].forEach((item: any) => {
@@ -772,7 +798,9 @@ export class BrowseRevisionsComponent implements OnInit {
                   .call({ instanceId: item.instanceId, metaId: item.metaId })
                   .then(async (res: any) => {
                     if (res && res.length > 0) {
+                      const originalItem = JSON.parse(JSON.stringify(item));
                       Object.assign(item, res[0]);
+                      this.deepRestoreIds(item, originalItem);
 
                       // Deep Hydration for nested fields within distributions and webservices
                       const innerPromises: Promise<any>[] = [];
@@ -787,20 +815,6 @@ export class BrowseRevisionsComponent implements OnInit {
                             );
                           }
                         });
-                      }
-                      if (revision.documentation && Array.isArray(revision.documentation)) {
-                        for (const item of revision.documentation) {
-                          if (item.instanceId && item.metaId && !(item as any).title && !(item as any).uri) {
-                            promises.push(
-                              this.apiService.endpoints.Documentation.get
-                                .call({ instanceId: item.instanceId, metaId: item.metaId })
-                                .then((res: any) => {
-                                  if (res && res.length > 0) Object.assign(item, res[0]);
-                                })
-                                .catch((e: any) => console.warn('Failed to fetch documentation', e)),
-                            );
-                          }
-                        }
                       }
                       if (item.contactPoint && Array.isArray(item.contactPoint)) {
                         item.contactPoint.forEach((cp: any) => {
@@ -860,12 +874,23 @@ export class BrowseRevisionsComponent implements OnInit {
                         });
                       }
 
-                      // Hydrate documentation inside webservice (nested in accessService)
+                      // documentation inside webservice (nested in accessService)
                       if (item.accessService && Array.isArray(item.accessService)) {
                         item.accessService.forEach((acc: any) => {
                           if (acc.documentation && Array.isArray(acc.documentation)) {
                             acc.documentation.forEach((doc: any) => {
-                              if (doc.instanceId && doc.metaId && !doc.title && !doc.description) {
+                              // Borrow IDs if missing
+                              if (!doc.instanceId && doc.uid) {
+                                const otherRev = this.revisions.find((r) => r !== rev);
+                                const otherDist = this.findMatch(item, (otherRev as any)?.distribution);
+                                const otherAcc = this.findMatch(acc, otherDist?.accessService);
+                                const match = otherAcc?.documentation?.find((d: any) => d.uid === doc.uid);
+                                if (match) {
+                                  doc.instanceId = match.instanceId;
+                                  doc.metaId = match.metaId;
+                                }
+                              }
+                              if (doc.instanceId && doc.metaId && (!doc.title || !doc.description || !doc.uri)) {
                                 innerPromises.push(
                                   this.apiService.endpoints.Documentation.get
                                     .call({ instanceId: doc.instanceId, metaId: doc.metaId })
@@ -878,10 +903,20 @@ export class BrowseRevisionsComponent implements OnInit {
                         });
                       }
 
-                      // Hydrate documentation directly on the distribution
+                      // documentation directly on the distribution
                       if (item.documentation && Array.isArray(item.documentation)) {
                         item.documentation.forEach((doc: any) => {
-                          if (doc.instanceId && doc.metaId && !doc.title && !doc.description) {
+                          // Borrow IDs if missing
+                          if (!doc.instanceId && doc.uid) {
+                            const otherRev = this.revisions.find((r) => r !== rev);
+                            const otherDist = this.findMatch(item, (otherRev as any)?.distribution);
+                            const match = otherDist?.documentation?.find((d: any) => d.uid === doc.uid);
+                            if (match) {
+                              doc.instanceId = match.instanceId;
+                              doc.metaId = match.metaId;
+                            }
+                          }
+                          if (doc.instanceId && doc.metaId && (!doc.title || !doc.description || !doc.uri)) {
                             innerPromises.push(
                               this.apiService.endpoints.Documentation.get
                                 .call({ instanceId: doc.instanceId, metaId: doc.metaId })
@@ -916,6 +951,45 @@ export class BrowseRevisionsComponent implements OnInit {
     }
 
     await Promise.allSettled(promises);
+  }
+
+  /**
+   * Recursively restores instanceId and metaId from a source object to a target object.
+   * Useful when an API response (target) wipes out identifiers that were present in the initial revision (source).
+   */
+  private deepRestoreIds(target: any, source: any): void {
+    if (!target || !source || typeof target !== 'object' || typeof source !== 'object') return;
+
+    for (const key in source) {
+      const sourceVal = source[key];
+      const targetVal = target[key];
+
+      if (key === 'instanceId' || key === 'metaId') {
+        if (targetVal === undefined && sourceVal !== undefined) {
+          target[key] = sourceVal;
+        }
+      } else if (Array.isArray(sourceVal) && Array.isArray(targetVal)) {
+        targetVal.forEach((targetItem: any) => {
+          if (targetItem && targetItem.uid) {
+            const sourceItem = sourceVal.find((s: any) => s && s.uid === targetItem.uid);
+            if (sourceItem) {
+              this.deepRestoreIds(targetItem, sourceItem);
+            }
+          }
+        });
+      } else if (sourceVal && typeof sourceVal === 'object' && targetVal && typeof targetVal === 'object') {
+        this.deepRestoreIds(targetVal, sourceVal);
+      }
+    }
+  }
+
+  /**
+   * Helper to find a match for a UID in another revision's array.
+   * Useful for borrowing instanceId/metaId when one revision has deeper data than the other.
+   */
+  private findNestedMatch(uid: string, otherRev: any, path: string): any {
+    if (!uid || !otherRev || !otherRev[path] || !Array.isArray(otherRev[path])) return null;
+    return otherRev[path].find((item: any) => item && item.uid === uid && item.instanceId && item.metaId);
   }
 
 }

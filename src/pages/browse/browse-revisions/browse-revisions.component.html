@@ -51,20 +51,25 @@
 
                 <!-- COMPLEX FIELDS (Distributions, Webservices, Documentation) -->
                 <ng-container *ngSwitchCase="'distribution'">
-                  <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: distCard }"></ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="cardLoop; context: { field: field, template: distCard }"></ng-container>
                 </ng-container>
                 <ng-container *ngSwitchCase="'webservice'">
-                   <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: wsCard }"></ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="cardLoop; context: { field: field, template: wsCard }"></ng-container>
                 </ng-container>
                 <ng-container *ngSwitchCase="'documentation'">
-                   <ng-container *ngTemplateOutlet="cardLoop; context: { field: field, template: docCard }"></ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="cardLoop; context: { field: field, template: docCard }"></ng-container>
                 </ng-container>
 
                 <!-- GENERIC FIELDS (Text/Simple) -->
                 <ng-container *ngSwitchDefault>
                   <ng-container *ngIf="field.status === 'modified'">
-                    <div class="friendly-diff-value old-value" [innerHTML]="field.oldHtml || formatFriendlyValue(field.oldValue)"></div>
-                    <div class="friendly-diff-value new-value" [innerHTML]="field.newHtml || formatFriendlyValue(field.newValue)"></div>
+                    <div class="friendly-diff-value old-value"
+                      [innerHTML]="field.oldHtml || formatFriendlyValue(field.oldValue)"></div>
+                    <div class="friendly-diff-value new-value"
+                      [innerHTML]="field.newHtml || formatFriendlyValue(field.newValue)"></div>
                   </ng-container>
                   <ng-container *ngIf="field.status === 'added'">
                     <div class="friendly-diff-value new-value" [innerHTML]="formatFriendlyValue(field.newValue)"></div>
@@ -73,7 +78,8 @@
                     <div class="friendly-diff-value old-value" [innerHTML]="formatFriendlyValue(field.oldValue)"></div>
                   </ng-container>
                   <ng-container *ngIf="field.status === 'unchanged'">
-                    <div class="friendly-diff-value unchanged-value" [innerHTML]="formatFriendlyValue(field.oldValue)"></div>
+                    <div class="friendly-diff-value unchanged-value" [innerHTML]="formatFriendlyValue(field.oldValue)">
+                    </div>
                   </ng-container>
                 </ng-container>
 
@@ -95,12 +101,14 @@
   <ng-container *ngIf="field.status === 'modified'">
     <div class="friendly-diff-value old-value">
       <div *ngFor="let item of toArray(field.oldValue)" class="card-wrapper">
-        <ng-container *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.newValue), side: 'old' }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.newValue), side: 'old' }"></ng-container>
       </div>
     </div>
     <div class="friendly-diff-value new-value">
       <div *ngFor="let item of toArray(field.newValue)" class="card-wrapper">
-        <ng-container *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.oldValue), side: 'new' }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="template; context: { item: item, other: findMatch(item, field.oldValue), side: 'new' }"></ng-container>
       </div>
     </div>
   </ng-container>
@@ -160,7 +168,7 @@
 
     <div class="dist-section-spacer"></div>
     <div class="dist-section-title">DATA ACCESS</div>
-    
+
     <div *ngIf="item?.downloadURL" class="dist-access-badge badge-download">DOWNLOADABLE FILE</div>
     <div *ngIf="item?.downloadURL" class="dist-field">
       <span class="dist-field-label">URL:</span>
@@ -171,15 +179,19 @@
       <div class="dist-access-badge badge-webservice">WEBSERVICE</div>
       <div *ngFor="let acc of item.accessService; let i = index" class="dist-sub-item">
         <div *ngIf="i > 0" class="dist-inner-sep"></div>
-        <div class="dist-sub-item-title" [innerHTML]="getDiff(acc.name || acc.uid, findMatch(acc, other?.accessService)?.name || findMatch(acc, other?.accessService)?.uid, side)"></div>
-        <div *ngIf="acc.description" class="dist-field">
-          <span class="dist-field-value" [innerHTML]="getDiff(acc.description, findMatch(acc, other?.accessService)?.description, side)"></span>
+        <div class="dist-sub-item-title"
+          [innerHTML]="getDiff(acc.name || acc.uid, findMatch(acc, other?.accessService)?.name || findMatch(acc, other?.accessService)?.uid, side)">
         </div>
-        
+        <div *ngIf="acc.description" class="dist-field">
+          <span class="dist-field-value"
+            [innerHTML]="getDiff(acc.description, findMatch(acc, other?.accessService)?.description, side)"></span>
+        </div>
+
         <div *ngIf="acc.documentation?.length > 0">
           <div class="dist-sub-label">DOCUMENTATION</div>
           <div *ngFor="let doc of acc.documentation; let j = index" class="dist-list-item">
-            <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, findMatch(acc, other?.accessService)?.documentation), side: side, parentId: acc.instanceId }"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, findMatch(acc, other?.accessService)?.documentation), side: side, parentId: acc.instanceId }"></ng-container>
           </div>
         </div>
       </div>
@@ -190,7 +202,8 @@
       <div class="dist-section-spacer"></div>
       <div class="dist-section-title">DOCUMENTATION</div>
       <div *ngFor="let doc of item.documentation; let i = index" class="dist-list-item">
-        <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
       </div>
     </div>
   </div>
@@ -221,7 +234,8 @@
       <div class="dist-section-spacer"></div>
       <div class="dist-section-title">DOCUMENTATION</div>
       <div *ngFor="let doc of item.documentation; let i = index" class="dist-list-item">
-        <ng-container *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="docCard; context: { item: doc, other: findMatch(doc, other?.documentation), side: side, parentId: item.instanceId }"></ng-container>
       </div>
     </div>
   </div>
@@ -230,15 +244,16 @@
 <!-- DOCUMENTATION MINI-CARD TEMPLATE -->
 <ng-template #docCard let-item="item" let-other="other" let-side="side" let-parentId="parentId">
   <div class="doc-detail">
-    <div class="doc-title">
-      <a [href]="item.instanceId && parentId ? API_BASE + '/documentation/' + parentId + '/' + item.instanceId : item.uri || '#'"
-         target="_blank" class="doc-link"
-         [innerHTML]="getDiff(item?.title || item?.uid, other?.title || other?.uid, side)"></a>
+    <div class="doc-description">
+      <span class="label">TITLE: </span>
+      <span [innerHTML]="getDiff(item?.title || item?.uid, other?.title || other?.uid, side)"></span>
     </div>
-    <div *ngIf="item?.description" class="doc-description"
-         [innerHTML]="getDiff(item?.description, other?.description, side)"></div>
+    <div *ngIf="item?.description" class="doc-description">
+      <span class="label">DESCRIPTION: </span>
+      <span [innerHTML]="getDiff(item?.description, other?.description, side)"></span>
+    </div>
     <div *ngIf="item.uri" class="doc-uri">
-      <span class="label">URI:</span> 
+      <span class="label">URI:</span>
       <span [innerHTML]="getDiff(item.uri, other?.uri, side)"></span>
     </div>
   </div>

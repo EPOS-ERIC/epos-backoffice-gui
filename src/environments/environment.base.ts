@@ -1,18 +1,34 @@
 import { LogLevel } from 'src/utility/enums/log.enum';
 
-const BACKOFFICE_HOME_PATH = '/backoffice/home';
 const API_PATH = '/api/v1';
+const BACKOFFICE_SUFFIX = '/backoffice/';
 
-const resolveApiBaseUrl = (): string => {
-  if (window.location.href.includes(BACKOFFICE_HOME_PATH)) {
-    return window.location.href.replace(BACKOFFICE_HOME_PATH, '') + API_PATH;
+const normalizePath = (path: string): string => {
+  const withLeadingSlash = path.startsWith('/') ? path : `/${path}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+};
+
+const removeBackofficeSuffix = (path: string): string => {
+  const normalizedPath = normalizePath(path);
+
+  if (!normalizedPath.endsWith(BACKOFFICE_SUFFIX)) {
+    return normalizedPath;
   }
 
-  return window.location.href + API_PATH;
+  const pathWithoutSuffix = normalizedPath.slice(0, -BACKOFFICE_SUFFIX.length);
+  return pathWithoutSuffix === '' ? '/' : pathWithoutSuffix;
+};
+
+const resolveApiBaseUrl = (): string => {
+  const baseUrl = new URL(document.baseURI);
+  const pathWithoutBackoffice = removeBackofficeSuffix(baseUrl.pathname);
+  const apiPath = API_PATH.startsWith('/') ? API_PATH.slice(1) : API_PATH;
+
+  return new URL(apiPath, `${baseUrl.origin}${pathWithoutBackoffice}`).toString().replace(/\/$/, '');
 };
 
 export const environmentBase = {
-  apiBaseUrl: "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1",
+  apiBaseUrl: resolveApiBaseUrl(),
   authClientId: 'eposICS',
   authRootUrl: 'https://aaai.epos-eu.org',
   authScope: ['openid', 'profile', 'single-logout'].join(' '),

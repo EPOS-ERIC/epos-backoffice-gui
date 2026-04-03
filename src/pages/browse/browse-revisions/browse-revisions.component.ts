@@ -369,7 +369,7 @@ export class BrowseRevisionsComponent implements OnInit {
     if (v == null || v === '') return '-';
     if (Array.isArray(v)) {
       if (v.length === 0) return '-';
-      return v.map((item) => this.formatSingleValue(item)).join('\n\n');
+      return v.map((item) => this.formatSingleValue(item)).join('\n');
     }
     return this.formatSingleValue(v);
   }
@@ -464,7 +464,15 @@ export class BrowseRevisionsComponent implements OnInit {
 
     if (detailedParts.length > 0) return detailedParts.join(' — ');
 
-    // 6. Last fallback: UID or Name as string
+    // 6. Mapping paramValue / internal name-value objects
+    if (obj['value'] !== undefined || obj['name'] !== undefined || obj['label'] !== undefined) {
+      const name = obj['name'] || obj['label'] || '';
+      const val = obj['value'] || '';
+      if (name && val) return `${name}: ${val}`;
+      if (name || val) return String(name || val);
+    }
+
+    // 7. Last fallback: UID or Name as string
     if ('name' in obj && typeof obj['name'] === 'string') return obj['name'];
     return JSON.stringify(obj);
   }
@@ -615,6 +623,7 @@ export class BrowseRevisionsComponent implements OnInit {
             JSON.stringify(this.revisions),
           );
           this.visualDiff = this.getVisualDiff();
+          console.warn('HYDRATED DATA:', this.revisions);
           this.loading = false;
         });
       } else {
@@ -630,6 +639,7 @@ export class BrowseRevisionsComponent implements OnInit {
               this._mapResponse(this.revisions);
               this.fetchRelatedEntities().then(() => {
                 this.visualDiff = this.getVisualDiff();
+                console.warn('HYDRATED DATA:', this.revisions);
                 this.loading = false;
               });
             }
@@ -785,6 +795,62 @@ export class BrowseRevisionsComponent implements OnInit {
                 .then(async (res: any) => {
                   if (res && res.length > 0) {
                     Object.assign(item, res[0]);
+
+                    // Hydrate dataProduct contact points
+                    if (item.dataProduct && Array.isArray(item.dataProduct)) {
+                      const dpPromises = item.dataProduct.map(async (dp: any) => {
+                        if (dp.instanceId && dp.metaId) {
+                          try {
+                            const dpRes = await this.apiService.endpoints.DataProduct.get.call({
+                              instanceId: dp.instanceId,
+                              metaId: dp.metaId,
+                            });
+                            if (dpRes && dpRes.length > 0) {
+                              const dpFull = dpRes[0];
+                              if (dpFull.contactPoint && Array.isArray(dpFull.contactPoint)) {
+                                const cpPromises = dpFull.contactPoint.map(async (cp: any) => {
+                                  if (cp.instanceId && cp.metaId && !cp.email && !cp.telephone && !cp.role) {
+                                    const cpRes = await this.apiService.endpoints.ContactPoint.get.call({
+                                      instanceId: cp.instanceId,
+                                      metaId: cp.metaId,
+                                    });
+                                    if (cpRes && cpRes.length > 0) Object.assign(cp, cpRes[0]);
+                                  }
+                                });
+                                await Promise.all(cpPromises);
+                                dp.contactPoint = dpFull.contactPoint;
+                              }
+                            }
+                          } catch (e) {
+                            console.warn('Failed to fetch data product for distribution contact points', e);
+                          }
+                        }
+                      });
+                      await Promise.all(dpPromises);
+                    }
+
+                    // Hydrate mapped parameters
+                    if (item.mapping) {
+                      const mappings = Array.isArray(item.mapping) ? item.mapping : [item.mapping];
+                      console.warn('Found mapping to hydrate for distribution:', item.instanceId, mappings);
+                      const mapPromises = mappings.map(async (mapItem: any) => {
+                        if (mapItem.instanceId && mapItem.metaId && !mapItem.variable) {
+                          try {
+                            const mapRes = await this.apiService.endpoints.Mapping.get.call({
+                              instanceId: mapItem.instanceId,
+                              metaId: mapItem.metaId,
+                            });
+                            if (mapRes && mapRes.length > 0) {
+                              console.warn('Hydrated mapping item:', mapItem.instanceId, mapRes[0]);
+                              Object.assign(mapItem, mapRes[0]);
+                            }
+                          } catch (e) {
+                            console.warn('Failed to fetch mapping', e);
+                          }
+                        }
+                      });
+                      await Promise.all(mapPromises);
+                    }
                     // 2. Normalize accessService to array and fetch the webservice details
                     const accList = Array.isArray(item.accessService)
                       ? item.accessService
@@ -798,7 +864,107 @@ export class BrowseRevisionsComponent implements OnInit {
                             metaId: acc.metaId,
                           });
                           if (wsRes && wsRes.length > 0) {
-                            hydratedAcc.push(wsRes[0]);
+                            const ws = wsRes[0];
+                            if (ws.documentation && Array.isArray(ws.documentation)) {
+                              const docPromises = ws.documentation.map((docItem: any) => {
+                                if (docItem.instanceId && docItem.metaId && !docItem.title && !docItem.uri && !docItem.name) {
+                                  return this.apiService.endpoints.Documentation.get.call({
+                                    instanceId: docItem.instanceId,
+                                    metaId: docItem.metaId,
+                                  }).then((docRes: any) => {
+                                    if (docRes && docRes.length > 0) {
+                                      Object.assign(docItem, docRes[0]);
+                                    }
+                                  }).catch((e: any) => console.warn('Failed to fetch ws documentation', e));
+                                }
+                                return Promise.resolve();
+                              });
+                              await Promise.all(docPromises);
+                            }
+                            if (ws.spatialExtent && Array.isArray(ws.spatialExtent)) {
+                              for (const item of ws.spatialExtent) {
+                                if (item.instanceId && item.metaId && !(item as any).location && !(item as any).coordinates) {
+                                  promises.push(
+                                    this.apiService.endpoints.Location.get
+                                      .call({ instanceId: item.instanceId, metaId: item.metaId })
+                                      .then((res: any) => {
+                                        if (res && res.length > 0) Object.assign(item, res[0]);
+                                      })
+                                      .catch((e: any) => console.warn('Failed to fetch ws spatial location', e)),
+                                  );
+                                }
+                              }
+                            }
+                            if (ws.temporalExtent && Array.isArray(ws.temporalExtent)) {
+                              for (const item of ws.temporalExtent) {
+                                if (item.instanceId && item.metaId && !(item as any).startDate && !(item as any).endDate) {
+                                  promises.push(
+                                    this.apiService.endpoints.PeriodOfTime.get
+                                      .call({ singleOptionOnly: true, instanceId: item.instanceId, metaId: item.metaId } as any)
+                                      .then((res: any) => {
+                                        if (res && res.length > 0) Object.assign(item, res[0]);
+                                      })
+                                      .catch((e: any) => console.warn('Failed to fetch ws temporal period', e)),
+                                  );
+                                }
+                              }
+                            }
+                            if (ws.supportedOperation && Array.isArray(ws.supportedOperation)) {
+                              console.warn('Found operations to hydrate for ws:', ws.instanceId, ws.supportedOperation);
+                              const opPromises = ws.supportedOperation.map(async (opItem: any) => {
+                                // 1. Hydrate operation if needed
+                                if (opItem.instanceId && opItem.metaId && !(opItem as any).template) {
+                                  try {
+                                    const opRes = await this.apiService.endpoints.Operation.get.call({
+                                      instanceId: opItem.instanceId,
+                                      metaId: opItem.metaId,
+                                    });
+                                    if (opRes && opRes.length > 0) {
+                                      console.warn('Hydrated operation:', opItem.instanceId, opRes[0]);
+                                      Object.assign(opItem, opRes[0]);
+                                    }
+                                  } catch (e) {
+                                    console.warn('Failed to fetch ws operation', e);
+                                  }
+                                }
+                                
+                                // 2. Hydrate operation mapping if present
+                                if (opItem.mapping) {
+                                  const opMappings = Array.isArray(opItem.mapping) ? opItem.mapping : [opItem.mapping];
+                                  const mapPromises = opMappings.map(async (mapItem: any) => {
+                                    if (mapItem.instanceId && mapItem.metaId && !mapItem.variable) {
+                                      try {
+                                        const mapRes = await this.apiService.endpoints.Mapping.get.call({
+                                          instanceId: mapItem.instanceId,
+                                          metaId: mapItem.metaId,
+                                        });
+                                        if (mapRes && mapRes.length > 0) {
+                                          Object.assign(mapItem, mapRes[0]);
+                                        }
+                                      } catch (e) {
+                                        console.warn('Failed to fetch operation mapping', e);
+                                      }
+                                    }
+                                  });
+                                  await Promise.all(mapPromises);
+                                }
+                              });
+                              await Promise.all(opPromises);
+                            }
+                            if (ws.provider) {
+                              const providers = Array.isArray(ws.provider) ? ws.provider : [ws.provider];
+                              providers.forEach((p: any) => {
+                                if (p.entityType === 'ORGANIZATION' && (!p.legalName || p.legalName.length === 0)) {
+                                  const found = allOrgs.find(
+                                    (org) => org.uid === p.uid || (org.instanceId === p.instanceId && org.metaId === p.metaId),
+                                  );
+                                  if (found) {
+                                    Object.assign(p, found);
+                                  }
+                                }
+                              });
+                            }
+                            hydratedAcc.push(ws);
                           } else {
                             hydratedAcc.push(acc);
                           }

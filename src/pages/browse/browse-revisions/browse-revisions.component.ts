@@ -734,6 +734,23 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
         }
       }
 
+      if (revision.groups && Array.isArray(revision.groups)) {
+        revision.groups.forEach((groupId: any, index: number) => {
+          if (typeof groupId === 'string') {
+            promises.push(
+              this.apiService.endpoints.Group.get
+                .call({ instanceId: groupId })
+                .then((res: any) => {
+                  if (res && res.length > 0) {
+                    revision.groups[index] = res[0];
+                  }
+                })
+                .catch((e: any) => console.warn('Failed to fetch group', e)),
+            );
+          }
+        });
+      }
+
       if (revision.identifier && Array.isArray(revision.identifier)) {
         for (const item of revision.identifier) {
           if (item.instanceId && item.metaId && !(item as any).identifier) {

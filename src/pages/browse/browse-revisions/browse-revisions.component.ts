@@ -207,6 +207,8 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
   public error = false;
   public referrerId = '';
   public noDifferences = false;
+  /** Tracks the active distribution card index per field-side, keyed by 'fieldLabel-side' */
+  public distCarouselIndex: Record<string, number> = {};
   private destroy$ = new Subject<void>();
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -387,6 +389,7 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
 
   public formatFriendlyValue(v: unknown): string {
     if (v == null || v === '') return '-';
+    if (typeof v === 'boolean') return v ? 'true' : 'false';
     if (Array.isArray(v)) {
       if (v.length === 0) return '-';
       const results = v.map((item) => this.formatSingleValue(item)).filter((s) => s !== '');
@@ -394,6 +397,38 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
     }
     const val = this.formatSingleValue(v);
     return val === '' ? '-' : val;
+  }
+
+  /** Like formatFriendlyValue but joins array items with ', ' instead of newlines */
+  public formatInlineValue(v: unknown): string {
+    if (v == null || v === '') return '-';
+    if (typeof v === 'boolean') return v ? 'true' : 'false';
+    if (Array.isArray(v)) {
+      if (v.length === 0) return '-';
+      const results = v.map((item) => this.formatSingleValue(item)).filter((s) => s !== '');
+      return results.length > 0 ? results.join(', ') : '-';
+    }
+    const val = this.formatSingleValue(v);
+    return val === '' ? '-' : val;
+  }
+
+  /** Get carousel key for distribution field */
+  public getDistKey(label: string, side: string): string {
+    return `${label}-${side}`;
+  }
+
+  /** Get or initialise the active distribution index */
+  public getDistIndex(key: string): number {
+    return this.distCarouselIndex[key] || 0;
+  }
+
+  /** Navigate distribution carousel */
+  public setDistIndex(key: string, delta: number, total: number): void {
+    const current = this.getDistIndex(key);
+    let next = current + delta;
+    if (next < 0) next = total - 1;
+    if (next >= total) next = 0;
+    this.distCarouselIndex[key] = next;
   }
 
   /**
@@ -665,7 +700,13 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
     const s1 = (side === 'old') ? this.formatFriendlyValue(v1) : this.formatFriendlyValue(v2);
     const s2 = (side === 'old') ? this.formatFriendlyValue(v2) : this.formatFriendlyValue(v1);
 
-    if (s1 === s2) return [{ type: 'same', text: s1 }];
+    // Treat 'false' and '-' (missing) as equivalent — only true↔false is a real diff
+    const norm = (s: string) => (s === 'false' || s === '-') ? '-' : s;
+    if (s1 === s2 || norm(s1) === norm(s2)) {
+      // Show the actual value from the current side (not the normalized one)
+      const display = (side === 'old') ? s1 : s2;
+      return [{ type: 'same', text: display }];
+    }
     const { oldChunks, newChunks } = this.computeWordDiff(s1, s2);
     return side === 'old' ? oldChunks : newChunks;
   }

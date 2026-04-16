@@ -438,7 +438,8 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
     }
 
     // 3. Identifiers: show type + identifier string
-    if ('type' in obj && 'identifier' in obj) {
+    // Check that identifier is not a complex object (like an array on an Organization)
+    if ('type' in obj && 'identifier' in obj && typeof obj['identifier'] !== 'object' && !('legalName' in obj) && !('givenName' in obj)) {
       const typeStr = obj['type'] || 'Empty';
       const idStr = obj['identifier'] || 'Empty';
       return `${typeStr}: ${idStr}`;

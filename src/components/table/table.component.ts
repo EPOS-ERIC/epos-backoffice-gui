@@ -141,19 +141,19 @@ export class TableComponent implements AfterViewInit {
       .subscribe((user) => {
         // Check if user has any active groups (groups with a role assigned)
         const activeGroups = user?.groups?.filter((g) => !!g.role) || [];
-        
+
         if (activeGroups.length === 0) {
           this.dataSource = new MatTableDataSource<TableDetail>([]);
           this.loading = false;
           this.dialogService
             .openConfirmationDialog(
-          "You're not a member of a group. Please ensure you are a member of a group. Proceed to Groups page?"
-        )
-        .then((accepted: boolean) => {
-          if (accepted) {
-            this.router.navigate(['groups']);
-          }
-        });
+              "You're not a member of a group. Please ensure you are a member of a group. Proceed to Groups page?"
+            )
+            .then((accepted: boolean) => {
+              if (accepted) {
+                this.router.navigate(['groups']);
+              }
+            });
           return;
         }
 

@@ -66,8 +66,6 @@ export class CategoriesEntityDetailsComponent implements OnInit {
 
   public disabled = false;
 
-  public disableSchemeSelect = false;
-
   private resolveEntityTypeFromInput(): Entity | null {
     if (!this.activeEntity) {
       return null;
@@ -129,7 +127,6 @@ export class CategoriesEntityDetailsComponent implements OnInit {
               return category.uid === value.uid;
             });
           });
-          this.selectedCategories.length > 0 ? (this.disableSchemeSelect = true) : (this.disableSchemeSelect = false);
 
           this.unfilteredCategories = response;
           if (this.selectedCategories.length > 0) {
@@ -264,7 +261,6 @@ export class CategoriesEntityDetailsComponent implements OnInit {
   }
 
   public notifyChange(): void {
-    this.selectedCategories.length > 0 ? (this.disableSchemeSelect = true) : (this.disableSchemeSelect = false);
     this.snackbarService.openSnackbar(`Please save.`, 'close', SnackbarType.WARNING, 3000, [
       'snackbar',
       'mat-toolbar',

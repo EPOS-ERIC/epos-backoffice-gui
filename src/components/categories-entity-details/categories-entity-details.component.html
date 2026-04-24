@@ -8,7 +8,6 @@
       [(ngModel)]="selectedCategoryScheme"
       formControlName="categoryScheme"
       (selectionChange)="updateCategories(unfilteredCategories)"
-      [disabled]="disableSchemeSelect"
     >
       <mat-option
         *ngFor="let scheme of categorySchemes | orderBy : { property: 'name', direction: 1 }"

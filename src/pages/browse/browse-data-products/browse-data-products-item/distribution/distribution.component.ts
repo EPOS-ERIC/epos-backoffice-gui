@@ -168,43 +168,35 @@ export class DistributionComponent implements OnInit {
   }
 
   public handleSave(index: number): void {
-    const changeComment = this.distributionDetails[index].changeComment
-      ? this.distributionDetails[index].changeComment!
-      : '';
 
     const activeDistForm = this.form.get('distributions')?.value[index] as Distribution & {
       dataAccess: 'download' | 'webservice';
     };
 
-    this.dialogService.handleUpdateChangeComment(changeComment).then((data: DialogData) => {
-      if (data.dataOut != null) {
-        const changeComment = data.dataOut;
-        const activeDistribution = this.distributionDetails[index];
-        if (null != activeDistribution) {
-          const dataAccess = activeDistForm.dataAccess as 'download' | 'webservice';
+    const activeDistribution = this.distributionDetails[index];
+    if (null != activeDistribution) {
+      const dataAccess = activeDistForm.dataAccess as 'download' | 'webservice';
 
-          if (dataAccess === 'download') {
-            activeDistribution.type = DistributionComponent.DISTRIBUTION_TYPE.DOWNLOAD;
-            activeDistribution.accessService = [];
-          } else {
-            activeDistribution.type = DistributionComponent.DISTRIBUTION_TYPE.WEBSERVICE;
-            activeDistribution.downloadURL = [];
-            activeDistribution.accessService = activeDistribution.accessService ?? [];
-          }
-
-          activeDistribution.changeComment = changeComment;
-          activeDistribution.title = this.helpersService.formatArrayVal(activeDistForm.title);
-          activeDistribution.description = this.helpersService.formatArrayVal(activeDistForm.description);
-          activeDistribution.licence = activeDistForm.licence;
-          this.entityExecutionService.setActiveDistribution(activeDistribution);
-          this.entityExecutionService.handleDistributionSave().then((success: boolean) => {
-            if (success && activeDistribution.accessService && activeDistribution.accessService.length > 0) {
-              this.entityExecutionService.handleWebserviceSave();
-            }
-          });
-        }
+      if (dataAccess === 'download') {
+        activeDistribution.type = DistributionComponent.DISTRIBUTION_TYPE.DOWNLOAD;
+        activeDistribution.accessService = [];
+      } else {
+        activeDistribution.type = DistributionComponent.DISTRIBUTION_TYPE.WEBSERVICE;
+        activeDistribution.downloadURL = [];
+        activeDistribution.accessService = activeDistribution.accessService ?? [];
       }
-    });
+
+      activeDistribution.title = this.helpersService.formatArrayVal(activeDistForm.title);
+      activeDistribution.description = this.helpersService.formatArrayVal(activeDistForm.description);
+      activeDistribution.licence = activeDistForm.licence;
+      this.entityExecutionService.setActiveDistribution(activeDistribution);
+      this.entityExecutionService.handleDistributionSave()
+      .then((success: boolean) => {
+        if (success && activeDistribution.accessService && activeDistribution.accessService.length > 0) {
+          this.entityExecutionService.handleWebserviceSave();
+        }
+      });
+    }
   }
 
   public handleDelete(index: number): void {

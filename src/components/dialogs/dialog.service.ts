@@ -15,7 +15,6 @@ import { DialogWebserviceAddOperationComponent } from './dialog-webservice-add-o
 import { DialogAddNewParameterComponent } from './dialog-add-new-parameter/dialog-add-new-parameter.component';
 import { DialogConfirmComponent, ConfirmationDataIn } from './dialog-confirm/dialog-confirm.component';
 import { LoadingService } from 'src/services/loading.service';
-import { DialogChangeCommentComponent } from './dialog-change-comment/dialog-change-comment.component';
 import { DialogSpatialCoverageHelpComponent } from './dialog-spatial-coverage-help/dialog-spatial-coverage-help.component';
 import { LinkedEntity, User, Operation, Group } from 'generated/backofficeSchemas';
 import { DialogUserStatusComponent } from './dialog-user-status/dialog-user-status.component';
@@ -224,17 +223,6 @@ export class DialogService extends BaseDialogService {
       });
     });
     return promise;
-  }
-
-  public handleUpdateChangeComment(changeComment: string): Promise<DialogData> {
-    return this.openDialog(
-      'changeCommentDialog',
-      DialogChangeCommentComponent,
-      false,
-      changeComment,
-      {},
-      'user-permissions',
-    );
   }
 
   public openUpdateStatusDialog(currentStatus: string): Promise<DialogData<string, string | undefined>> {

@@ -3,6 +3,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { ApiService } from 'src/apiAndObjects/api/api.service';
 import { Entity } from 'src/utility/enums/entity.enum';
 import { TableDetail } from 'src/utility/objects/table/detail';
@@ -11,11 +12,14 @@ import { FilterEmit } from '../table-filter/table-filter.component';
 import { CUSTOM_DATE_FORMAT } from 'src/utility/config/date';
 import moment from 'moment';
 import { Status } from 'src/utility/enums/status.enum';
+import { ActiveUserService } from 'src/services/activeUser.service';
 import { DataProductDetailDataSource } from 'src/apiAndObjects/objects/data-source/dataProductDetailDataSource';
 import { DistributionDetailDataSource } from 'src/apiAndObjects/objects/data-source/distributionDetailDataSource';
 import { SoftwareDetailDataSource } from 'src/apiAndObjects/objects/data-source/softwareDetailDataSource';
 import { SourceCodeDetailDataSource } from 'src/apiAndObjects/objects/data-source/sourceCodeDetailDataSource';
 import { SnackbarService, SnackbarType } from 'src/services/snackbar.service';
+import { DialogService } from 'src/components/dialogs/dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table',
@@ -37,7 +41,13 @@ export class TableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private apiService: ApiService, private readonly snackbarService: SnackbarService) {}
+  constructor(
+    private apiService: ApiService,
+    private readonly snackbarService: SnackbarService,
+    private readonly activeUserService: ActiveUserService,
+    private readonly dialogService: DialogService,
+    private readonly router: Router
+  ) { }
 
   private mapTableDetails(items: TableItems): TableDetail[] {
     return items.map((item: TableItem) => ({
@@ -123,22 +133,47 @@ export class TableComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.loading = true;
-    this.apiService.endpoints[this.sectionName].getAll
-      .call()
-      .then((tableItems) => {
-        this.resolveEditorIdsToEditorFullName(tableItems as TableItems).then(() => {
-          this.createTableObjects(tableItems as TableItems);
-        });
-      })
-      .catch(() => {
-        this.snackbarService.openSnackbar(
-          `Failed to load data, please try again later.`,
-          'close',
-          SnackbarType.ERROR,
-          6000,
-          ['snackbar', 'mat-toolbar', 'snackbar-error'],
-        );
+    this.activeUserService.activeUserInfoObservable
+      .pipe(
+        filter((user) => user !== null),
+        take(1)
+      )
+      .subscribe((user) => {
+        // Check if user has any active groups (groups with a role assigned)
+        const activeGroups = user?.groups?.filter((g) => !!g.role) || [];
+
+        if (activeGroups.length === 0) {
+          this.dataSource = new MatTableDataSource<TableDetail>([]);
+          this.loading = false;
+          this.dialogService
+            .openConfirmationDialog(
+              "You're not a member of a group. Please ensure you are a member of a group. Proceed to Groups page?"
+            )
+            .then((accepted: boolean) => {
+              if (accepted) {
+                this.router.navigate(['groups']);
+              }
+            });
+          return;
+        }
+
+        this.loading = true;
+        this.apiService.endpoints[this.sectionName].getAll
+          .call()
+          .then((tableItems) => {
+            this.resolveEditorIdsToEditorFullName(tableItems as TableItems).then(() => {
+              this.createTableObjects(tableItems as TableItems);
+            });
+          })
+          .catch(() => {
+            this.snackbarService.openSnackbar(
+              `Failed to load data, please try again later.`,
+              'close',
+              SnackbarType.ERROR,
+              6000,
+              ['snackbar', 'mat-toolbar', 'snackbar-error'],
+            );
+          });
       });
   }
 

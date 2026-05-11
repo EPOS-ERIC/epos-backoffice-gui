@@ -15,7 +15,6 @@ import { DialogDataproductAddDistributionComponent } from './dialog-dataproduct-
 import { DialogDataproductAddWebserviceComponent } from './dialog-dataproduct-add-webservice/dialog-dataproduct-add-webservice.component';
 import { FormatRangePipe } from 'src/pipes/formatRange.pipe';
 import { DialogNewEntityComponent } from './dialog-new-entity/dialog-new-entity.component';
-import { DialogChangeCommentComponent } from './dialog-change-comment/dialog-change-comment.component';
 import { DialogSpatialCoverageHelpComponent } from './dialog-spatial-coverage-help/dialog-spatial-coverage-help.component';
 import { DialogSelectGroupComponent } from './dialog-select-group/dialog-select-group.component';
 import { DialogUserStatusComponent } from './dialog-user-status/dialog-user-status.component';
@@ -36,7 +35,6 @@ import { DialogNewCategorySchemeComponent } from './dialog-new-category-scheme/d
     DialogDataproductAddWebserviceComponent,
     FormatRangePipe,
     DialogNewEntityComponent,
-    DialogChangeCommentComponent,
     DialogSpatialCoverageHelpComponent,
     DialogSelectGroupComponent,
     DialogUserStatusComponent,

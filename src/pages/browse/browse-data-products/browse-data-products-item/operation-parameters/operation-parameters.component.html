@@ -1,4 +1,18 @@
 <ng-container *ngIf="!loading">
+  <div class="">
+    <button
+      type="button"
+      class="action"
+      mat-raised-button
+      color="primary"
+      [disabled]="disabled"
+      (click)="handleSave()"
+      *ngIf="mapping.length > 0"
+    >
+      Save Operation
+    </button>
+    <p style="color: red;">Please, be reminded to click on "Save Distribution" button at the bottom of the page before saving Operation.</p>
+  </div>
   <form
     [formGroup]="paramsForm"
     *ngIf="paramsForm && mapping"
@@ -89,20 +103,6 @@
     </mat-accordion>
   </form>
   <div class="button-wrapper">
-    <div>
-      <button
-        type="button"
-        class="action"
-        mat-raised-button
-        color="primary"
-        [disabled]="disabled"
-        (click)="handleSave()"
-        *ngIf="mapping.length > 0"
-      >
-        Save Operation
-      </button>
-      <p style="color: red;">Please, be reminded to click on "Save Distribution" button below before saving Operation.</p>
-    </div>
     <button
       type="button"
       id="param"

@@ -91,6 +91,17 @@
   <div class="button-wrapper">
     <div>
       <button
+      type="button"
+      id="param"
+      mat-stroked-button
+      color="primary"
+      [disabled]="disabled"
+      (click)="handleAddParam()"
+      *ngIf="supportedOperations && supportedOperations.length > 0"
+      >
+        Add Parameter
+      </button>
+      <button
         type="button"
         class="action"
         mat-raised-button
@@ -103,17 +114,6 @@
       </button>
       <p style="color: red;">Please, be reminded to click on "Save Distribution" button at the bottom of the page before saving Operation.</p>
     </div>
-    <button
-      type="button"
-      id="param"
-      mat-stroked-button
-      color="primary"
-      [disabled]="disabled"
-      (click)="handleAddParam()"
-      *ngIf="supportedOperations && supportedOperations.length > 0"
-    >
-      Add Parameter
-    </button>
   </div>
 </ng-container>
 <ng-container *ngIf="loading">

@@ -199,20 +199,20 @@ export class SupportedOperationComponent implements OnInit {
 
   public supportedOperationSearch(event: any): void {
     void event;
-    // const value = event.target.value;
-    // if (value.length > 1) {
-    //   const supportedOperation = this.webservice?.supportedOperation ?? [];
-    //   const foundIndex = supportedOperation.findIndex((operation) =>
-    //     operation.uid?.toUpperCase().includes(value.toUpperCase()),
-    //   );
-    //   if (foundIndex > -1) {
-    //     this.supportedOperationFocusFirstRow = true;
-    //     supportedOperation.push(...supportedOperation.splice(0, foundIndex));
-    //   } else {
-    //     this.supportedOperationFocusFirstRow = false;
-    //   }
-    // } else {
-    //   this.supportedOperationFocusFirstRow = false;
-    // }
+     /* const value = event.target.value;
+     if (value.length > 1) {
+       const supportedOperation = this.webservice?.supportedOperation ?? [];
+       const foundIndex = supportedOperation.findIndex((operation) =>
+         operation.uid?.toUpperCase().includes(value.toUpperCase()),
+       );
+       if (foundIndex > -1) {
+         this.supportedOperationFocusFirstRow = true;
+         supportedOperation.push(...supportedOperation.splice(0, foundIndex));
+       } else {
+         this.supportedOperationFocusFirstRow = false;
+       }
+     } else {
+       this.supportedOperationFocusFirstRow = false;
+     } */
   }
 }

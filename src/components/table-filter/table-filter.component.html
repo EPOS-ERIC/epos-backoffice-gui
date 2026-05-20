@@ -36,8 +36,30 @@
           [value]="filters.title"
         />
       </mat-form-field>
+      <ng-container *ngIf="userCanAtLeastEdit()">
+        <mat-form-field
+          appearance="fill"
+          color="primary"
+        >
+          <mat-label>Author</mat-label>
+          <mat-select
+            (selectionChange)="handleFilterByAuthor($event)"
+            [(ngModel)]="selectedAuthorOption"
+            panelClass="table-filter-panel"
+          >
+            <mat-option
+              *ngFor="let author of authorOptions"
+              [value]="author.option"
+            >
+              {{ author.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
 
-      <mat-form-field
+      <!-- Commenting out the SaveComment search as for now we do not have in plan to use it, but might turn in useful in the future -->
+      <!-- -------------------- -->
+      <!-- <mat-form-field
         appearance="fill"
         color="primary"
       >
@@ -47,7 +69,7 @@
           (input)="handleCommentSearch($event)"
           [value]="filters.changeComment"
         />
-      </mat-form-field>
+      </mat-form-field> -->
     </div>
 
     <button

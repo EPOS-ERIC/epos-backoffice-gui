@@ -81,7 +81,8 @@ export class TableComponent implements AfterViewInit {
     const formatStr = (str: string) => str?.trim().toLocaleLowerCase();
     return (
       formatStr(data.status as string).indexOf(formatStr(filters.status)) >= 0 &&
-      formatStr(titleValue)?.indexOf(formatStr(filters.title)) >= 0
+      formatStr(titleValue)?.indexOf(formatStr(filters.title)) >= 0 && 
+      formatStr(data.author as string)?.indexOf(formatStr(filters.author)) >= 0
     );
   }
 

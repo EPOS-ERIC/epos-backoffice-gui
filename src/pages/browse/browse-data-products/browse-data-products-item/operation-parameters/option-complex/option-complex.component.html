@@ -1,6 +1,27 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form">
     <ng-container *ngIf="id !== 'boolean'">
+      <!-- Variable === 'format' -->
+      <ng-container *ngIf="form.get('variable')?.value.toLowerCase() === 'format' ">
+        <mat-form-field
+          appearance="fill"
+          [style.width.%]="50"
+        >
+          <mat-label>Semantic Tag</mat-label>
+          <mat-select
+            matNativeControl
+            name="property"
+            formControlName="property"
+          >
+            <mat-option
+              *ngFor="let encodFormatSemTag of encodingFormatSemanticTag"
+              [value]="encodFormatSemTag"
+            >
+              {{ encodFormatSemTag }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
       <mat-radio-group
         aria-label="Allowed values"
         formControlName="allowedValues"

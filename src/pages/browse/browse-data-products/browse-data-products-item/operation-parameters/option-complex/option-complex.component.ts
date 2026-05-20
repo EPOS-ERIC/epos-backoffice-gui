@@ -1,13 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActiveToggle } from '../toggle.interface';
+import { EncodingFormatSemanticTag } from 'src/utility/enums/encodingFormatsemanticTag.enum';
+
 
 @Component({
   selector: 'app-option-complex',
   templateUrl: './option-complex.component.html',
   styleUrl: './option-complex.component.scss',
 })
-export class OptionComplexComponent {
+export class OptionComplexComponent{
   @Input() id: string = '';
 
   @Input() form!: UntypedFormGroup;
@@ -15,6 +17,8 @@ export class OptionComplexComponent {
   @Input() disableAddNewValue!: boolean;
 
   private readonly clickedIndex!: number;
+
+  public encodingFormatSemanticTag = Object.values(EncodingFormatSemanticTag);
 
   public activeToggles: ActiveToggle[] = [];
 

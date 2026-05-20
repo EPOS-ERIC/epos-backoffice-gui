@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActiveToggle } from '../toggle.interface';
+
 import { EncodingFormatSemanticTag } from 'src/utility/enums/encodingFormatsemanticTag.enum';
 
 

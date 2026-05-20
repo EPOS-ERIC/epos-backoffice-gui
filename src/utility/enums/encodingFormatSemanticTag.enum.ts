@@ -1,4 +1,4 @@
 export enum EncodingFormatSemanticTag {
-  EMPTY = 'EMPTY',
+  EMPTY = '',
   ENCODING_FORMAT = 'schema:encodingFormat',
 }

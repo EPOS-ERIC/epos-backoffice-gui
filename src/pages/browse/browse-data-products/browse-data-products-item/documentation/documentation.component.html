@@ -1,8 +1,5 @@
 <ng-container *ngIf="form">
   <ng-container [formGroup]="form">
-    <p class="documentation-note">
-      ℹ️ This information will not be displayed on the platform.
-    </p>
     <mat-tab-group [mat-stretch-tabs]="false" [animationDuration]="0" class="documentation">
       <div formArrayName="documentations">
         <ng-container *ngFor="let child of getControls('documentations'); let i = index" [formGroupName]="i">
@@ -12,11 +9,19 @@
                 <mat-label>Title</mat-label>
                 <input matInput formControlName="title" placeholder="title" />
               </mat-form-field>
+              <p class="form-note">
+                <mat-icon inline>info_outline</mat-icon>
+                The information above will not be displayed on the platform.
+              </p>
               <mat-form-field appearance="fill">
                 <mat-label>Description</mat-label>
                 <textarea matInput name="description" [ngStyle]="{ 'line-height': '1.4' }"
                   formControlName="description"></textarea>
               </mat-form-field>
+              <p class="form-note">
+                <mat-icon inline>info_outline</mat-icon>
+                The information above will not be displayed on the platform.
+              </p>
               <mat-form-field appearance="fill">
                 <mat-label>URI</mat-label>
                 <input matInput formControlName="uri" placeholder="Documentation URI" />

@@ -5,6 +5,7 @@ import { ActionsService } from 'src/services/actions.service';
 import { FilterItem } from 'src/shared/interfaces/form.interface';
 import { Status } from 'src/utility/enums/status.enum';
 import { ActiveUserService } from 'src/services/activeUser.service';
+import { GroupEnum } from 'src/shared/enums/group.enum';
 
 const TITLE_KEY = 'titleSearchText';
 // All SaveComment code in this file has been commented out since it's not in use at the moment, but might turn in useful in the future
@@ -27,6 +28,8 @@ export class TableFilterComponent {
 
   @Input() sectionName!: string;
   @Input() editorIdsMapping!: Map<string, string>;
+  // the list of groups the user belongs to
+  @Input() groupFilterOptions!: Array<string>;
 
   @Output() onFilter: EventEmitter<FilterEmit> = new EventEmitter();
   @Output() onSubmit: EventEmitter<null> = new EventEmitter();
@@ -69,12 +72,18 @@ export class TableFilterComponent {
     },
   ];
   public selectedAuthorOption = 'all';
+  
+  public selectedGroupOption = GroupEnum.ALL;
+
+  public filteredGroupOptions: FilterItem[] = [];
+
   public filters = {
     status: '',
     title: '',
     /* changeComment: '', */
     // Empty author filter means no filtering ("all")
     author: '',
+    group: '',
   };
 
   public handleFilterByStatus(event: MatSelectChange): void {
@@ -99,6 +108,31 @@ export class TableFilterComponent {
     }
   }
 
+  public handleFilterByGroup(event: MatSelectChange): void {
+    this.selectedGroupOption = event.value;
+
+    switch (event.value) {
+      case GroupEnum.SEISOMOLOGY:
+      case GroupEnum.NEAR_FAULT_OBSERVATORIES:
+      case GroupEnum.GNSS_DATA_AND_PRODUCTS:
+      case GroupEnum.VOLCANO_OBSERVATIONS:
+      case GroupEnum.SATELLITE_DATA:
+      case GroupEnum.GEOMAGNETIC_OBSERVATIONS:
+      case GroupEnum.ANTHROPOGENIC_HAZARDS:
+      case GroupEnum.GEOLOGICAL_INFORMATION_AND_MODELING:
+      case GroupEnum.MULTI_SCALE_LABORATORIES:
+      case GroupEnum.TSUNAMI:
+        this.filters.group = event.value;
+        break;
+      case GroupEnum.ALL:
+        this.filters.group = '';
+        break;
+      default:
+        break;
+    }
+
+  }
+
   public handleTitleSearch(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.filters.title = target.value;
@@ -116,7 +150,9 @@ export class TableFilterComponent {
     this.filters.title = '';
     /* this.filters.changeComment = ''; */
     this.filters.author = '';
+    this.filters.group = '';
     this.selectedAuthorOption = 'all';
+    this.selectedGroupOption = GroupEnum.ALL;
     this.onClear.emit();
   }
 

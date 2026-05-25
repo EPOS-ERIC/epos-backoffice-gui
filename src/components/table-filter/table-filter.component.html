@@ -56,6 +56,24 @@
           </mat-select>
         </mat-form-field>
       </ng-container>
+      <mat-form-field
+        appearance="fill"
+        color="primary"
+      >
+        <mat-label>TCS Group</mat-label>
+        <mat-select
+          (selectionChange)="handleFilterByGroup($event)"
+          [(ngModel)]="selectedGroupOption"
+          panelClass="table-filter-panel"
+        >
+          <mat-option
+            *ngFor="let group of groupFilterOptions"
+            [value]="group"
+          >
+            {{ group }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
       <!-- Commenting out the SaveComment search as for now we do not have in plan to use it, but might turn in useful in the future -->
       <!-- -------------------- -->

@@ -12,4 +12,5 @@ export interface TableDetail {
   metaId: string;
   versionInfo?: string;
   dataProduct?: LinkedEntity;
+  group?: string;
 }

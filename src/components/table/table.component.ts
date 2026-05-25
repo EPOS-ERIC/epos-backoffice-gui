@@ -20,6 +20,7 @@ import { SourceCodeDetailDataSource } from 'src/apiAndObjects/objects/data-sourc
 import { SnackbarService, SnackbarType } from 'src/services/snackbar.service';
 import { DialogService } from 'src/components/dialogs/dialog.service';
 import { Router } from '@angular/router';
+import { Group, UserGroup } from 'generated/backofficeSchemas';
 
 @Component({
   selector: 'app-table',
@@ -37,6 +38,9 @@ export class TableComponent implements AfterViewInit {
   public loading = false;
 
   public editorIdsMapping: Map<string, string> = new Map<string, string>();
+  public groupIdsMapping: Map<string, string> = new Map<string, string>();
+
+  public groupFilterOptions: string[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -53,6 +57,9 @@ export class TableComponent implements AfterViewInit {
     return items.map((item: TableItem) => ({
       uid: item.uid,
       title: this.checkTitleOrName(item),
+      group: this.groupIdsMapping.has(item.groups?.[0] as string)
+      ? this.groupIdsMapping.get(item.groups?.[0] as string)
+      : item.groups?.[0],
       lastChange: moment(item.changeTimestamp).format(CUSTOM_DATE_FORMAT.display.dateInput),
       status: item.status as Status,
       changeComment: item.changeComment,
@@ -82,7 +89,8 @@ export class TableComponent implements AfterViewInit {
     return (
       formatStr(data.status as string).indexOf(formatStr(filters.status)) >= 0 &&
       formatStr(titleValue)?.indexOf(formatStr(filters.title)) >= 0 && 
-      formatStr(data.author as string)?.indexOf(formatStr(filters.author)) >= 0
+      formatStr(data.author as string)?.indexOf(formatStr(filters.author)) >= 0 &&
+      formatStr(data.group as string)?.indexOf(formatStr(filters.group)) >= 0
     );
   }
 
@@ -118,6 +126,36 @@ export class TableComponent implements AfterViewInit {
     });
 
     return Promise.all(requests).then(() => undefined);
+  }
+  
+  private resolveGroupIdsToGroupFullName(items: Array<UserGroup>): Promise<void> {
+    const groupIdsCleaned : string[] = [];
+    // push actual groupIds into new Array containing only that information (stripped from 'role' property)
+    items.forEach(userGroup => {
+      groupIdsCleaned.push(userGroup.groupId as string);
+    })
+    const groupIds = groupIdsCleaned;
+
+    const requests = groupIds.map((groupId: string) => {
+      const groupIdent = {instanceId: groupId};
+      return this.apiService.endpoints.Group.get
+        .call(groupIdent)
+        .then((groupInfo: Group[]) => {
+          // there's only one item in this Array, so accessing 0 index directly
+          const groupName = groupInfo[0]?.name ?? '';
+
+          if (groupName !== '') {
+            this.groupIdsMapping.set(groupId, groupName);
+            // push into Filter Options Array to be passed to child
+            this.groupFilterOptions.push(groupName);
+          }
+        })
+        .catch(() => {
+          console.warn("Couldn't resolve groupId to Group Name.");
+        });
+    });
+
+    return Promise.all(requests).then(() =>{ undefined; });
   }
 
   private createTableObjects(items: TableItems) {
@@ -163,7 +201,9 @@ export class TableComponent implements AfterViewInit {
           .call()
           .then((tableItems) => {
             this.resolveEditorIdsToEditorFullName(tableItems as TableItems).then(() => {
-              this.createTableObjects(tableItems as TableItems);
+              this.resolveGroupIdsToGroupFullName(activeGroups as Array<UserGroup>).then(() => {
+                this.createTableObjects(tableItems as TableItems);
+              });
             });
           })
           .catch(() => {

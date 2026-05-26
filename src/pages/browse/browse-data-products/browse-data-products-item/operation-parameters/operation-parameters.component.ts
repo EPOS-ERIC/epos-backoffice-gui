@@ -45,7 +45,13 @@ export class OperationParametersComponent implements OnInit {
     private readonly activeUserService: ActiveUserService,
   ) {
     this.stateChangeService.currentDataProductStateObs.subscribe((state: DataProduct['status'] | null) => {
-      if (state == null || (state === Status.SUBMITTED && !this.userHasEditPermissionsForSubmitted()) || state === Status.PUBLISHED || state === Status.ARCHIVED || state === Status.DISCARDED) {
+      if (
+        state == null ||
+        (state === Status.SUBMITTED && !this.userHasEditPermissionsForSubmitted()) ||
+        state === Status.PUBLISHED ||
+        state === Status.ARCHIVED ||
+        state === Status.DISCARDED
+      ) {
         this.disabled = true;
       } else {
         this.disabled = false;
@@ -65,33 +71,33 @@ export class OperationParametersComponent implements OnInit {
 
   public disabled = false;
 
-  public userHasEditPermissionsForSubmitted(): boolean{
+  public expandedPanelInstanceId: string | null = null;
+
+  public userHasEditPermissionsForSubmitted(): boolean {
     // check for User Role - if user not an ADMIN or REVIEWER can see the SUBMITTED, but can't edit them
     const dataProduct = this.entityExecutionService.getActiveDataProductValue();
     const activeUser = this.activeUserService.getActiveUser();
-    if(activeUser){
+    if (activeUser) {
       const activeUserGroups = activeUser.groups;
-      if(activeUserGroups){
+      if (activeUserGroups) {
         // find group in UserGroups matching with current active loaded Entity
-        const groupMatch = activeUserGroups.find(group => group.groupId === dataProduct?.groups?.find(entityGroup => entityGroup === group.groupId));
-        if(groupMatch){
+        const groupMatch = activeUserGroups.find(
+          (group) => group.groupId === dataProduct?.groups?.find((entityGroup) => entityGroup === group.groupId),
+        );
+        if (groupMatch) {
           const userRole = groupMatch.role;
-          if(userRole && (userRole === 'ADMIN' || userRole === 'REVIEWER')){
+          if (userRole && (userRole === 'ADMIN' || userRole === 'REVIEWER')) {
             return true;
-          }
-          else{
+          } else {
             return false;
           }
-        }
-        else{
+        } else {
           return false;
         }
-      }
-      else{
+      } else {
         return false;
       }
-    }
-    else{
+    } else {
       return false;
     }
   }
@@ -213,6 +219,7 @@ export class OperationParametersComponent implements OnInit {
       const newString = `${groupParamsOnTemplate[0]}, ${mapping.variable}`;
       const template = this.templateInput;
       this.template.next(template.replace(groupParamsOnTemplate[0], newString));
+      this;
     }
   }
 
@@ -257,6 +264,7 @@ export class OperationParametersComponent implements OnInit {
             this.mapping.push(newParam);
             this.addMappingOnTemplate(newParam);
             this.initForm(this.mapping);
+            this.expandedPanelInstanceId = newParam.instanceId ?? null;
           });
       }
     });

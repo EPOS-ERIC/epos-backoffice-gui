@@ -1,8 +1,14 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form">
     <ng-container *ngIf="id !== 'boolean'">
-      <!-- Variable === 'format' -->
-      <ng-container *ngIf="form.get('variable')?.value.toLowerCase() === 'format' ">
+      <ng-container>
+        <mat-checkbox (change)="toggleSemanticTagSection($event)">
+          <span class="checkbox-label">Show Semantic Tag</span>
+          <mat-icon matTooltip="If this parameter is the 'Output Format' parameter, check the box and select option." class="info-icon">info</mat-icon>
+        </mat-checkbox>
+      </ng-container>
+      <!-- Semantic Tag section -->
+      <ng-container *ngIf="showSemanticTag ">
         <mat-form-field
           appearance="fill"
           [style.width.%]="50"

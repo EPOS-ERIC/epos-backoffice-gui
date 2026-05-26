@@ -3,6 +3,35 @@
     [formGroup]="form"
     class="integer-form"
   >
+
+    <ng-container>
+      <mat-checkbox (change)="toggleSemanticTagSection($event)">
+        <span class="checkbox-label">Show Semantic Tag</span>
+        <mat-icon matTooltip="If this parameter is a 'Coordinate' parameter, check the box and select option between available." class="info-icon">info</mat-icon>
+      </mat-checkbox>
+    </ng-container>
+    <ng-container *ngIf="showSemanticTag">
+      <mat-form-field
+        appearance="fill"
+        [style.width.%]="50"
+      >
+        <mat-label>Semantic Tag</mat-label>
+        <mat-select
+          matNativeControl
+          name="property"
+          formControlName="property"
+          [(ngModel)]="defaultSemanticTag"
+        >
+          <mat-option
+            *ngFor="let coordSemTag of coordinateSemanticTagsOptions"
+            [value]="coordSemTag"
+          >
+            {{ coordSemTag }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>    
+
     <mat-radio-group
       aria-label="Allowed values"
       formControlName="allowedValues"

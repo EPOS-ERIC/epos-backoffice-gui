@@ -3,6 +3,7 @@ import { FormArray, FormControl, UntypedFormGroup, Validators } from '@angular/f
 import { ActiveToggle } from '../toggle.interface';
 
 import { EncodingFormatSemanticTag } from 'src/utility/enums/encodingFormatSemanticTag.enum';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-option-complex',
@@ -21,6 +22,8 @@ export class OptionComplexComponent {
   public encodingFormatSemanticTag = Object.values(EncodingFormatSemanticTag);
 
   public activeToggles: ActiveToggle[] = [];
+
+  public showSemanticTag = false;
 
   public getControls(field: string) {
     return (this.form.get(field) as FormArray).controls;
@@ -48,6 +51,15 @@ export class OptionComplexComponent {
       return defaultValue === values.at(index).value;
     }
     return false;
+  }
+
+  public toggleSemanticTagSection(event: MatCheckboxChange) {
+    if(event.checked){
+      this.showSemanticTag = true;
+    }
+    else{
+      this.showSemanticTag = false;
+    }
   }
 
   // public disableSelect(index: number): boolean {

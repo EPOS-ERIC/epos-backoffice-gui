@@ -9,6 +9,12 @@
         <mat-expansion-panel
           *ngFor="let control of getControls('mapping'); let i = index"
           [formGroupName]="i"
+          [expanded]="expandedPanelInstanceId === control.value.instanceId"
+          (opened)="expandedPanelInstanceId = control.value.instanceId"
+          (closed)="
+            expandedPanelInstanceId =
+              expandedPanelInstanceId === control.value.instanceId ? null : expandedPanelInstanceId
+          "
         >
           <mat-expansion-panel-header>
             <mat-panel-title>{{ control.value.variable }}</mat-panel-title>
@@ -91,13 +97,13 @@
   <div class="button-wrapper">
     <div>
       <button
-      type="button"
-      id="param"
-      mat-stroked-button
-      color="primary"
-      [disabled]="disabled"
-      (click)="handleAddParam()"
-      *ngIf="supportedOperations && supportedOperations.length > 0"
+        type="button"
+        id="param"
+        mat-stroked-button
+        color="primary"
+        [disabled]="disabled"
+        (click)="handleAddParam()"
+        *ngIf="supportedOperations && supportedOperations.length > 0"
       >
         Add Parameter
       </button>
@@ -112,7 +118,9 @@
       >
         Save Operation
       </button>
-      <p style="color: red;">Please, be reminded to click on "Save Distribution" button at the bottom of the page before saving Operation.</p>
+      <p style="color: red">
+        Please, be reminded to click on "Save Distribution" button at the bottom of the page before saving Operation.
+      </p>
     </div>
   </div>
 </ng-container>

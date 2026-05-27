@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PersistorService, StorageType } from 'src/services/persistor.service';
 import { StorageKey } from 'src/utility/enums/storageKey.enum';
 import { create as createDiffPatcher } from 'jsondiffpatch';
@@ -188,11 +188,9 @@ export interface DiffChunk {
   selector: 'app-browse-revisions',
   templateUrl: './browse-revisions.component.html',
   styleUrls: ['./browse-revisions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BrowseRevisionsComponent implements OnInit, OnDestroy {
   constructor(
-    private cdr: ChangeDetectorRef,
     private helpersService: HelpersService,
     private persistorService: PersistorService,
     private route: ActivatedRoute,

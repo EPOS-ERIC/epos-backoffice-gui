@@ -14,7 +14,6 @@ export class OptionFloatComponent {
 
   // the four coordinates and empty option to be displayed in the dropdown
   public coordinateSemanticTagsOptions = [ '', ...Object.values(CoordinateType)];
-  public defaultSemanticTag = '';
 
   public handleAddNewValue(): void {
     const values = this.form.get('paramValue') as FormArray;

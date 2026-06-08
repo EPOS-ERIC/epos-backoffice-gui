@@ -58,9 +58,10 @@ export class TableComponent implements AfterViewInit {
       uid: item.uid,
       title: this.checkTitleOrName(item),
       group: this.groupIdsMapping.has(item.groups?.[0] as string)
-      ? this.groupIdsMapping.get(item.groups?.[0] as string)
-      : item.groups?.[0],
+        ? this.groupIdsMapping.get(item.groups?.[0] as string)
+        : item.groups?.[0],
       lastChange: moment(item.changeTimestamp).format(CUSTOM_DATE_FORMAT.display.dateInput),
+      changeTimestamp: item.changeTimestamp as string,
       status: item.status as Status,
       changeComment: item.changeComment,
       author: this.editorIdsMapping.has(item.editorId as string)
@@ -88,7 +89,7 @@ export class TableComponent implements AfterViewInit {
     const formatStr = (str: string) => str?.trim().toLocaleLowerCase();
     return (
       formatStr(data.status as string).indexOf(formatStr(filters.status)) >= 0 &&
-      formatStr(titleValue)?.indexOf(formatStr(filters.title)) >= 0 && 
+      formatStr(titleValue)?.indexOf(formatStr(filters.title)) >= 0 &&
       formatStr(data.author as string)?.indexOf(formatStr(filters.author)) >= 0 &&
       formatStr(data.group as string)?.indexOf(formatStr(filters.group)) >= 0
     );
@@ -127,9 +128,9 @@ export class TableComponent implements AfterViewInit {
 
     return Promise.all(requests).then(() => undefined);
   }
-  
+
   private resolveGroupIdsToGroupFullName(items: Array<UserGroup>): Promise<void> {
-    const groupIdsCleaned : string[] = [];
+    const groupIdsCleaned: string[] = [];
     // push actual groupIds into new Array containing only that information (stripped from 'role' property)
     items.forEach(userGroup => {
       groupIdsCleaned.push(userGroup.groupId as string);
@@ -137,7 +138,7 @@ export class TableComponent implements AfterViewInit {
     const groupIds = groupIdsCleaned;
 
     const requests = groupIds.map((groupId: string) => {
-      const groupIdent = {instanceId: groupId};
+      const groupIdent = { instanceId: groupId };
       return this.apiService.endpoints.Group.get
         .call(groupIdent)
         .then((groupInfo: Group[]) => {
@@ -155,7 +156,7 @@ export class TableComponent implements AfterViewInit {
         });
     });
 
-    return Promise.all(requests).then(() =>{ undefined; });
+    return Promise.all(requests).then(() => { undefined; });
   }
 
   private createTableObjects(items: TableItems) {
@@ -168,6 +169,24 @@ export class TableComponent implements AfterViewInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.dataSource.filterPredicate = this.filterDataSource;
+
+    // Sort by real date value instead of the formatted display string.
+    this.dataSource.sortingDataAccessor = (row: TableDetail, column: string) => {
+      if (column === 'lastChange') {
+        return row.changeTimestamp ? new Date(row.changeTimestamp).getTime() : 0;
+      }
+      const value = (row as unknown as Record<string, unknown>)[column];
+      return typeof value === 'string' ? value.toLowerCase() : (value as number ?? 0);
+    };
+
+    // latest changes first
+    if (this.sort) {
+      this.sort.active = 'lastChange';
+      this.sort.direction = 'desc';
+      this.sort._stateChanges.next();
+      this.dataSource.sort = this.sort;
+    }
+
     this.loading = false;
   }
 

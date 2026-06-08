@@ -3,14 +3,8 @@
     [formGroup]="form"
     class="integer-form"
   >
-
+    <!-- Semantic Tag -->
     <ng-container>
-      <mat-checkbox (change)="toggleSemanticTagSection($event)">
-        <span class="checkbox-label">Show Semantic Tag</span>
-        <mat-icon matTooltip="If this parameter is a 'Coordinate' parameter, check the box and select option between available." class="info-icon">info</mat-icon>
-      </mat-checkbox>
-    </ng-container>
-    <ng-container *ngIf="showSemanticTag">
       <mat-form-field
         appearance="fill"
         [style.width.%]="50"
@@ -29,6 +23,9 @@
             {{ coordSemTag }}
           </mat-option>
         </mat-select>
+        <mat-hint>
+          If this parameter is a 'Coordinate' parameter, check the box and select an option.
+        </mat-hint>
       </mat-form-field>
     </ng-container>    
 

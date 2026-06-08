@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { CoordinateType } from 'src/utility/enums/coordinateType.enum';
 
 @Component({
@@ -12,7 +11,6 @@ export class OptionFloatComponent {
   @Input() form!: UntypedFormGroup;
   @Input() disableAddNewValue!: boolean;
 
-  public showSemanticTag = false;
 
   // the four coordinates and empty option to be displayed in the dropdown
   public coordinateSemanticTagsOptions = [ '', ...Object.values(CoordinateType)];
@@ -46,12 +44,4 @@ export class OptionFloatComponent {
     return (this.form.get(field) as FormArray).controls;
   }
 
-  public toggleSemanticTagSection(event: MatCheckboxChange) {
-    if(event.checked){
-      this.showSemanticTag = true;
-    }
-    else{
-      this.showSemanticTag = false;
-    }
-  }
 }

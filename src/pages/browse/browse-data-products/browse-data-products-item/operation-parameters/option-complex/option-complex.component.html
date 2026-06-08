@@ -12,6 +12,7 @@
             matNativeControl
             name="property"
             formControlName="property"
+            [value]="form.get('property')?.value || ''"
           >
             <mat-option
               *ngFor="let encodFormatSemTag of encodingFormatSemanticTag"

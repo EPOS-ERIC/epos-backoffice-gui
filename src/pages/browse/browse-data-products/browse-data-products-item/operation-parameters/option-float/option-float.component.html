@@ -14,7 +14,7 @@
           matNativeControl
           name="property"
           formControlName="property"
-          [(ngModel)]="defaultSemanticTag"
+          [value]="form.get('property')?.value || ''"
         >
           <mat-option
             *ngFor="let coordSemTag of coordinateSemanticTagsOptions"

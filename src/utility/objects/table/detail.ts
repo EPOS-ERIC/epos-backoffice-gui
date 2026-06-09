@@ -5,7 +5,6 @@ export interface TableDetail {
   uid?: string;
   title?: string[] | string;
   lastChange?: string;
-  changeTimestamp?: string;
   status?: Status;
   changeComment?: string;
   author?: string;

@@ -128,7 +128,7 @@ export class PersistentIdentifierComponent implements OnInit {
   public handleAddIdentifier(): void {
     this.loadingService.setShowSpinner(true);
     // group to assign the new Identifier (the to which the DP belongs to)
-    const group = this.dataProduct.groups?.[0] || []; // Assuming groups Array has only 1 item
+    const group = this.dataProduct.groups?.[0] || ''; // Assuming groups Array has only 1 item
     this.apiService.endpoints.Identifier.create
       .call({groups: [group as string]})
       .then((item: Identifier) => {

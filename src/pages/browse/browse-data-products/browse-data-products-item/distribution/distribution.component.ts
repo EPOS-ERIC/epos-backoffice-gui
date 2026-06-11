@@ -224,7 +224,7 @@ export class DistributionComponent implements OnInit {
     }
   }
 
-  public handleAddDistribution(): void {
+  public handleAddDistribution(): void { 
     // groups to which assign the Distribution to
     const groups = this.dataProduct?.groups?.[0] ?? '';
     

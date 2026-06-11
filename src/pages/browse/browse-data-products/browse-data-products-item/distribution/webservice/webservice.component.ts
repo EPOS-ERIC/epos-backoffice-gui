@@ -68,6 +68,9 @@ export class DistributionWebserviceComponent extends WithSubscription implements
 
   public pluginRequestForm!: FormGroup;
 
+  // this member holds the webService groups id, passed then to the params
+  public webservGroupId = '';
+
   public readonly pluginRequestTypes: Array<{ value: string; label: string }> = [
     { value: 'create_new', label: 'Create New' },
     { value: 'update_existing', label: 'Update existing' },
@@ -98,6 +101,8 @@ export class DistributionWebserviceComponent extends WithSubscription implements
             );
             this.handleServiceProviders(this.webservice);
             this.initForm();
+            // assign value to groups member (consumed by template)
+            this.webservGroupId = this.webservice.groups?.[0] ?? '';
             let userHasEditPermissionsForSubmitted: boolean | undefined = false;
             // check for User Role - if user not an ADMIN or REVIEWER can see the SUBMITTED, but can't edit them
             const activeUser = this.activeUserService.getActiveUser();

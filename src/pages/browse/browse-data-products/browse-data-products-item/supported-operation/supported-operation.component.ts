@@ -19,6 +19,7 @@ export class SupportedOperationComponent implements OnInit {
   @Input() supportedOperations!: LinkedEntity[] | undefined;
   @Input() webservice: WebService | undefined;
   @Input() disableFeatures!: boolean;
+  @Input() groups!: string; 
 
   public mappingSrc = new Subject<Array<Mapping>>();
   public templateSrc = new Subject<string>();

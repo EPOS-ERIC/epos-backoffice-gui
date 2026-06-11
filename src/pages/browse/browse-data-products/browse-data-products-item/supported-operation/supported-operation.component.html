@@ -72,6 +72,7 @@
     <app-operation-parameters
       [supportedOperations]="supportedOperations"
       [templateInput]="this.form.get('template')?.value"
+      [groups]="groups"
       (template)="templateSrc.next($event)"
       (mappingVals)="mappingSrc.next($event)"
     ></app-operation-parameters>

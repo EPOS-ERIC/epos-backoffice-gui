@@ -96,8 +96,8 @@ export class DialogService extends BaseDialogService {
     );
   }
 
-  public openAddNewParameterDialog(): Promise<DialogData> {
-    return this.openDialog('addNewParam', DialogAddNewParameterComponent, false, null, {});
+  public openAddNewParameterDialog(groups: string[] | undefined): Promise<DialogData> {
+    return this.openDialog('addNewParam', DialogAddNewParameterComponent, false, groups, {});
   }
 
   public openSpatialCoverageHelpDialog(): Promise<DialogData> {

@@ -20,10 +20,10 @@ export class DialogAddNewParameterComponent implements OnInit {
   public duplicateName = false;
   public forbiddenName = '';
   private activeMappingArr: Array<string> = [];
-  private mapping: any = { range: '', variable: '', required: '' };
+  private mapping: any = { range: '', variable: '', required: '', groups: undefined };
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData<any>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData<string[] | undefined>,
     private readonly formBuilder: FormBuilder,
     private operationService: EntityExecutionService,
     private apiService: ApiService,
@@ -36,6 +36,8 @@ export class DialogAddNewParameterComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    // assign group
+    this.mapping.groups = this.data.dataIn;
     this.createForm();
   }
 
@@ -64,6 +66,7 @@ export class DialogAddNewParameterComponent implements OnInit {
       range: this.mapping.range,
       required: this.mapping.required,
       variable: this.mapping.variable,
+      groups: this.mapping.groups,
     };
     this.apiService.endpoints.Mapping.create.call(newParam).then((data: LinkedEntity) => {
       this.data.dataOut = data;

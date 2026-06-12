@@ -159,7 +159,6 @@ export class SupportedOperationComponent implements OnInit {
   }
 
   public handleAddOperation(): void {
-    console.warn("Hello, i'm being called");
     const webserviceEtityDetail: LinkedEntity = {
       entityType: Entity.WEBSERVICE,
       instanceId: this.webservice?.instanceId ?? '',

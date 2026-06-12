@@ -21,6 +21,7 @@ export class SupportedOperationComponent implements OnInit {
   @Input() webservice: WebService | undefined;
   @Input() distribution: Distribution | undefined;
   @Input() disableFeatures!: boolean;
+  @Input() groups!: string; 
 
   public mappingSrc = new Subject<Array<Mapping>>();
   public templateSrc = new Subject<string>();
@@ -158,14 +159,13 @@ export class SupportedOperationComponent implements OnInit {
   }
 
   public handleAddOperation(): void {
-    console.warn("Hello, i'm being called");
     const webserviceEtityDetail: LinkedEntity = {
       entityType: Entity.WEBSERVICE,
       instanceId: this.webservice?.instanceId ?? '',
       uid: this.webservice?.uid ?? '',
       metaId: this.webservice?.metaId ?? '',
     };
-    this.dialogService.handleAddWebserviceOperation(webserviceEtityDetail).then((result: Operation | unknown) => {
+    this.dialogService.handleAddWebserviceOperation(webserviceEtityDetail, [this.groups]).then((result: Operation | unknown) => {
       // put result on supportedOperation array (first position and focused)
       const newOperation = result as Operation;
       this.entityExecutionService.setActiveOperation(newOperation);
@@ -193,7 +193,13 @@ export class SupportedOperationComponent implements OnInit {
 
       }
       this.entityExecutionService.getActiveWebServiceValue();
+      // since the source is the Dist and not the Webserv anymore for SuppOper, keeping this line just in case switching back to webServ
       this.webservice?.supportedOperation?.unshift(operation);
+      
+      // update the template with added operation
+      activeDistribution?.supportedOperation?.unshift(operation);
+      // save the distribution
+      this.entityExecutionService.handleDistributionSave();
       // this.entityExecutionService.handleWebserviceSave();
       // this.supportedOperationFocusFirstRow = true;
     });

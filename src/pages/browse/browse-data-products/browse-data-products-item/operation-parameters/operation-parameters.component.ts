@@ -28,6 +28,8 @@ export class OperationParametersComponent implements OnInit {
   @Output() template = new Subject<string>();
 
   @Input() templateInput = '';
+  
+  @Input() groups: string | undefined;
 
   @Output() mappingVals = new Subject<Mapping[]>();
 
@@ -241,7 +243,10 @@ export class OperationParametersComponent implements OnInit {
   }
 
   public handleAddParam(): void {
-    this.dialogService.openAddNewParameterDialog().then((data: DialogData) => {
+    // group to assign the new Parameter to
+    const groups = this.groups ? [this.groups] : undefined;
+
+    this.dialogService.openAddNewParameterDialog(groups).then((data: DialogData) => {
       const newMapping = data.dataOut as LinkedEntity;
       if (null != newMapping) {
         const linkedEntityParam: LinkedEntity = {

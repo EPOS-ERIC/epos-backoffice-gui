@@ -224,8 +224,12 @@ export class DistributionComponent implements OnInit {
     }
   }
 
-  public handleAddDistribution(): void {
-    this.apiService.endpoints[Entity.DISTRIBUTION].create.call().then((dist: DistributionDetailDataSource) => {
+  public handleAddDistribution(): void { 
+    // groups to which assign the Distribution to
+    const groups = this.dataProduct?.groups?.[0] ?? '';
+    
+    this.apiService.endpoints[Entity.DISTRIBUTION].create.call({groups: [groups]})
+    .then((dist: DistributionDetailDataSource) => {
       this.distributionDetails.push(dist);
       this.selectedDistributionTabIndex = this.distributionDetails.length - 1;
       this.initForm();
@@ -249,7 +253,10 @@ export class DistributionComponent implements OnInit {
   }
 
   public handleAddWebservice(index: number) {
-    this.apiService.endpoints[Entity.WEBSERVICE].create.call().then((webservice: WebserviceDetailDataSource) => {
+    // the groups to which assign the webService to
+    const groups = this.dataProduct?.groups?.[0] ?? '';
+
+    this.apiService.endpoints[Entity.WEBSERVICE].create.call({groups: [groups]}).then((webservice: WebserviceDetailDataSource) => {
       const newWebserviceEntity: LinkedEntity = {
         entityType: Entity.WEBSERVICE,
         instanceId: webservice.instanceId,

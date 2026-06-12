@@ -124,8 +124,10 @@ export class PersistentIdentifierSoftAppComponent implements OnInit {
 
   public handleAddIdentifier(): void {
     this.loadingService.setShowSpinner(true);
+    // group to assign the new Identifier (the to which the SA belongs to)
+    const group = this.softwareApplication.groups?.[0] || ''; // Assuming groups Array has only 1 item
     this.apiService.endpoints.Identifier.create
-      .call()
+      .call({groups: [group as string]})
       .then((item: Identifier) => {
         this.identifiersFullObj.push(item);
         const linkedEntity: LinkedEntity = {

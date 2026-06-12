@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LinkedEntity, Mapping, Operation, WebService } from 'generated/backofficeSchemas';
+import { Distribution, LinkedEntity, Mapping, Operation, WebService } from 'generated/backofficeSchemas';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Subject, Subscription } from 'rxjs';
 import { DialogService } from 'src/components/dialogs/dialog.service';
@@ -9,6 +9,7 @@ import { EntityExecutionService } from 'src/services/calls/entity-execution.serv
 import { SnackbarService, SnackbarType } from 'src/services/snackbar.service';
 import { Entity } from 'src/utility/enums/entity.enum';
 import { OperationParamsRange } from 'src/utility/enums/operationParamsRange.enum';
+import { ApiService } from 'src/apiAndObjects/api/api.service';
 
 @Component({
   selector: 'app-supported-operation',
@@ -18,6 +19,7 @@ import { OperationParamsRange } from 'src/utility/enums/operationParamsRange.enu
 export class SupportedOperationComponent implements OnInit {
   @Input() supportedOperations!: LinkedEntity[] | undefined;
   @Input() webservice: WebService | undefined;
+  @Input() distribution: Distribution | undefined;
   @Input() disableFeatures!: boolean;
 
   public mappingSrc = new Subject<Array<Mapping>>();
@@ -31,6 +33,7 @@ export class SupportedOperationComponent implements OnInit {
     private entityExecutionService: EntityExecutionService,
     private dialogService: DialogService,
     private snackbarService: SnackbarService,
+    private apiService: ApiService,
   ) {
     this.initSubscriptions();
   }
@@ -155,6 +158,7 @@ export class SupportedOperationComponent implements OnInit {
   }
 
   public handleAddOperation(): void {
+    console.warn("Hello, i'm being called");
     const webserviceEtityDetail: LinkedEntity = {
       entityType: Entity.WEBSERVICE,
       instanceId: this.webservice?.instanceId ?? '',
@@ -173,10 +177,20 @@ export class SupportedOperationComponent implements OnInit {
       };
       // Sets 'accessURL' on Distribution to newly created Operation.
       const activeDistribution = this.entityExecutionService.getActiveDistributionValue();
-      // activeDistribution?.accessURL?.push(operation);
+
       if (activeDistribution != null) {
         this.entityExecutionService.setActiveDistribution(activeDistribution);
         // this.actionsService.showSaveDistributionMessage(true);
+        
+        // update both the activeDistribtion locally and PUT the entity
+        activeDistribution.supportedOperation = [operation];
+        this.apiService.endpoints.Distribution.update.call(activeDistribution)
+        .then(()=> { 
+        })
+        .catch(() => {
+          console.error('Failed to update Distribution.');
+        })
+
       }
       this.entityExecutionService.getActiveWebServiceValue();
       this.webservice?.supportedOperation?.unshift(operation);

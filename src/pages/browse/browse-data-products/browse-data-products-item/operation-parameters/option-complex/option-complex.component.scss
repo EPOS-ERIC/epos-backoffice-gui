@@ -1,9 +1,22 @@
 :host {
   display: block;
-  .controlled-params {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1em;
+
+  .controlled-values-table-wrap {
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+
+  .controlled-values-table {
+    width: 100%;
+  }
+
+  .value-field {
+    width: 100%;
+    min-width: 18rem;
+  }
+
+  .empty-state {
+    padding: 1rem 0.5rem;
+    text-align: center;
   }
 }

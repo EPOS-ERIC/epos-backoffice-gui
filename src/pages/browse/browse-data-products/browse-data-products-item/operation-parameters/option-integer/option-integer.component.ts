@@ -31,9 +31,23 @@ export class OptionIntegerComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private selectedDefaultSubscription: Subscription | null = null;
 
+  private filterSubscriptions = new Map<FormControl, Subscription>();
+
+  public filterText = '';
+
+  private editingControl: FormControl | null = null;
+
   @ViewChild(MatPaginator) public paginator!: MatPaginator;
 
   public ngOnInit(): void {
+    this.dataSource.filterPredicate = (row: ControlledValueRow, filter: string) => {
+      if (this.editingControl === row.control) {
+        return true;
+      }
+
+      const value = String(row.control.value ?? '').trim().toLowerCase();
+      return value.includes(filter);
+    };
     this.refreshDataSource();
     this.syncSelectedDefaultFromFormValue();
   }
@@ -44,6 +58,8 @@ export class OptionIntegerComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public ngOnDestroy(): void {
     this.selectedDefaultSubscription?.unsubscribe();
+    this.filterSubscriptions.forEach((subscription) => subscription.unsubscribe());
+    this.filterSubscriptions.clear();
   }
 
   private getParamValues(): FormArray {
@@ -56,7 +72,53 @@ export class OptionIntegerComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     const controls = this.getParamValues().controls as FormControl[];
+    controls.forEach((control: FormControl) => this.bindFilterRefresh(control));
     this.dataSource.data = controls.map((control: FormControl, index: number) => ({ index, control }));
+    this.applyFilter();
+  }
+
+  private bindFilterRefresh(control: FormControl): void {
+    if (this.filterSubscriptions.has(control)) {
+      return;
+    }
+
+    this.filterSubscriptions.set(
+      control,
+      control.valueChanges.subscribe(() => {
+        this.applyFilter();
+      }),
+    );
+  }
+
+  private unbindFilterRefresh(control: FormControl): void {
+    this.filterSubscriptions.get(control)?.unsubscribe();
+    this.filterSubscriptions.delete(control);
+  }
+
+  private applyFilter(): void {
+    this.dataSource.filter = this.filterText.trim().toLowerCase();
+  }
+
+  public startEditing(control: FormControl): void {
+    this.editingControl = control;
+    this.applyFilter();
+  }
+
+  public stopEditing(control: FormControl): void {
+    if (this.editingControl === control) {
+      this.editingControl = null;
+    }
+    this.applyFilter();
+  }
+
+  public handleFilterChange(event: Event): void {
+    this.filterText = (event.target as HTMLInputElement).value ?? '';
+    this.applyFilter();
+  }
+
+  public clearFilter(): void {
+    this.filterText = '';
+    this.applyFilter();
   }
 
   private syncSelectedDefaultFromFormValue(): void {
@@ -120,6 +182,12 @@ export class OptionIntegerComponent implements OnInit, AfterViewInit, OnDestroy 
       this.clearSelectedDefaultControl();
       this.form.get('defaultValue')?.setValue(null);
     }
+
+    if (this.editingControl === controlToRemove) {
+      this.editingControl = null;
+    }
+
+    this.unbindFilterRefresh(controlToRemove);
 
     value.removeAt(index);
     this.refreshDataSource();

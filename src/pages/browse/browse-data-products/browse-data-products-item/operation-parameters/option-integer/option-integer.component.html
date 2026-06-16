@@ -43,13 +43,34 @@
       >
         Allows multiple selection
       </mat-slide-toggle>
-      <div class="controlled-values-table-wrap">
-        <table
-          mat-table
-          [dataSource]="dataSource"
-          class="controlled-values-table"
-          [trackBy]="trackByRow"
-        >
+      <div class="controlled-values-section">
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-icon matPrefix>search</mat-icon>
+          <mat-label>Filter values</mat-label>
+          <input
+            matInput
+            placeholder="Filter values"
+            [value]="filterText"
+            (input)="handleFilterChange($event)"
+          />
+          <button
+            *ngIf="filterText"
+            type="button"
+            mat-icon-button
+            matSuffix
+            aria-label="Clear filter"
+            (click)="clearFilter()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <div class="controlled-values-table-wrap">
+          <table
+            mat-table
+            [dataSource]="dataSource"
+            class="controlled-values-table"
+            [trackBy]="trackByRow"
+          >
           <ng-container matColumnDef="value">
             <th
               mat-header-cell
@@ -61,11 +82,13 @@
               mat-cell
               *matCellDef="let row"
             >
-              <mat-form-field appearance="fill" class="value-field">
+              <mat-form-field appearance="fill" class="value-field" subscriptSizing="dynamic">
                 <input
                   matInput
                   placeholder="Value"
                   [formControl]="row.control"
+                  (focus)="startEditing(row.control)"
+                  (blur)="stopEditing(row.control)"
                 />
               </mat-form-field>
             </td>
@@ -138,13 +161,14 @@
               No values defined yet.
             </td>
           </tr>
-        </table>
+          </table>
 
-        <mat-paginator
-          [pageSize]="10"
-          [pageSizeOptions]="[10, 25, 50]"
-          showFirstLastButtons
-        ></mat-paginator>
+          <mat-paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 25, 50]"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
       </div>
       <button
         mat-raised-button

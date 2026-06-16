@@ -41,3 +41,26 @@ button {
   align-items: center;
   gap: 1em;
 }
+
+:host {
+  display: block;
+
+  .controlled-values-table-wrap {
+    margin: 1rem 0;
+    overflow-x: auto;
+  }
+
+  .controlled-values-table {
+    width: 100%;
+  }
+
+  .value-field {
+    width: 100%;
+    min-width: 18rem;
+  }
+
+  .empty-state {
+    padding: 1rem 0.5rem;
+    text-align: center;
+  }
+}

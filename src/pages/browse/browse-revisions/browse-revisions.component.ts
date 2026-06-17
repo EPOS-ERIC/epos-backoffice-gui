@@ -1187,9 +1187,12 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
                                 }
                               }
                             }
-                            if (ws.supportedOperation && Array.isArray(ws.supportedOperation)) {
-                              console.warn('Found operations to hydrate for ws:', ws.instanceId, ws.supportedOperation);
-                              const opPromises = ws.supportedOperation.map(async (opItem: any) => {
+                            // HELLO: Keep in mind that:
+                            // even though we're in WebService section, we need to read Operations from Distribution !!! (due to issue with AH and many OPS in WebServ).
+                            // Template has been adapted to this as well.
+                            if (item.supportedOperation && Array.isArray(item.supportedOperation)) {
+                              console.warn('Found operations to hydrate for item:', item.instanceId, item.supportedOperation);
+                              const opPromises = item.supportedOperation.map(async (opItem: any) => {
                                 // 1. Hydrate operation if needed
                                 if (opItem.instanceId && opItem.metaId && !(opItem as any).template) {
                                   try {
@@ -1201,7 +1204,7 @@ export class BrowseRevisionsComponent implements OnInit, OnDestroy {
                                       Object.assign(opItem, opRes[0]);
                                     }
                                   } catch (e) {
-                                    console.warn('Failed to fetch ws operation', e);
+                                    console.warn('Failed to fetch item operation', e);
                                   }
                                 }
 

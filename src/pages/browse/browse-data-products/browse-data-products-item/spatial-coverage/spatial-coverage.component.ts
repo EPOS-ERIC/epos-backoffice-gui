@@ -116,8 +116,12 @@ export class SpatialCoverageComponent implements OnInit {
   }
 
   public newSpatialCoverage() {
+    // group to assign the new Spatial Coverage (the to which the DP belongs to)
+    const group = this.dataProduct.groups?.[0] || ''; // Assuming groups Array has only 1 item
+
     const newSpatialCoverage: Location = {
       location: 'POINT(0 0)',
+      groups: [group as string],
     };
     this.apiService.endpoints.Location.create.call(newSpatialCoverage).then((newLocation) => {
       this.spatialExtents.push(newLocation);

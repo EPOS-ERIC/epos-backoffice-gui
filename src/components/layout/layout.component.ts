@@ -72,11 +72,13 @@ export class LayoutComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.entityNavigationType = 'distribution';
     }
 
-    this.router.events.subscribe((e) => {
-      if (e instanceof ActivationStart) {
-        this.outlet.deactivate();
-      }
-    });
+    this.subscriptions.push(
+      this.router.events.subscribe((e) => {
+        if (e instanceof ActivationStart) {
+          this.outlet.deactivate();
+        }
+      }),
+    );
 
     this.subscriptions.push(
       this.aaai.watchUser().subscribe((user: AAAIUser | null) => {
@@ -96,6 +98,7 @@ export class LayoutComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   public ngOnDestroy(): void {
     document.removeEventListener('click', this.onDocumentClick);
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
   public ngAfterViewChecked(): void {

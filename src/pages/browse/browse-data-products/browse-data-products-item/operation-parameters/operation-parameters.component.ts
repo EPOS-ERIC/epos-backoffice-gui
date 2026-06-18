@@ -28,6 +28,8 @@ export class OperationParametersComponent implements OnInit {
   @Output() template = new Subject<string>();
 
   @Input() templateInput = '';
+  
+  @Input() groups: string | undefined;
 
   @Output() mappingVals = new Subject<Mapping[]>();
 
@@ -177,6 +179,8 @@ export class OperationParametersComponent implements OnInit {
       if (mapping) {
         this.loading = false;
         this.mapping = mapping.flat();
+        this.paramsToUpdate = [];
+        this.entityExecutionService.setActiveMappingArr(this.paramsToUpdate);
         this.mappingVals.next(mapping.flat());
         this.initForm(this.mapping);
       }
@@ -239,7 +243,10 @@ export class OperationParametersComponent implements OnInit {
   }
 
   public handleAddParam(): void {
-    this.dialogService.openAddNewParameterDialog().then((data: DialogData) => {
+    // group to assign the new Parameter to
+    const groups = this.groups ? [this.groups] : undefined;
+
+    this.dialogService.openAddNewParameterDialog(groups).then((data: DialogData) => {
       const newMapping = data.dataOut as LinkedEntity;
       if (null != newMapping) {
         const linkedEntityParam: LinkedEntity = {
@@ -314,6 +321,10 @@ export class OperationParametersComponent implements OnInit {
             this.mapping.splice(
               this.mapping.findIndex((e) => e.instanceId === instanceId),
               1,
+            );
+            this.paramsToUpdate = this.paramsToUpdate.filter((e) => e.instanceId !== instanceId);
+            this.entityExecutionService.setActiveMappingArr(
+              this.entityExecutionService.getActiveMappingArrValue().filter((e) => e.instanceId !== instanceId),
             );
             this.initForm(this.mapping);
           }

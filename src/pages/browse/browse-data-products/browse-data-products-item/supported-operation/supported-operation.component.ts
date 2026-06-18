@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { LinkedEntity, Mapping, Operation, WebService } from 'generated/backofficeSchemas';
+import { Distribution, LinkedEntity, Mapping, Operation, WebService } from 'generated/backofficeSchemas';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Subject, Subscription } from 'rxjs';
 import { DialogService } from 'src/components/dialogs/dialog.service';
@@ -9,6 +9,7 @@ import { EntityExecutionService } from 'src/services/calls/entity-execution.serv
 import { SnackbarService, SnackbarType } from 'src/services/snackbar.service';
 import { Entity } from 'src/utility/enums/entity.enum';
 import { OperationParamsRange } from 'src/utility/enums/operationParamsRange.enum';
+import { ApiService } from 'src/apiAndObjects/api/api.service';
 
 @Component({
   selector: 'app-supported-operation',
@@ -18,7 +19,9 @@ import { OperationParamsRange } from 'src/utility/enums/operationParamsRange.enu
 export class SupportedOperationComponent implements OnInit {
   @Input() supportedOperations!: LinkedEntity[] | undefined;
   @Input() webservice: WebService | undefined;
+  @Input() distribution: Distribution | undefined;
   @Input() disableFeatures!: boolean;
+  @Input() groups!: string; 
 
   public mappingSrc = new Subject<Array<Mapping>>();
   public templateSrc = new Subject<string>();
@@ -31,6 +34,7 @@ export class SupportedOperationComponent implements OnInit {
     private entityExecutionService: EntityExecutionService,
     private dialogService: DialogService,
     private snackbarService: SnackbarService,
+    private apiService: ApiService,
   ) {
     this.initSubscriptions();
   }
@@ -103,19 +107,24 @@ export class SupportedOperationComponent implements OnInit {
     event.chipInput?.clear();
   }
 
-  private mapParams(submatch: string, paramName: string): string | null {
+  private mapParams(submatch: string, paramName: string, includeKey: boolean = true): string | null {
     const match = this.mapping.find((param: Mapping) => param.variable === paramName);
     if (match) {
       const regex = new RegExp(`${paramName}`, 'g');
       if (match.defaultValue) {
         if (match.range === OperationParamsRange.DATE_TIME) {
-          // get only the date from datetime string
           const dateStr = match.defaultValue.split('T').shift();
           if (dateStr) {
-            submatch = submatch.replace(regex, paramName + '=' + encodeURIComponent(dateStr));
+            const value = includeKey
+              ? paramName + '=' + encodeURIComponent(dateStr)
+              : encodeURIComponent(dateStr);
+            submatch = submatch.replace(regex, value);
           }
         } else {
-          submatch = submatch.replace(regex, paramName + '=' + encodeURIComponent(match.defaultValue));
+          const value = includeKey
+            ? paramName + '=' + encodeURIComponent(match.defaultValue)
+            : encodeURIComponent(match.defaultValue);
+          submatch = submatch.replace(regex, value);
         }
       } else {
         submatch = '';
@@ -132,27 +141,43 @@ export class SupportedOperationComponent implements OnInit {
     this.form.get('template')?.valueChanges.subscribe((changes: string) => this.updateTemplate(changes));
   }
 
-  public handleCreateURIPreview(): void {
-    const template = this.form.get('template')?.value;
-    const templateWhiteSpaceRemove = template.replace(/\s/g, '');
-    if (templateWhiteSpaceRemove) {
-      const templateParams = templateWhiteSpaceRemove.match(/\{(.*?)\}/);
-
-      let submatch = templateParams[1];
-      const paramsArr = submatch.replace('?', '').split(',');
-      if (paramsArr.length > 0 && this.mapping.length > 0) {
-        paramsArr.forEach((paramName: string) => {
-          const checkNullValue = this.mapParams(submatch, paramName);
-          if (checkNullValue) {
-            submatch = this.mapParams(submatch, paramName);
-          }
-        });
-        submatch = submatch.replace(/,/g, '&');
-        const finalTemplateURI = templateWhiteSpaceRemove.split('{').shift() + `${submatch}`;
-        this.form.get('preview')?.setValue(finalTemplateURI);
+    public handleCreateURIPreview(): void {
+      const template = this.form.get('template')?.value;
+      const templateWhiteSpaceRemove = template.replace(/\s/g, '');
+    
+      if (templateWhiteSpaceRemove) {
+        const templateParams = [...templateWhiteSpaceRemove.matchAll(/\{(.*?)\}/g)];
+    
+        if (templateParams.length > 0 && this.mapping.length > 0) {
+          let result = templateWhiteSpaceRemove;
+    
+          templateParams.forEach((match) => {
+            let submatch = match[1]; // e.g.: "?service,version" or "minlatitude,minlongitude"
+            const isQueryParam = submatch.startsWith('?');
+            const paramsArr = submatch.replace('?', '').split(',');
+    
+            paramsArr.forEach((paramName: string) => {
+              const checkNullValue = this.mapParams(submatch, paramName, isQueryParam);
+              if (checkNullValue) {
+                submatch = this.mapParams(submatch, paramName, isQueryParam);
+              }
+            });
+    
+            if (isQueryParam) {
+              // {?service,version} → "service=WMS&version=1.3.0"
+              submatch = submatch.replace(/,/g, '&');
+            } else {
+              // {minlatitude,minlongitude} → "val1,val2,val3"
+              submatch = submatch.replace('?', '');
+            }
+    
+            result = result.replace(match[0], submatch);
+          });
+    
+          this.form.get('preview')?.setValue(result);
+        }
       }
     }
-  }
 
   public handleAddOperation(): void {
     const webserviceEtityDetail: LinkedEntity = {
@@ -161,7 +186,7 @@ export class SupportedOperationComponent implements OnInit {
       uid: this.webservice?.uid ?? '',
       metaId: this.webservice?.metaId ?? '',
     };
-    this.dialogService.handleAddWebserviceOperation(webserviceEtityDetail).then((result: Operation | unknown) => {
+    this.dialogService.handleAddWebserviceOperation(webserviceEtityDetail, [this.groups]).then((result: Operation | unknown) => {
       // put result on supportedOperation array (first position and focused)
       const newOperation = result as Operation;
       this.entityExecutionService.setActiveOperation(newOperation);
@@ -173,13 +198,29 @@ export class SupportedOperationComponent implements OnInit {
       };
       // Sets 'accessURL' on Distribution to newly created Operation.
       const activeDistribution = this.entityExecutionService.getActiveDistributionValue();
-      // activeDistribution?.accessURL?.push(operation);
+
       if (activeDistribution != null) {
         this.entityExecutionService.setActiveDistribution(activeDistribution);
         // this.actionsService.showSaveDistributionMessage(true);
+        
+        // update both the activeDistribtion locally and PUT the entity
+        activeDistribution.supportedOperation = [operation];
+        this.apiService.endpoints.Distribution.update.call(activeDistribution)
+        .then(()=> { 
+        })
+        .catch(() => {
+          console.error('Failed to update Distribution.');
+        })
+
       }
       this.entityExecutionService.getActiveWebServiceValue();
+      // since the source is the Dist and not the Webserv anymore for SuppOper, keeping this line just in case switching back to webServ
       this.webservice?.supportedOperation?.unshift(operation);
+      
+      // update the template with added operation
+      activeDistribution?.supportedOperation?.unshift(operation);
+      // save the distribution
+      this.entityExecutionService.handleDistributionSave();
       // this.entityExecutionService.handleWebserviceSave();
       // this.supportedOperationFocusFirstRow = true;
     });

@@ -96,8 +96,8 @@ export class DialogService extends BaseDialogService {
     );
   }
 
-  public openAddNewParameterDialog(): Promise<DialogData> {
-    return this.openDialog('addNewParam', DialogAddNewParameterComponent, false, null, {});
+  public openAddNewParameterDialog(groups: string[] | undefined): Promise<DialogData> {
+    return this.openDialog('addNewParam', DialogAddNewParameterComponent, false, groups, {});
   }
 
   public openSpatialCoverageHelpDialog(): Promise<DialogData> {
@@ -188,7 +188,7 @@ export class DialogService extends BaseDialogService {
    * passed as a property to the `WebserviceAddOperationComponent` component.
    * @returns a Promise that resolves to either an Operation object or an unknown value.
    */
-  public handleAddWebserviceOperation(webserviceEntityDetail: LinkedEntity): Promise<Operation | unknown> {
+  public handleAddWebserviceOperation(webserviceEntityDetail: LinkedEntity, groups: Array<string> | undefined): Promise<Operation | unknown> {
     const promise = new Promise((resolve) => {
       this.openDialog('addWebserviceOperation', DialogWebserviceAddOperationComponent, false, {
         webservice: webserviceEntityDetail,
@@ -196,7 +196,7 @@ export class DialogService extends BaseDialogService {
         if (response.dataOut.action === 'add') {
           this.loadingService.setShowSpinner(true);
           this.apiService.endpoints.Operation.create
-            .call()
+            .call({groups: groups})
             .then((value: Operation) => {
               this.snackbarService.openSnackbar(
                 `Please click 'Save Distribution' to complete this action.`,

@@ -61,6 +61,7 @@ export class TableComponent implements AfterViewInit {
         ? this.groupIdsMapping.get(item.groups?.[0] as string)
         : item.groups?.[0],
       lastChange: moment(item.changeTimestamp).format(CUSTOM_DATE_FORMAT.display.dateInput),
+      changeTimestamp: item.changeTimestamp as string,
       status: item.status as Status,
       changeComment: item.changeComment,
       author: this.editorIdsMapping.has(item.editorId as string)
@@ -166,8 +167,25 @@ export class TableComponent implements AfterViewInit {
   private initialiseTable(details: Array<TableDetail>) {
     this.dataSource = new MatTableDataSource(details);
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
     this.dataSource.filterPredicate = this.filterDataSource;
+
+    this.dataSource.sortingDataAccessor = (row: TableDetail, column: string) => {
+      if (column === 'lastChange') {
+        return row.changeTimestamp ? new Date(row.changeTimestamp).getTime() : 0;
+      }
+      if (column === 'title') {
+        const titleValue = Array.isArray(row.title) ? row.title[0] ?? '' : row.title ?? '';
+        return titleValue.toLowerCase();
+      }
+      const value = (row as unknown as Record<string, unknown>)[column];
+      return typeof value === 'string' ? value.toLowerCase() : (value as number ?? 0);
+    };
+
+    if (!this.sort.active) {
+      this.sort.active = 'lastChange';
+      this.sort.direction = 'desc';
+    }
+    this.dataSource.sort = this.sort;
     this.loading = false;
   }
 

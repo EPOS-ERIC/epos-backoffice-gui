@@ -7,7 +7,7 @@
     <mat-select
       [(ngModel)]="selectedCategoryScheme"
       formControlName="categoryScheme"
-      (selectionChange)="updateCategories(unfilteredCategories)"
+      (selectionChange)="onCategorySchemeChange()"
     >
       <mat-option
         *ngFor="let scheme of categorySchemes | orderBy : { property: 'name', direction: 1 }"

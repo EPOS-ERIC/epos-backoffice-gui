@@ -126,12 +126,6 @@
         Create Webservice
       </button>
     </div>
-    <app-save-entity
-    entity="Distribution"
-    [disabled]="disabled"
-    (onSave)="handleSave(index ? index : 0)"
-    (onDelete)="handleDelete(index ? index : 0)"
-    ></app-save-entity>
     @if (distributionObj.accessService.length > 0) {
       <app-distribution-webservice
         [accessService]="distributionObj.accessService"
@@ -142,7 +136,12 @@
     }
   </ng-container>
 
-  
+  <app-save-entity
+    entity="Distribution"
+    [disabled]="disabled"
+    (onSave)="handleSave(index ? index : 0)"
+    (onDelete)="handleDelete(index ? index : 0)"
+  ></app-save-entity>
 
   <button
     mat-flat-button

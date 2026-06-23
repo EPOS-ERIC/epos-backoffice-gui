@@ -76,7 +76,7 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
     const redirectUri = new URL(OAuthAuthenticationProvider.REDIRECTION_PAGE.slice(1), document.baseURI).toString();
     const silentRefreshRedirectUri = new URL(
       OAuthAuthenticationProvider.SILENT_REFRESH_PAGE.slice(1),
-      document.baseURI,
+      'https://ics-c.epos-ip.org/',
     ).toString();
 
     const authConfig: AuthConfig = {

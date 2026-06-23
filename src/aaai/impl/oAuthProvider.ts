@@ -15,6 +15,7 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
   private static readonly AUTH_ISSUER = OAuthAuthenticationProvider.AUTH_ROOT + '/oauth2';
   private static readonly AUTH_REVOKE_ENDPOINT = OAuthAuthenticationProvider.AUTH_ISSUER + '/revoke';
   private static readonly REDIRECTION_PAGE = '/last-page-redirect';
+  private static readonly SILENT_REFRESH_PAGE = '/silent-token-refresh.html';
 
   private readonly http: HttpClient;
   private authInitializationPromise: null | Promise<void> = null;
@@ -73,6 +74,10 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
 
   private makeAuthConfig(): AuthConfig {
     const redirectUri = new URL(OAuthAuthenticationProvider.REDIRECTION_PAGE.slice(1), document.baseURI).toString();
+    const silentRefreshRedirectUri = new URL(
+      OAuthAuthenticationProvider.SILENT_REFRESH_PAGE.slice(1),
+      document.baseURI,
+    ).toString();
 
     const authConfig: AuthConfig = {
       // Url of the Identity Provider
@@ -80,6 +85,7 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
 
       // URL of the SPA to redirect the user to after login
       redirectUri,
+      silentRefreshRedirectUri,
 
       // The SPA's id. The SPA is registerd with this id at the auth-server
       clientId: environment.authClientId,
@@ -98,34 +104,68 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
     this.configure();
     this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
 
+    console.info('[AAAI][OAuth] init: configuring silent refresh');
+    this.oAuthService.setupAutomaticSilentRefresh();
+    console.info('[AAAI][OAuth] init: silent refresh configured');
+
+    this.oAuthService.events.subscribe((e) => {
+      switch (e.type) {
+        case 'discovery_document_loaded':
+          console.info('[AAAI][OAuth] discovery document loaded', e);
+          break;
+        case 'discovery_document_load_error':
+          console.error('[AAAI][OAuth] discovery document load error', e);
+          break;
+        case 'token_received':
+          console.info('[AAAI][OAuth] token received', e);
+          this.updateUserProfile();
+          break;
+        case 'silently_refreshed':
+          console.info('[AAAI][OAuth] silent refresh succeeded', e);
+          this.updateUserProfile();
+          break;
+        case 'silent_refresh_error':
+          console.error('[AAAI][OAuth] silent refresh failed', e);
+          break;
+        case 'silent_refresh_timeout':
+          console.warn('[AAAI][OAuth] silent refresh timed out', e);
+          break;
+        case 'token_expires':
+          console.info('[AAAI][OAuth] token expires', e);
+          break;
+        case 'token_refresh_error':
+          console.error('[AAAI][OAuth] token refresh error', e);
+          break;
+        case 'session_error':
+          console.error('[AAAI][OAuth] session error', e);
+          break;
+        case 'session_terminated':
+          console.warn('[AAAI][OAuth] session terminated', e);
+          break;
+        case 'token_revoke_error':
+          console.error('[AAAI][OAuth] token revoke error', e);
+          break;
+        case 'logout':
+          console.info('[AAAI][OAuth] logout event received', e);
+          this.userProfileSource.next(null);
+          break;
+        default:
+          break;
+      }
+    });
+
     try {
+      console.info('[AAAI][OAuth] loading discovery document and trying login');
       await this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+      console.info('[AAAI][OAuth] discovery document loaded and login checked');
     } catch (e) {
       console.error('Error loading discovery document and trying login', e);
     }
 
     if (this.oAuthService.hasValidAccessToken()) {
+      console.info('[AAAI][OAuth] valid access token present after init');
       this.updateUserProfile();
     }
-
-    this.oAuthService.events.subscribe((e) => {
-      switch (e.type) {
-        case 'discovery_document_loaded': // page refresh when logged in
-        case 'token_received': // first logged in
-          break;
-        case 'logout': // logout to clear user info
-          if (e.type === 'logout') {
-            this.userProfileSource.next(null);
-          }
-          break;
-        case 'token_expires':
-        case 'token_refresh_error':
-        case 'session_error':
-        case 'session_terminated':
-        case 'token_revoke_error':
-          break;
-      }
-    });
   }
 
   private updateUserProfile(): void {

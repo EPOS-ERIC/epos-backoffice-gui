@@ -217,16 +217,6 @@ export class OperationParametersComponent implements OnInit {
     }
   }
 
-  private addMappingOnTemplate(mapping: Mapping) {
-    const groupParamsOnTemplate = this.foundListParametersOnTemplate();
-    if (groupParamsOnTemplate.length > 0) {
-      const newString = `${groupParamsOnTemplate[0]}, ${mapping.variable}`;
-      const template = this.templateInput;
-      this.template.next(template.replace(groupParamsOnTemplate[0], newString));
-      this;
-    }
-  }
-
   public ngOnInit(): void {
     this.initData();
   }
@@ -269,7 +259,6 @@ export class OperationParametersComponent implements OnInit {
           .then((map: Array<Mapping>) => {
             const newParam = map.shift() as Mapping;
             this.mapping.push(newParam);
-            this.addMappingOnTemplate(newParam);
             this.initForm(this.mapping);
             this.expandedPanelInstanceId = newParam.instanceId ?? null;
           });

@@ -107,24 +107,19 @@ export class SupportedOperationComponent implements OnInit {
     event.chipInput?.clear();
   }
 
-  private mapParams(submatch: string, paramName: string, includeKey: boolean = true): string | null {
+  private mapParams(submatch: string, paramName: string): string | null {
     const match = this.mapping.find((param: Mapping) => param.variable === paramName);
     if (match) {
       const regex = new RegExp(`${paramName}`, 'g');
       if (match.defaultValue) {
         if (match.range === OperationParamsRange.DATE_TIME) {
+          // get only the date from datetime string
           const dateStr = match.defaultValue.split('T').shift();
           if (dateStr) {
-            const value = includeKey
-              ? paramName + '=' + encodeURIComponent(dateStr)
-              : encodeURIComponent(dateStr);
-            submatch = submatch.replace(regex, value);
+            submatch = submatch.replace(regex, paramName + '=' + encodeURIComponent(dateStr));
           }
         } else {
-          const value = includeKey
-            ? paramName + '=' + encodeURIComponent(match.defaultValue)
-            : encodeURIComponent(match.defaultValue);
-          submatch = submatch.replace(regex, value);
+          submatch = submatch.replace(regex, paramName + '=' + encodeURIComponent(match.defaultValue));
         }
       } else {
         submatch = '';
@@ -141,43 +136,27 @@ export class SupportedOperationComponent implements OnInit {
     this.form.get('template')?.valueChanges.subscribe((changes: string) => this.updateTemplate(changes));
   }
 
-    public handleCreateURIPreview(): void {
-      const template = this.form.get('template')?.value;
-      const templateWhiteSpaceRemove = template.replace(/\s/g, '');
-    
-      if (templateWhiteSpaceRemove) {
-        const templateParams = [...templateWhiteSpaceRemove.matchAll(/\{(.*?)\}/g)];
-    
-        if (templateParams.length > 0 && this.mapping.length > 0) {
-          let result = templateWhiteSpaceRemove;
-    
-          templateParams.forEach((match) => {
-            let submatch = match[1]; // e.g.: "?service,version" or "minlatitude,minlongitude"
-            const isQueryParam = submatch.startsWith('?');
-            const paramsArr = submatch.replace('?', '').split(',');
-    
-            paramsArr.forEach((paramName: string) => {
-              const checkNullValue = this.mapParams(submatch, paramName, isQueryParam);
-              if (checkNullValue) {
-                submatch = this.mapParams(submatch, paramName, isQueryParam);
-              }
-            });
-    
-            if (isQueryParam) {
-              // {?service,version} → "service=WMS&version=1.3.0"
-              submatch = submatch.replace(/,/g, '&');
-            } else {
-              // {minlatitude,minlongitude} → "val1,val2,val3"
-              submatch = submatch.replace('?', '');
-            }
-    
-            result = result.replace(match[0], submatch);
-          });
-    
-          this.form.get('preview')?.setValue(result);
-        }
+  public handleCreateURIPreview(): void {
+    const template = this.form.get('template')?.value;
+    const templateWhiteSpaceRemove = template.replace(/\s/g, '');
+    if (templateWhiteSpaceRemove) {
+      const templateParams = templateWhiteSpaceRemove.match(/\{(.*?)\}/);
+
+      let submatch = templateParams[1];
+      const paramsArr = submatch.replace('?', '').split(',');
+      if (paramsArr.length > 0 && this.mapping.length > 0) {
+        paramsArr.forEach((paramName: string) => {
+          const checkNullValue = this.mapParams(submatch, paramName);
+          if (checkNullValue) {
+            submatch = this.mapParams(submatch, paramName);
+          }
+        });
+        submatch = submatch.replace(/,/g, '&');
+        const finalTemplateURI = templateWhiteSpaceRemove.split('{').shift() + `${submatch}`;
+        this.form.get('preview')?.setValue(finalTemplateURI);
       }
     }
+  }
 
   public handleAddOperation(): void {
     const webserviceEtityDetail: LinkedEntity = {

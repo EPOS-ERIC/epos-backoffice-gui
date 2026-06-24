@@ -136,28 +136,6 @@ export class SupportedOperationComponent implements OnInit {
     this.form.get('template')?.valueChanges.subscribe((changes: string) => this.updateTemplate(changes));
   }
 
-  public handleCreateURIPreview(): void {
-    const template = this.form.get('template')?.value;
-    const templateWhiteSpaceRemove = template.replace(/\s/g, '');
-    if (templateWhiteSpaceRemove) {
-      const templateParams = templateWhiteSpaceRemove.match(/\{(.*?)\}/);
-
-      let submatch = templateParams[1];
-      const paramsArr = submatch.replace('?', '').split(',');
-      if (paramsArr.length > 0 && this.mapping.length > 0) {
-        paramsArr.forEach((paramName: string) => {
-          const checkNullValue = this.mapParams(submatch, paramName);
-          if (checkNullValue) {
-            submatch = this.mapParams(submatch, paramName);
-          }
-        });
-        submatch = submatch.replace(/,/g, '&');
-        const finalTemplateURI = templateWhiteSpaceRemove.split('{').shift() + `${submatch}`;
-        this.form.get('preview')?.setValue(finalTemplateURI);
-      }
-    }
-  }
-
   public handleAddOperation(): void {
     const webserviceEtityDetail: LinkedEntity = {
       entityType: Entity.WEBSERVICE,

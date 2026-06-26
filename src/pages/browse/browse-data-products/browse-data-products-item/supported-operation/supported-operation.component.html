@@ -45,28 +45,6 @@
         formControlName="template"
       />
     </mat-form-field>
-    <mat-form-field
-      appearance="fill"
-      [style.width.%]="100"
-    >
-      <mat-label>Preview of the URI template with default values</mat-label>
-      <input
-        matInput
-        placeholder="Preview of the URI template with default values"
-        formControlName="preview"
-        readonly
-      />
-    </mat-form-field>
-
-    <button
-      type="button"
-      mat-stroked-button
-      color="primary"
-      class="uri-preview"
-      (click)="handleCreateURIPreview()"
-    >
-      Create URI preview
-    </button>
 
     <p>Parameters</p>
     <app-operation-parameters

@@ -113,6 +113,7 @@ export class OperationParametersComponent implements OnInit {
       // if item exists in array then replace at index n
       this.paramsToUpdate[indexofExistingItem] = map;
     }
+    this.mapping = this.paramsToUpdate;
     // Update parent component with latest params to allow creation of URI template;
     this.mappingVals.next(this.paramsToUpdate);
 
@@ -178,11 +179,12 @@ export class OperationParametersComponent implements OnInit {
     this.getMappingDetails(this.operation.mapping).then((mapping: Array<Array<Mapping>>) => {
       if (mapping) {
         this.loading = false;
-        this.mapping = mapping.flat();
-        this.paramsToUpdate = [];
+        const hydratedMapping = mapping.flat();
+        this.mapping = hydratedMapping;
+        this.paramsToUpdate = hydratedMapping;
         this.entityExecutionService.setActiveMappingArr(this.paramsToUpdate);
-        this.mappingVals.next(mapping.flat());
-        this.initForm(this.mapping);
+        this.mappingVals.next(this.paramsToUpdate);
+        this.initForm(this.paramsToUpdate);
       }
     });
   }
@@ -258,8 +260,12 @@ export class OperationParametersComponent implements OnInit {
           })
           .then((map: Array<Mapping>) => {
             const newParam = map.shift() as Mapping;
-            this.mapping.push(newParam);
-            this.initForm(this.mapping);
+            const nextMapping = [...this.paramsToUpdate, newParam];
+            this.mapping = nextMapping;
+            this.paramsToUpdate = nextMapping;
+            this.entityExecutionService.setActiveMappingArr(nextMapping);
+            this.mappingVals.next(nextMapping);
+            this.initForm(nextMapping);
             this.expandedPanelInstanceId = newParam.instanceId ?? null;
           });
       }
@@ -307,15 +313,12 @@ export class OperationParametersComponent implements OnInit {
               1,
             );
             this.entityExecutionService.setActiveOperation(activeOperation);
-            this.mapping.splice(
-              this.mapping.findIndex((e) => e.instanceId === instanceId),
-              1,
-            );
-            this.paramsToUpdate = this.paramsToUpdate.filter((e) => e.instanceId !== instanceId);
-            this.entityExecutionService.setActiveMappingArr(
-              this.entityExecutionService.getActiveMappingArrValue().filter((e) => e.instanceId !== instanceId),
-            );
-            this.initForm(this.mapping);
+            const nextMapping = this.paramsToUpdate.filter((e) => e.instanceId !== instanceId);
+            this.mapping = nextMapping;
+            this.paramsToUpdate = nextMapping;
+            this.entityExecutionService.setActiveMappingArr(nextMapping);
+            this.mappingVals.next(nextMapping);
+            this.initForm(nextMapping);
           }
         }
       });

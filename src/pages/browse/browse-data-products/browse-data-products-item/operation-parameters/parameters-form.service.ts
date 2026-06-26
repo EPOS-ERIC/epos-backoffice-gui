@@ -62,9 +62,10 @@ export class ParametersFormService {
     const activeSupportedOperation = this.entityExecutionService.getActiveOperationValue();
     if (null != activeSupportedOperation) {
       const updatedMappingArray = activeSupportedOperation?.mapping?.map((item: any) =>
-        item.variable === updatedMapping.variable ? updatedMapping : item,
+        item.instanceId === updatedMapping.instanceId ? updatedMapping : item,
       );
       activeSupportedOperation.mapping = updatedMappingArray as Array<any>;
+      this.entityExecutionService.setActiveMappingArr(activeSupportedOperation.mapping as Array<any>);
 
       const nullsOrEmptyExist = (map: any) => map.label == null || map.label === '';
       this.disableOperationSave.next(activeSupportedOperation.mapping.some(nullsOrEmptyExist));

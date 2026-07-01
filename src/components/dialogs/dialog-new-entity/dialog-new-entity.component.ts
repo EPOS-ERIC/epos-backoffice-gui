@@ -30,6 +30,7 @@ export class DialogNewEntityComponent {
   // flag signalling if groups 'ALL' has been loaded (for SA and SSC)
   public groupSoftwaresLoaded: boolean = false;
   public groupsLoading: boolean = false;
+  public groupsLoadFailed: boolean = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData<null | IncomingEntityType, NewEntityDialog>,
@@ -66,6 +67,7 @@ export class DialogNewEntityComponent {
 
   private getUserRelevantGroups(userIds: Array<string>): void {
     this.groupsLoading = true;
+    this.groupsLoadFailed = false;
     this.apiService.endpoints.Group.getAll
       .call()
       .then((allGroups: Array<Group>) => {
@@ -78,6 +80,10 @@ export class DialogNewEntityComponent {
         }
         // now filter
         this.groups = allGroups.filter((group) => userIds.some((userIds) => group.id === userIds));
+      })
+      .catch(() => {
+        this.groups = [];
+        this.groupsLoadFailed = true;
       })
       .finally(() => {
         this.groupsLoading = false;

@@ -382,9 +382,14 @@ export class EntityExecutionService extends EntityStateManager {
           activeDistribution.instanceChangedId = activeDistribution.instanceId;
         }
         this.loadingService.setShowSpinner(true);
+        const distributionPayload = { ...activeDistribution } as Distribution & Record<string, unknown>;
+        // Empty reverse relations are defaulted by the data source; do not clear persisted links on update.
+        if (Array.isArray(distributionPayload.dataProduct) && distributionPayload.dataProduct.length === 0) {
+          delete distributionPayload.dataProduct;
+        }
         this.apiService.endpoints[Entity.DISTRIBUTION].update
           .call(
-            this.sanitizePayload(activeDistribution as unknown as Record<string, unknown>) as Distribution,
+            this.sanitizePayload(distributionPayload) as Distribution,
             false,
           )
           .then((data: Distribution) => {

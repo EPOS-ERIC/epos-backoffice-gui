@@ -60,6 +60,9 @@ export class ContactPointSearchComponent extends WithSubscription implements OnI
   }
 
   private getActiveEntity(): DataProduct | WebService | null {
+    if (!this.isDataProductParent && this.webservice) {
+      return this.entityExecutionService.getActiveWebServiceValue() ?? this.webservice;
+    }
     return this.isDataProductParent
       ? this.entityExecutionService.getActiveDataProductValue()
       : this.entityExecutionService.getActiveWebServiceValue();
@@ -71,33 +74,33 @@ export class ContactPointSearchComponent extends WithSubscription implements OnI
       role: new FormControl(this.contactPointRoleOptions[0].id),
     });
   }
-  public userHasEditPermissionsForSubmitted(): boolean{
+  public userHasEditPermissionsForSubmitted(): boolean {
     // check for User Role - if user not an ADMIN or REVIEWER can see the SUBMITTED, but can't edit them
     const dataProduct = this.entityExecutionService.getActiveDataProductValue();
     const activeUser = this.activeUserService.getActiveUser();
-    if(activeUser){
+    if (activeUser) {
       const activeUserGroups = activeUser.groups;
-      if(activeUserGroups){
+      if (activeUserGroups) {
         // find group in UserGroups matching with current active loaded Entity
         const groupMatch = activeUserGroups.find(group => group.groupId === dataProduct?.groups?.find(entityGroup => entityGroup === group.groupId));
-        if(groupMatch){
+        if (groupMatch) {
           const userRole = groupMatch.role;
-          if(userRole && (userRole === 'ADMIN' || userRole === 'REVIEWER')){
+          if (userRole && (userRole === 'ADMIN' || userRole === 'REVIEWER')) {
             return true;
           }
-          else{
+          else {
             return false;
           }
         }
-        else{
+        else {
           return false;
         }
       }
-      else{
+      else {
         return false;
       }
     }
-    else{
+    else {
       return false;
     }
   }

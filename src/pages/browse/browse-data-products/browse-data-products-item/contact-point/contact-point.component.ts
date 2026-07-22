@@ -103,10 +103,13 @@ export class ContactPointComponent extends WithSubscription implements OnInit {
   }
 
   private getActiveEntity(): DataProduct | WebService | null {
-
+    if (!this.isDataProductParent && this.webservice) {
+      return this.entityExecutionService.getActiveWebServiceValue() ?? this.webservice;
+    }
     return this.isDataProductParent
       ? this.entityExecutionService.getActiveDataProductValue()
       : this.entityExecutionService.getActiveWebServiceValue();
+
   }
 
   private syncContactPointsFromActiveEntity(): void {

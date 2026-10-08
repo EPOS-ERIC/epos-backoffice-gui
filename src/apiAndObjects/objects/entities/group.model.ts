@@ -5,7 +5,7 @@ export class Group implements GroupType {
     public description: string,
     public id: string,
     public name: string,
-    public entities: Array<string>,
+    public entities: Array<Record<string, any>>,
     public users: Array<{ [key: string]: string }>,
-  ) {}
+  ) { }
 }

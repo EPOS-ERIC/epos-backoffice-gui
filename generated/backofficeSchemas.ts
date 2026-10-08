@@ -1460,11 +1460,11 @@ export type Group = {
    */
   description?: string;
   /**
-   * This property refers to the list of entities id of a group
+   * This property refers to the list of entities of a group. It contains metaIds by default and LinkedEntity objects when extended data is requested.
    *
    * @example entitymetaid
    */
-  entities?: string[];
+  entities?: Record<string, any>[];
   /**
    * This property refers to the id of a group
    *

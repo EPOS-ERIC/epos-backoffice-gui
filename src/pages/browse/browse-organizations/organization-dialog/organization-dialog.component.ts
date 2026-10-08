@@ -62,6 +62,7 @@ export class OrganizationDialogComponent implements OnInit {
     this.filteredParentOrganizations = this.parentOrganizations;
     this.form = this.formBuilder.group({
       identifier: this.createIdentifierArray(organization?.identifier),
+      url: [organization?.url || ''],
       legalName: [organization?.legalName?.[0] || ''],
       leiCode: [organization?.leiCode || ''],
       email: [this.uniqueValues(organization?.email)],
@@ -192,6 +193,7 @@ export class OrganizationDialogComponent implements OnInit {
     this.data.dataOut = {
       organization: {
         ...(this.data.dataIn.organization || {}),
+        url: formValue.url.trim() || undefined,
         legalName: formValue.legalName.trim() ? [formValue.legalName.trim()] : [],
         leiCode: formValue.leiCode.trim() || undefined,
         email: formValue.email as string[],

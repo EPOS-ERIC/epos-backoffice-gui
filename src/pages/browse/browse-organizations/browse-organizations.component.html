@@ -90,6 +90,7 @@
             <div class="organization-details" [@detailExpand]="organization === expandedOrganization ? 'expanded' : 'collapsed'">
               <div class="detail-grid">
                 <div><span>Identifier</span>{{ getIdentifierLabels(organization.identifier) }}</div>
+                <div><span>URL</span>{{ organization.url || '-' }}</div>
                 <div><span>Email</span>{{ organization.email?.join(', ') || '-' }}</div>
                 <div><span>Telephone</span>{{ organization.telephone?.join(', ') || '-' }}</div>
                 <div><span>LEI Code</span>{{ organization.leiCode || '-' }}</div>

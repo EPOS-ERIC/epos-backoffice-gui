@@ -12,7 +12,7 @@ export class GroupsDataSource extends BaseObject implements GroupType {
 
   public readonly name: string;
   public readonly description: string;
-  public readonly entities: Array<string>;
+  public readonly entities: Array<Record<string, any>>;
   public readonly id: string;
   public readonly users: Array<{ [key: string]: string }>;
 
